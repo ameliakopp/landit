@@ -1894,7 +1894,7 @@ function shell(route,inner){
   return `<div class="app"><header class="top">
     <a class="brand" href="#welcome">${mark}<span class="wordmark">Landit</span></a>
     ${route==="today"?"<span></span>":`<nav class="nav" aria-label="Main">${nav.map(([r,l])=>`<a href="#${r}" ${route===r?'aria-current="page"':""}>${l}</a>`).join("")}</nav>`}
-    <div class="seg" role="group" aria-label="Switch profile"><button data-act="switch" data-k="sample" aria-pressed="${S.active==="sample"}">Sample</button>${you?`<button data-act="switch" data-k="you" aria-pressed="${S.active==="you"}">You</button>`:`<button data-act="go" data-r="start" aria-pressed="false">+ You</button>`}</div>${sb?(AUTH.user?"":`<button class="link acct" data-act="go" data-r="login">Log in</button>`):""}
+    ${AUTH.user?"":`<div class="seg" role="group" aria-label="Switch profile"><button data-act="switch" data-k="sample" aria-pressed="${S.active==="sample"}">Sample</button>${you?`<button data-act="switch" data-k="you" aria-pressed="${S.active==="you"}">You</button>`:`<button data-act="go" data-r="start" aria-pressed="false">+ You</button>`}</div>`}${sb?(AUTH.user?"":`<button class="link acct" data-act="go" data-r="login">Log in</button>`):""}
   </header><main class="stack" style="gap:0">${inner}</main>
   <footer class="foot">${p.id==="sample"?"<span>Sample student · all data is fictional</span>":""}<button class="link" data-act="go" data-r="start">Retake the diagnostic</button>${AUTH.user?`<span>Signed in as ${esc(AUTH.user.email||"")}</span><button class="link" data-act="logout">Log out</button>`:`<button class="link" data-act="reset">Reset demo data</button>`}</footer></div>`;
 }
@@ -2012,7 +2012,7 @@ function dashMock(){
 function vWelcome(){
   return `<div class="land short sl">
   <header class="band lnav"><div class="wrap"><a class="brand" href="#welcome">${mark}<span class="wordmark">Landit</span></a>
-    <nav class="lnav-links" aria-label="Sections"><button data-act="go" data-r="today">See a sample</button>${sb&&!AUTH.user?`<button data-act="go" data-r="login" data-mode="login">Log in</button>`:""}</nav></div></header>
+    <nav class="lnav-links" aria-label="Sections"><button data-act="go" data-r="today">${AUTH.user?"My plan":"See a sample"}</button>${sb&&!AUTH.user?`<button data-act="go" data-r="login" data-mode="login">Log in</button>`:""}</nav></div></header>
   <section class="band sl-hero"><div class="wrap">
     <h1 class="sl-h1">Land an<br>internship<br>in <span class="odo" role="img" aria-label="${daysBetween(TODAY,targets()[0].start)}">${[0,1,2].map(k=>`<span class="dg" style="--d:${k}"><span class="strip"><i> </i>${[0,1,2,3,4,5,6,7,8,9].map(n=>`<i>${n}</i>`).join("")}</span></span>`).join("")}</span> days</h1>
     <p class="sl-sub">A week-by-week plan to land your internship, with one clear step at a time.</p>
@@ -2640,7 +2640,8 @@ const ROUTES={login:vLogin,welcome:vWelcome,how:vHow,start:vStart,today:vToday,w
 const ALIAS={next:1,log:1,reflect:1,checkin:1};
 const route=()=>{const r=(location.hash||"").slice(1);return ALIAS[r]?"today":ROUTES[r]?r:"welcome"};
 function render(){
-  F=null;const r=route();
+  F=null;let r=route();
+  if(AUTH.user){if(S.profiles.you)S.active="you";else if(r!=="start"&&r!=="login"&&r!=="welcome"){location.hash="start";return}}
   document.getElementById("app").innerHTML=ROUTES[r]();
   const qw=document.querySelector(".q-wrap");
   initOrbs();
