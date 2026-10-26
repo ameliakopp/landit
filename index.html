@@ -987,6 +987,23 @@ a{color:var(--accent)}
 .fib-in::placeholder{color:#B4B9BE;font-weight:500;font-style:italic}
 .fib-in:focus{outline:none;background:#EEFBC9;border-bottom-color:#7AA800}
 .fib-empty{line-height:1.5;min-height:120px}
+.win{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:16px;background:#0A0B0C;color:#fff;animation:winin .5s cubic-bezier(.2,1.4,.4,1)}
+.win b{display:block;font-size:17px}.win span{font-size:14px;opacity:.8}
+.win-check{width:40px;height:40px;flex:none;border-radius:12px;background:#C6F432;color:#0A0B0C;display:grid;place-items:center;font-weight:900;font-size:20px;animation:checkpop .6s .15s cubic-bezier(.2,1.6,.4,1) both;opacity:1!important}
+@keyframes winin{from{opacity:0;transform:translateY(-10px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes checkpop{0%{transform:scale(0) rotate(-30deg)}60%{transform:scale(1.25) rotate(6deg)}100%{transform:scale(1)}}
+.sd-list li.pop .sd-n{position:relative;animation:checkpop .6s .25s cubic-bezier(.2,1.6,.4,1) both}
+.sd-list li.pop{animation:rowglow 1.4s .2s ease}
+@keyframes rowglow{0%,100%{background:transparent}30%{background:#F4FBDF}}
+.burst{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none}
+.burst b{position:absolute;width:6px;height:6px;border-radius:2px;background:#C6F432;left:-3px;top:-3px;opacity:0;animation:burst .7s .3s ease-out forwards;transform:rotate(var(--a)) translateY(0)}
+.burst b:nth-child(even){background:#0A0B0C;width:4px;height:4px}
+@keyframes burst{0%{opacity:1;transform:rotate(var(--a)) translateY(0)}100%{opacity:0;transform:rotate(var(--a)) translateY(-28px)}}
+.sd-bar i.fill{background:#C6F432;animation:barfill .7s .1s ease-out both;transform-origin:left}
+@keyframes barfill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.sd-prog span.bump{display:inline-block;animation:bump .5s .6s ease}
+@keyframes bump{50%{transform:scale(1.3);color:#5C8A00}}
+@media (prefers-reduced-motion:reduce){.win,.win-check,.sd-list li.pop,.sd-list li.pop .sd-n,.burst b,.sd-bar i.fill,.sd-prog span.bump{animation:none}}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -2463,6 +2480,9 @@ const WKS={
 };
 const curW=()=>WKS[route()]||WKS.workshop;
 const wkSlides=()=>curW().slides();
+function ding(){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const ctx=ding.c||(ding.c=new A());if(ctx.state==="suspended")ctx.resume();const t=ctx.currentTime;
+  [[1318.5,0],[1975.5,.11]].forEach(([f,d])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(0,t+d);g.gain.linearRampToValueAtTime(.22,t+d+.01);g.gain.exponentialRampToValueAtTime(.001,t+d+.6);o.connect(g).connect(ctx.destination);o.start(t+d);o.stop(t+d+.65)})}catch(e){}}
+function celebrate(k){UI.celebrate=k;ding()}
 function fibText(tpl,f){return tpl.replace(/\{([^}]+)\}/g,(_,l)=>(f[l]||"").trim()||"["+l+"]")}
 function fib(k,tpl,w,defs){const f=w[k+"_f"]||(w[k+"_f"]={});if(defs)Object.entries(defs).forEach(([l,v])=>{if(f[l]==null&&v)f[l]=v});w[k]=fibText(tpl,f);
   return `<div class="fib" data-fib="${k}" data-tpl="${esc(tpl)}">${tpl.split(/(\{[^}]+\})/).map(part=>{const m=part.match(/^\{(.+)\}$/);if(!m)return part?`<span>${esc(part)}</span>`:"";const l=m[1],v=f[l]||"";return `<input class="fib-in" data-fl="${esc(l)}" value="${esc(v)}" placeholder="${esc(l)}" size="${Math.max(l.length,v.length)+1}" aria-label="${esc(l)}" autocomplete="off">`}).join("")}</div>`}
@@ -2491,16 +2511,17 @@ function homeBody(p,mock){
   const lock=`<svg width="11" height="12" viewBox="0 0 11 12" aria-hidden="true"><rect x="1" y="5" width="9" height="6.5" rx="1.6" fill="currentColor"/><path d="M3 5V3.6a2.5 2.5 0 0 1 5 0V5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
   const left=x&&due[cur]?daysBetween(TODAY,due[cur]):0,when=!x?"":late?`Overdue · was due ${fmt(due[cur])}`:due[cur]?`Due ${fmt(due[cur])} · ${left<=0?"today":left===1?"1 day left":left<14?left+" days left":Math.round(left/7)+" weeks left"}`:"";
   const wr=x&&{linkedin:"workshop",who:"contacts",email:"outreach",pitch:"pitch",resume:"resume",interview:"interview"}[x.k],ws=wr&&p[WKS[wr].store],btn=!x?"":wr?`<button class="btn primary big" data-act="go" data-r="${wr}">${(ws&&ws.i)?"Continue":"Start"} →</button>`:`<button class="btn primary big" data-act="check" data-k="${x.k}">Done ✓</button>`;
-  return `<div class="sd${mock?" sd-mock":""}">${mock?"":saveBanner()}
+  const won=!mock&&UI.celebrate&&CHECK.find(c=>c.k===UI.celebrate);
+  return `<div class="sd${mock?" sd-mock":""}">${mock?"":saveBanner()}${won?`<div class="win" role="status"><span class="win-check">✓</span><div><b>${esc(won.s)} done!</b><span>${cur===N?"All 6 steps complete. You’re ready.":`${cur} of ${N} · next up: ${esc(ckT(CHECK[cur],p))}`}</span></div></div>`:""}
     <header class="sd-hi"><h1>${p.first==="there"?"Hi!":`Hi ${esc(p.first)}!`}</h1>${pl?`<p><b>${pl.weeks} weeks</b> to land your ${esc(pl.t.label)} internship${p.job&&p.job.company?` at <b>${esc(p.job.company)}</b>`:""}. Apply by <b>${fmt(pl.deadline)}</b>.</p>`:""}</header>
-    <div class="sd-prog"><div class="sd-bar">${CHECK.map((c,i)=>`<i class="${i<cur?"done":i===cur?"now":""}"></i>`).join("")}</div><span>${cur} of ${N} done</span></div>
+    <div class="sd-prog"><div class="sd-bar">${CHECK.map((c,i)=>`<i class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"></i>`).join("")}</div><span class="${!mock&&UI.celebrate?"bump":""}">${cur} of ${N} done</span></div>
     ${x?`<section class="sd-now${late?" late":""}">
       <span class="sd-eye">Step ${cur+1} · ${when}</span>
       <h2>${esc(ckT(x,p))}</h2>
       <p>${esc(x.h)}</p>
       <div class="sd-acts">${btn}${wr?`<button class="link" data-act="check" data-k="${x.k}">Already done</button>`:""}</div>
     </section>`:`<section class="sd-now"><span class="sd-eye">All ${N} steps done</span><h2>You’re ready. Go get it.</h2>${p.job&&p.job.url?`<div class="sd-acts"><a class="btn primary big" href="${esc(p.job.url)}" target="_blank" rel="noopener">Open the job ↗</a></div>`:""}</section>`}
-    <ol class="sd-list">${CHECK.map((c,i)=>i===cur?"":`<li class="${i<cur?"done":"next"}"><span class="sd-n">${i<cur?"✓":lock}</span><span class="sd-t">${esc(ckT(c,p))}</span>${i<cur?(i===cur-1?`<button class="link" data-act="check" data-k="${c.k}">Undo</button>`:"<span></span>"):`<span class="sd-d">${due[i]?fmt(due[i]):""}</span>`}</li>`).join("")}</ol>
+    <ol class="sd-list">${CHECK.map((c,i)=>i===cur?"":`<li class="${i<cur?"done":"next"}${!mock&&UI.celebrate===c.k?" pop":""}"><span class="sd-n">${i<cur?"✓":lock}${!mock&&UI.celebrate===c.k?`<span class="burst" aria-hidden="true">${Array.from({length:10},(_,j)=>`<b style="--a:${j*36}deg"></b>`).join("")}</span>`:""}</span><span class="sd-t">${esc(ckT(c,p))}</span>${i<cur?(i===cur-1?`<button class="link" data-act="check" data-k="${c.k}">Undo</button>`:"<span></span>"):`<span class="sd-d">${due[i]?fmt(due[i]):""}</span>`}</li>`).join("")}</ol>
     ${pl&&!mock?`<div class="sd-foot">${UI.editDl?`<span class="row" style="gap:8px"><input class="input mono" type="date" id="dl-input" value="${pl.deadline}" min="${TODAY}" max="${addDays(pl.start,-1)}" style="width:auto;padding:6px 10px"><button class="btn primary sm" data-act="savedl">Save</button><button class="link" data-act="resetdl">Use typical</button></span>`:`<button class="link" data-act="editdl">Change apply-by date</button>`}</div>`:""}
   </div>`;
 }
@@ -2664,6 +2685,7 @@ function render(){
   F=null;let r=route();
   if(AUTH.user){if(S.profiles.you)S.active="you";else if(r!=="start"&&r!=="login"&&r!=="welcome"){location.hash="start";return}}
   document.getElementById("app").innerHTML=ROUTES[r]();
+  if(UI.celebrate&&r==="today"){const k=UI.celebrate;setTimeout(()=>{if(UI.celebrate===k)UI.celebrate=null},50)}
   const qw=document.querySelector(".q-wrap");
   initOrbs();
   clearInterval(render.tick);
@@ -2703,7 +2725,7 @@ const ACT={
   ind:el=>{UI.ind=UI.ind===el.dataset.k?null:el.dataset.k;render()},
   cta:()=>{startStep();render();window.scrollTo(0,0)},
   how:()=>{UI.how=!UI.how;render()},
-  check:el=>{const p=P(),c=p.checklist||(p.checklist={}),cur=checkCur(p),i=CHECK.findIndex(x=>x.k===el.dataset.k);if(i===cur){c[CHECK[i].k]=true;if(i+1===CHECK.length)toast("All done. You’re ready!")}else if(i===cur-1){CHECK.slice(i).forEach(x=>c[x.k]=false)}else return;save();render()},
+  check:el=>{const p=P(),c=p.checklist||(p.checklist={}),cur=checkCur(p),i=CHECK.findIndex(x=>x.k===el.dataset.k);if(i===cur){c[CHECK[i].k]=true;celebrate(CHECK[i].k)}else if(i===cur-1){CHECK.slice(i).forEach(x=>c[x.k]=false)}else return;save();render()},
   wkgo:el=>wkGo(+el.dataset.d),
   closeauth:()=>{UI.authModal=false;AUTH.msg="";render()},
   authmode:el=>{AUTH.mode=el.dataset.v;AUTH.msg="";render()},
@@ -2721,7 +2743,7 @@ const ACT={
   wkopen:el=>{const w=wkData(P());w.open=+el.dataset.i;save();render()},
   wkcopy:el=>{const v=wkData(P())[el.dataset.k]||"";if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>toast("Copied"),()=>toast("Couldn’t copy. Select it and copy manually."));else toast("Select it and copy manually.")},
   wkexit:()=>{toast("Saved. Pick up where you left off.");go("today")},
-  wkdone:()=>{const p=P(),c=p.checklist||(p.checklist={}),k=curW().done,i=CHECK.findIndex(x=>x.k===k);if(!c[k]){c[k]=true;save();const nx=CHECK[i+1];toast("Done ✓"+(nx?" Next: "+ckT(nx,p).replace(/^./,m=>m.toLowerCase()):""))}go("today")},
+  wkdone:()=>{const p=P(),c=p.checklist||(p.checklist={}),k=curW().done,i=CHECK.findIndex(x=>x.k===k);if(!c[k]){c[k]=true;save();celebrate(k)}go("today")},
   editdl:()=>{UI.editDl=true;render()},
   toggleind:()=>{UI.showInd=!UI.showInd;UI.ind=null;render()},
   savedl:()=>{const v=document.getElementById("dl-input").value;if(!v){toast("Pick a date first");return}const p=P();p.deadline=v;p.planStart=p.planStart||TODAY;UI.editDl=false;save();toast("Plan rebuilt around "+fmt(v));render()},
