@@ -981,6 +981,12 @@ a{color:var(--accent)}
 .modal-bg{position:fixed;inset:0;z-index:50;background:rgba(10,11,12,.55);display:grid;place-items:center;padding:16px;animation:wkin .2s ease}
 .modal{width:100%;max-width:440px;max-height:calc(100vh - 32px);overflow:auto;background:var(--bg);border-radius:22px;padding:28px;display:flex;flex-direction:column;gap:14px;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
 .modal .wk-h{font-size:clamp(28px,5vw,38px)}
+.fib{border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:14px 16px;font-size:16.5px;line-height:2.3;color:#6B7177}
+.fib span{white-space:pre-wrap}
+.fib-in{font:inherit;color:var(--ink);font-weight:600;background:#fff;border:0;border-bottom:2px solid #0A0B0C;border-radius:6px 6px 0 0;padding:2px 6px;margin:0 2px;min-width:4ch;max-width:100%;line-height:1.4}
+.fib-in::placeholder{color:#B4B9BE;font-weight:500;font-style:italic}
+.fib-in:focus{outline:none;background:#EEFBC9;border-bottom-color:#7AA800}
+.fib-empty{line-height:1.5;min-height:120px}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -2117,8 +2123,8 @@ const WK=[
   {sec:"profile",id:"headline",r:(p,w)=>`<span class="wk-eye">Part 1 · Your profile · 1 of 3</span>
     <h2 class="wk-h">Upgrade your headline</h2>
     <div class="wk-ba">${shot("harry","Harry’s profile before","pcrop","Before")}<div class="wk-new"><span class="lbl">Harry’s new headline</span><span>NYU Music Business Student | A &amp; R @ Columbia Records, Lede, Victor Victor</span></div></div>
-    <div class="wk-you"><label for="wk-headline">Now write yours</label><p class="wk-hint">School + major | what you’ve done @ where</p>
-      <input class="input" id="wk-headline" data-wk="headline" maxlength="220" value="${esc(w.headline||"")}" placeholder="e.g. NYU Gallatin Student | Growth @ Retrofit AI, LinkedIn">
+    <div class="wk-you"><label>Now write yours</label><p class="wk-hint">Fill in the blanks. The gray text stays.</p>
+      ${fib("headline","{school} {major} Student | {role} @ {company}, {another company}",w,{school:p.wkc&&p.wkc.school})}
       ${wkLiCard(p,w)}</div>`},
   {sec:"profile",id:"about",r:(p,w)=>`<span class="wk-eye">Profile · 2 of 3</span>
     <h2 class="wk-h">Add an “About”</h2>
@@ -2130,8 +2136,8 @@ const WK=[
       <div class="wk-li-entry"><img src="img/wk/teo-head.jpg" alt=""><div class="wk-about now"><b>About</b><p>I’m an International Business student at NYU. I spent my first year in Madrid, where I co-founded the Model UN and Business Clubs. I’m interested in how companies grow across borders, and I’m looking for Summer 2027 internships in consulting or international strategy.</p></div></div>
       </div></div>
     <p class="wk-formula"><b>The formula:</b> who you are + one thing you’ve done + <mark>what you’re looking for</mark>.</p>
-    <div class="wk-you"><label for="wk-about">Now write yours: three sentences</label>
-      <textarea class="ta input" id="wk-about" data-wk="about" placeholder="I’m a ___ student at ___. I ___. I’m interested in ___, and I’m looking for ___ internships in ___.">${esc(w.about||"")}</textarea></div>`},
+    <div class="wk-you"><label>Now write yours: fill in the blanks</label>
+      ${fib("about","I’m a {major} student at {school}. I {one thing you’ve done}. I’m interested in {topic}, and I’m looking for {season} internships in {field}.",w,{school:p.wkc&&p.wkc.school})}</div>`},
   {sec:"profile",id:"exp",r:(p,w)=>`<span class="wk-eye">Profile · 3 of 3</span>
     <h2 class="wk-h">Add details to your experience</h2>
     <p class="wk-p">Most students list a job with no description, so recruiters can’t tell what they actually did. Here’s Reagan’s before and after.</p>
@@ -2142,8 +2148,8 @@ const WK=[
       <div class="wk-li-entry"><img src="img/wk/reagan-cisco.jpg" alt=""><div class="wk-desc"><p>One of <mark>40</mark> high school students chosen for Cisco’s <mark>6-week</mark> summer externship. Worked on a <mark>5-person</mark> team to design a cybersecurity awareness campaign for small businesses, and presented it to <mark>4</mark> Cisco managers. Finished <mark>25+ hours</mark> of training in networking and cybersecurity, and met with <mark>8</mark> Cisco employees to learn how their teams work.</p></div></div>
       </div></div>
     <p class="wk-formula"><b>The formula:</b> what you did + who you did it with + <mark>numbers</mark> (how many, how long, what happened).</p>
-    <div class="wk-you"><label for="wk-exp">Now rewrite one of yours</label>
-      <textarea class="ta input" id="wk-exp" data-wk="exp" placeholder="What you did, who with, and the numbers: how many, how long, what happened.">${esc(w.exp||"")}</textarea>
+    <div class="wk-you"><label>Now rewrite one of yours</label>
+      ${fib("exp","{Led / Built / Grew} {what you did} with {how many people} over {how long}, resulting in {a number: views, sales, signups}.",w)}
       <p class="wk-hint${/\d/.test(w.exp||"")?" ok":""}" data-live-hint="exp">${wkExpHint(w.exp)}</p></div>`},
   {sec:"net",r:()=>`<span class="wk-eye">Next up</span><h2 class="wk-h">Networking</h2>${wkChecks("net")}<p class="wk-p">Profile done. Now the part most people skip.</p>`},
   {sec:"net",r:(p,w)=>`<span class="wk-eye">Part 2 · Networking</span>
@@ -2183,12 +2189,12 @@ const WK=[
         <div class="wk-hk-vis"><div class="wk-bubble">Hi [Name], I loved your post on cold outreach. I’m a student at NYU and…</div></div>
         <div class="wk-try"><b>Try this</b>You’ll write your first note on the next screen →</div></div>
     </div>`},
-  {sec:"hacks",id:"note",r:(p,w)=>{const note=w.note||"";
+  {sec:"hacks",id:"note",r:(p,w)=>{const box=w.open!=null?fib("note",`Hi {their name}, ${WK_OPEN[w.open].replace(/…$/,"")} {something specific}. I’m a student at {school} and think I could learn a lot from you.`,w,{school:p.wkc&&p.wkc.school}):"";const note=w.open!=null?w.note:"";
     return `<span class="wk-eye">Hack 3 · Add a note</span>
     <h2 class="wk-h">Write your connection note</h2>
     <div class="wk-note"><div class="stack" style="gap:8px"><span class="eyebrow">Pick a way to reach out</span><div class="wk-opts">${WK_OPEN.map((o,i)=>`<button class="chip" data-act="wkopen" data-i="${i}" aria-pressed="${w.open===i}">${esc(o)}</button>`).join("")}</div></div>
-    <div class="stack" style="gap:8px"><label class="eyebrow" for="wk-note">Your note</label>
-      <textarea class="ta input" id="wk-note" data-wk="note" style="min-height:190px" placeholder="Pick one on the left.">${esc(note)}</textarea>
+    <div class="stack" style="gap:8px"><span class="eyebrow">Your note</span>
+      ${box||`<div class="fib fib-empty">Pick one on the left.</div>`}
       <div class="row" style="justify-content:space-between;gap:12px"><button class="btn ghost sm" data-act="wkcopy" data-k="note">Copy note</button><span class="wk-count${note.length>300?" over":""}" data-live-count="note">${note.length}/300</span></div></div></div>`}},
   {sec:"end",r:(p,w)=>{const draft=(k,l)=>`<div class="gp-d${w[k]?"":" gp-skip"}"><span class="k">${l}</span>${w[k]?`<p>${esc(w[k])}</p><button class="btn primary sm" data-act="wkcopy" data-k="${k}">Copy</button>`:`<button class="link" data-act="wkjump" data-id="${k}">Write it →</button>`}</div>`;
     return `<span class="wk-eye">Your game plan</span>
@@ -2237,11 +2243,11 @@ const WKC=[
         <label>Location</label><p class="wk-hint">Optional. Pick the office city.</p></div></div>
     </div>
     <div class="wk-search"><span class="wk-q" data-search-q>${esc(wkcQ(p,w))||"Add a role to build your search"}</span><a class="btn primary" data-search-link href="${wkcURL(p,w)}" target="_blank" rel="noopener">Open on LinkedIn ↗</a></div>`}},
-  {sec:"note",r:(p,w)=>{if(!w.noteEdited)w.note=wkcNote(p,w);const note=w.note;return `<span class="wk-eye">Step 3 of 3</span>
+  {sec:"note",r:(p,w)=>{const co=coOf(p,w),box=fib("note",`Hi {their name}, I’m a student at {school} interested in {role} roles${co?" at "+co:""}. I’d love to hear how you got there.`,w,{school:w.school,role:w.role});const note=w.note;return `<span class="wk-eye">Step 3 of 3</span>
     <h2 class="wk-h">Send a note</h2>
     <div class="wk-ba2">
       <div class="wk-fix"><span class="wk-tag before">On LinkedIn</span><div class="wk-li-entry"><img src="img/wk/fc-connect.jpg" alt="A Spotify marketer’s LinkedIn profile with Connect circled"></div><div class="wk-li-entry" style="max-width:70%"><img src="img/wk/fc-addnote.jpg" alt="Add a note to your invitation dialog with Add a note circled"></div><p class="wk-hint">Click <b>Connect</b>, then <b>Add a note</b>.</p></div>
-      <div class="wk-fix"><span class="wk-tag after">Your note</span><textarea class="ta input" data-wk="note" style="min-height:170px">${esc(note)}</textarea>
+      <div class="wk-fix"><span class="wk-tag after">Your note</span>${box}
         <div class="row" style="justify-content:space-between;gap:12px"><button class="btn ghost sm" data-act="wkcopy" data-k="note">Copy note</button><span class="wk-count${note.length>300?" over":""}" data-live-count="note">${note.length}/300</span></div></div>
     </div>`}},
   {sec:"end",r:(p,w)=>`<span class="wk-eye">Your game plan</span>
@@ -2281,12 +2287,12 @@ const WKO=[
     <div class="wk-ex"><div class="wk-ex-to"><span class="wk-tag after">${x.l}</span><span>To ${esc(x.to)}</span></div>
       <p class="wk-ex-msg">${x.parts.map(([k,t])=>k?seg(k,esc(t)):`<span class="seg-plain">${esc(t)}</span>`).join(" ")}</p></div>
     <div class="wk-legend"><span class="seg-k sg-who">Who</span> school / major <span class="seg-k sg-why">Why</span> them specifically <span class="seg-k sg-what">What</span> what you want</div>`}},
-  {sec:"write",r:(p,w)=>{if(w.who==null){const sc=p.wkc&&p.wkc.school;w.who=sc?`I’m a student at ${sc}.`:""}w.note=wkoNote(w);return `<span class="wk-eye">Your turn</span>
+  {sec:"write",r:(p,w)=>{const sc=p.wkc&&p.wkc.school,whoB=fib("who","I’m a {year} at {school} studying {major}.",w,{school:sc}),whyB=fib("why","I {loved / saw / read} your {post / talk / work} about {topic}.",w);w.note=wkoNote(w);return `<span class="wk-eye">Your turn</span>
     <h2 class="wk-h">Write your note</h2>
     <div class="wk-ba2">
       <div class="wk-fix wk-build">
-        <label for="wko-who"><span class="seg-k sg-who">Who</span> Who you are</label><input class="input" id="wko-who" data-wk="who" value="${esc(w.who||"")}" placeholder="I’m a sophomore at NYU studying marketing.">
-        <label for="wko-why"><span class="seg-k sg-why">Why</span> Why them</label><textarea class="ta input" id="wko-why" data-wk="why" style="min-height:80px" placeholder="I loved your post about… / I saw you also went to…">${esc(w.why||"")}</textarea>
+        <label><span class="seg-k sg-who">Who</span> Who you are</label>${whoB}
+        <label><span class="seg-k sg-why">Why</span> Why them</label>${whyB}
         <label><span class="seg-k sg-what">What</span> What you want</label><div class="wk-opts">${WKO_WHAT.map(o=>`<button class="chip" data-act="wkset" data-k="what" data-v="${esc(o)}" aria-pressed="${w.what===o}">${esc(o)}</button>`).join("")}</div>
       </div>
       <div class="wk-fix"><span class="wk-tag after">Your note</span><div class="wk-turn"><p class="wk-preview" data-live-note>${esc(w.note)}</p></div>
@@ -2315,12 +2321,12 @@ const WKP=[
     <h1 class="wk-h">Prep for your chat${wkpCo(p)?` with your <mark>${esc(wkpCo(p))}</mark> contact`:""}.</h1>
     <p class="wk-p">Four steps, in the order they happen.</p>
     <div class="wk-abc"><span><b>1</b>Your intro</span><span><b>2</b>Questions to ask</span><span><b>3</b>Leave the door open</span><span><b>4</b>Follow up</span></div>`},
-  {sec:"you",r:(p,w)=>{if(w.who==null){const o=p.wko&&p.wko.who;w.who=o?o.replace(/^I’m/,`Hi, I’m ${p.first==="there"?"[name]":p.first}. I’m`):""}const st=wkpStats(w);return `<span class="wk-eye">Step 1 of 4 · Your intro</span>
+  {sec:"you",r:(p,w)=>{const of=(p.wko&&p.wko.who_f)||{},whoB=fib("who","Hi, I’m {name}. I’m a {year} at {school} studying {major}.",w,{name:p.first==="there"?"":p.first,year:of.year,school:of.school||(p.wkc&&p.wkc.school),major:of.major}),whyB=fib("why","I {loved / saw / read} your {post / talk / work} about {topic}.",w,(p.wko&&p.wko.why_f)||{});w.pitch=wkpText(w);const st=wkpStats(w);return `<span class="wk-eye">Step 1 of 4 · Your intro</span>
     <h2 class="wk-h">Know who you are and <mark>what you want</mark>.</h2>
     <div class="wk-ba2">
       <div class="wk-fix wk-build">
-        <label for="wkp-who"><span class="seg-k sg-who">Who</span> Who you are</label><textarea class="ta input" id="wkp-who" data-wk="who" style="min-height:70px" placeholder="Hi, I’m ___. I’m a ___ at ___ studying ___.">${esc(w.who||"")}</textarea>
-        <label for="wkp-why"><span class="seg-k sg-why">Why</span> Why them</label><textarea class="ta input" id="wkp-why" data-wk="why" style="min-height:70px" placeholder="I loved your post about… / I saw you also went to…">${esc(w.why||"")}</textarea>
+        <label><span class="seg-k sg-who">Who</span> Who you are</label>${whoB}
+        <label><span class="seg-k sg-why">Why</span> Why them</label>${whyB}
         <label><span class="seg-k sg-what">What</span> What you want from the chat</label><div class="wk-opts">${WKP_ASK.map(o=>`<button class="chip" data-act="wkset" data-k="what" data-v="${esc(o)}" aria-pressed="${w.what===o}">${esc(o)}</button>`).join("")}</div>
       </div>
       <div class="wk-fix"><span class="wk-tag after">Your intro</span><div class="wk-ex"><p class="wk-ex-msg" data-live-pitch>${wkpHTML(w)}</p></div>
@@ -2422,8 +2428,8 @@ const WKI=[
       <div class="wk-hk-card"><span class="wk-hk-n">2</span><b><mark>Connect</mark> your experiences to the role</b></div>
       <div class="wk-hk-card"><span class="wk-hk-n">3</span><b>Show <mark>growth</mark>, <mark>learning</mark> and <mark>impact</mark></b></div>
     </div>
-    <div class="wk-you" style="border:0;padding:0"><label for="wki-story">Your turn: pick one experience. How does it connect to this role?</label>
-      <textarea class="ta input" id="wki-story" data-wk="story" placeholder="At BENI I led 9 interns to grow 5 Instagram communities. That taught me… which is exactly what this role needs because…">${esc(w.story||"")}</textarea></div>`},
+    <div class="wk-you" style="border:0;padding:0"><label>Your turn: pick one experience. How does it connect to this role?</label>
+      ${fib("story","At {where}, I {what you did}, which led to {a result with a number}. That taught me {a skill}, which is exactly what this role needs.",w)}</div>`},
   {sec:"biz",r:(p,w)=>{const co=esc(wkiCo(p));return `<span class="wk-eye">2 of 4 · Understand the business</span>
     <h2 class="wk-h">Know <mark>${co}</mark> like you already work there.</h2>
     <div class="wk-sheet">${WKI_BIZ.map(([k,q])=>`<label class="wk-row"><span>${q(co)}</span><input class="input" data-wk="${k}" value="${esc(w[k]||"")}" placeholder="One line"></label>`).join("")}</div>`}},
@@ -2457,6 +2463,9 @@ const WKS={
 };
 const curW=()=>WKS[route()]||WKS.workshop;
 const wkSlides=()=>curW().slides();
+function fibText(tpl,f){return tpl.replace(/\{([^}]+)\}/g,(_,l)=>(f[l]||"").trim()||"["+l+"]")}
+function fib(k,tpl,w,defs){const f=w[k+"_f"]||(w[k+"_f"]={});if(defs)Object.entries(defs).forEach(([l,v])=>{if(f[l]==null&&v)f[l]=v});w[k]=fibText(tpl,f);
+  return `<div class="fib" data-fib="${k}" data-tpl="${esc(tpl)}">${tpl.split(/(\{[^}]+\})/).map(part=>{const m=part.match(/^\{(.+)\}$/);if(!m)return part?`<span>${esc(part)}</span>`:"";const l=m[1],v=f[l]||"";return `<input class="fib-in" data-fl="${esc(l)}" value="${esc(v)}" placeholder="${esc(l)}" size="${Math.max(l.length,v.length)+1}" aria-label="${esc(l)}" autocomplete="off">`}).join("")}</div>`}
 function vWorkshop(){
   const cfg=curW(),S_=cfg.slides(),p=P(),w=wkData(p),i=Math.min(w.i||0,S_.length-1),sl=S_[i],last=i===S_.length-1,done=(p.checklist||{})[cfg.done];
   const order=cfg.parts,k=order.indexOf(sl.sec);
@@ -2709,7 +2718,7 @@ const ACT={
   wkcar:el=>{const t=el.closest(".wk-car").querySelector(".wk-car-track");t.scrollBy({left:+el.dataset.d*t.clientWidth,behavior:"smooth"})},
   wkset:el=>{const w=wkData(P());w[el.dataset.k]=el.dataset.v;save();render()},
   wkobj:el=>{const w=wkData(P()),a=w.obj||(w.obj=[]),v=el.dataset.v,j=a.indexOf(v);j<0?a.push(v):a.splice(j,1);save();render()},
-  wkopen:el=>{const p=P(),w=wkData(p),i=+el.dataset.i;w.open=i;w.note=`Hi [Name], ${WK_OPEN[i].replace(/…$/,"")} [something specific]. I’m a student at [your school] and think I could learn a lot from you.`;save();render()},
+  wkopen:el=>{const w=wkData(P());w.open=+el.dataset.i;save();render()},
   wkcopy:el=>{const v=wkData(P())[el.dataset.k]||"";if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>toast("Copied"),()=>toast("Couldn’t copy. Select it and copy manually."));else toast("Select it and copy manually.")},
   wkexit:()=>{toast("Saved. Pick up where you left off.");go("today")},
   wkdone:()=>{const p=P(),c=p.checklist||(p.checklist={}),k=curW().done,i=CHECK.findIndex(x=>x.k===k);if(!c[k]){c[k]=true;save();const nx=CHECK[i+1];toast("Done ✓"+(nx?" Next: "+ckT(nx,p).replace(/^./,m=>m.toLowerCase()):""))}go("today")},
@@ -2747,14 +2756,18 @@ const ACT={
   back:()=>{if(!F||!F.stack.length)return;F.idx=F.stack.pop();F.note=null;render()},
 };
 document.addEventListener("click",e=>{const el=e.target.closest("[data-act]");if(!el)return;const fn=ACT[el.dataset.act];if(fn){e.preventDefault();fn(el,e)}});
-document.addEventListener("input",e=>{const el=e.target;if(!el.dataset||!el.dataset.wk)return;const k=el.dataset.wk,w=wkData(P());w[k]=el.value;clearTimeout(wkGo.t);wkGo.t=setTimeout(save,300);
+document.addEventListener("input",e=>{const el=e.target;
+  if(el.classList&&el.classList.contains("fib-in")){const box=el.closest(".fib"),k=box.dataset.fib,w=wkData(P()),f=w[k+"_f"]||(w[k+"_f"]={}),l=el.dataset.fl;f[l]=el.value;
+    box.querySelectorAll(".fib-in").forEach(x=>{if(x!==el&&x.dataset.fl===l)x.value=el.value;if(x.dataset.fl===l)x.size=Math.max(l.length,el.value.length)+1});wkSet(k,fibText(box.dataset.tpl,f));return}
+  if(el.dataset&&el.dataset.wk)wkSet(el.dataset.wk,el.value)});
+function wkSet(k,val){const el={value:val},w=wkData(P());w[k]=val;clearTimeout(wkGo.t);wkGo.t=setTimeout(save,300);
   const lv=document.querySelector(`[data-live="${k}"]`);if(lv){lv.textContent=el.value||lv.dataset.ph;lv.classList.toggle("wk-ph",!el.value)}
   const lh=document.querySelector(`[data-live-hint="${k}"]`);if(lh){lh.textContent=wkExpHint(el.value);lh.classList.toggle("ok",/\d/.test(el.value))}
   const lc=document.querySelector(`[data-live-count="${k}"]`);if(lc){lc.textContent=el.value.length+"/300";lc.classList.toggle("over",el.value.length>300)}
   if(route()==="contacts"){const p=P();document.querySelectorAll("[data-search-link]").forEach(a=>a.href=wkcURL(p,w));document.querySelectorAll("[data-search-q]").forEach(q=>q.textContent=wkcQ(p,w)||"Add a role to build your search");}
   if(k==="note"&&route()==="contacts")w.noteEdited=true;
   if(route()==="pitch"){w.pitch=wkpText(w);const lp=document.querySelector("[data-live-pitch]");if(lp)lp.innerHTML=wkpHTML(w);const ls=document.querySelector("[data-live-stats]");if(ls){const st=wkpStats(w);ls.textContent=st.n+" words · about "+st.sec+" sec"}w.follow=wkpFollow(P(),w);const lf=document.querySelector("[data-live-follow]");if(lf)lf.textContent=w.follow}
-  if(route()==="outreach"&&k!=="note"){w.note=wkoNote(w);const ln=document.querySelector("[data-live-note]");if(ln)ln.textContent=w.note;const c=document.querySelector('[data-live-count="notelen"]');if(c){c.textContent=w.note.length+"/300";c.classList.toggle("over",w.note.length>300)}}});
+  if(route()==="outreach"&&k!=="note"){w.note=wkoNote(w);const ln=document.querySelector("[data-live-note]");if(ln)ln.textContent=w.note;const c=document.querySelector('[data-live-count="notelen"]');if(c){c.textContent=w.note.length+"/300";c.classList.toggle("over",w.note.length>300)}}}
 document.addEventListener("input",e=>{const el=e.target;if(!F||!el.dataset||!el.dataset.bind)return;const path=el.dataset.bind.split(".");if(path.length===1)F.a[path[0]]=el.value;else{const o=F.a[path[0]]||(F.a[path[0]]={});o[path[1]]=el.value}});
 document.addEventListener("change",e=>{const el=e.target;if(!F||!el.dataset||!el.dataset.bind)return;const path=el.dataset.bind.split(".");if(path.length===1)F.a[path[0]]=el.value;else{const o=F.a[path[0]]||(F.a[path[0]]={});o[path[1]]=el.value}});
 document.addEventListener("scroll",e=>{const t=e.target;if(t&&t.classList&&t.classList.contains("wk-car-track"))wkCarSync(t)},true);
