@@ -2600,12 +2600,12 @@ async function cloudLoad(){
 }
 async function setUser(u){
   const was=AUTH.user&&AUTH.user.id;AUTH.user=u||null;
-  if(AUTH.user&&AUTH.user.id!==was){await cloudLoad();if(fromEmail||route()==="login")location.hash=S.profiles.you?"today":"start";render()}
-  else render();
+  if(AUTH.user&&AUTH.user.id!==was){await cloudLoad();if(fromEmail||route()==="login")location.hash=S.profiles.you?"today":"start";if(!F)render()}
+  else if(!!AUTH.user!==!!was&&!F)render();
 }
 if(sb){
   sb.auth.getSession().then(({data})=>setUser(data.session&&data.session.user));
-  sb.auth.onAuthStateChange((ev,session)=>{if(ev==="SIGNED_OUT"){AUTH.user=null;render()}else if(session)setUser(session.user)});
+  sb.auth.onAuthStateChange((ev,session)=>{if(ev==="SIGNED_OUT"){if(AUTH.user){AUTH.user=null;render()}}else if(session&&(!AUTH.user||AUTH.user.id!==session.user.id))setUser(session.user)});
 }
 function vLogin(){
   const up=AUTH.mode==="signup";
