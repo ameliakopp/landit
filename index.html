@@ -978,6 +978,9 @@ a{color:var(--accent)}
 .auth-msg{font-size:14.5px;line-height:1.45;padding:12px 14px;border-radius:12px;background:#FBFFF0;border:1.5px solid #0A0B0C}
 .save-banner{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:14px 16px;border:1.5px solid #0A0B0C;border-radius:14px;background:#FBFFF0;font-size:14.5px}
 .save-banner .btn{border-radius:10px}
+.modal-bg{position:fixed;inset:0;z-index:50;background:rgba(10,11,12,.55);display:grid;place-items:center;padding:16px;animation:wkin .2s ease}
+.modal{width:100%;max-width:440px;max-height:calc(100vh - 32px);overflow:auto;background:var(--bg);border-radius:22px;padding:28px;display:flex;flex-direction:column;gap:14px;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+.modal .wk-h{font-size:clamp(28px,5vw,38px)}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -1896,6 +1899,7 @@ function shell(route,inner){
     ${route==="today"?"<span></span>":`<nav class="nav" aria-label="Main">${nav.map(([r,l])=>`<a href="#${r}" ${route===r?'aria-current="page"':""}>${l}</a>`).join("")}</nav>`}
     ${AUTH.user?"":`<div class="seg" role="group" aria-label="Switch profile"><button data-act="switch" data-k="sample" aria-pressed="${S.active==="sample"}">Sample</button>${you?`<button data-act="switch" data-k="you" aria-pressed="${S.active==="you"}">You</button>`:`<button data-act="go" data-r="start" aria-pressed="false">+ You</button>`}</div>`}${sb?(AUTH.user?"":`<button class="link acct" data-act="go" data-r="login">Log in</button>`):""}
   </header><main class="stack" style="gap:0">${inner}</main>
+  ${authModal()}
   <footer class="foot">${p.id==="sample"?"<span>Sample student · all data is fictional</span>":""}<button class="link" data-act="go" data-r="start">Retake the diagnostic</button>${AUTH.user?`<span>Signed in as ${esc(AUTH.user.email||"")}</span><button class="link" data-act="logout">Log out</button>`:`<button class="link" data-act="reset">Reset demo data</button>`}</footer></div>`;
 }
 const AVATAR={"Priya S.":"img/priya.jpg","Marcus O.":"img/marcus.jpg","Dana L.":"img/dana.jpg"};
@@ -2033,7 +2037,7 @@ function vStart(){
       <p class="muted">These are first reads from one conversation. They’ll get sharper every time you log something and reflect.</p>
       <div class="row"><button class="btn primary" data-act="go" data-r="today">Open my dashboard</button><button class="btn ghost" data-act="go" data-r="next">See the full next step</button></div></div></div></main></div>`}
   if(UI.justFinished){UI.justFinished=false;return `<div class="app bare"></div>`}
-  if(!diagFlow||diagFlow.done){diagFlow=makeFlow(DIAG_FAST,f=>{const a=Object.assign({},f.a,{name:(f.a.me&&f.a.me.name||"").trim()||undefined,linkedin:(f.a.me&&f.a.me.linkedin||"").trim(),goal:f.a.goal||f.a.goalPreset,flow:f.a.flowTagsText||"",drainText:f.a.drainTagsText||""});S.profiles.you=profileFromDiag(a);S.active="you";save();UI.diagSummary=false;diagFlow=null;UI.justFinished=true;location.hash="today"});if(UI.presetWhen){diagFlow.a.whenPreset=UI.presetWhen;diagFlow.a.when=UI.presetWhen;diagFlow.idx=nextIdx(diagFlow,-1);diagFlow.note=DIAG_FAST[0].coach(diagFlow.a)}}
+  if(!diagFlow||diagFlow.done){diagFlow=makeFlow(DIAG_FAST,f=>{const a=Object.assign({},f.a,{name:(f.a.me&&f.a.me.name||"").trim()||undefined,linkedin:(f.a.me&&f.a.me.linkedin||"").trim(),goal:f.a.goal||f.a.goalPreset,flow:f.a.flowTagsText||"",drainText:f.a.drainTagsText||""});S.profiles.you=profileFromDiag(a);S.active="you";save();if(sb&&!AUTH.user){UI.authModal=true;AUTH.mode="signup";AUTH.msg=""}UI.diagSummary=false;diagFlow=null;UI.justFinished=true;location.hash="today"});if(UI.presetWhen){diagFlow.a.whenPreset=UI.presetWhen;diagFlow.a.when=UI.presetWhen;diagFlow.idx=nextIdx(diagFlow,-1);diagFlow.note=DIAG_FAST[0].coach(diagFlow.a)}}
   F=diagFlow;
   return `<div class="app bare"><main><div style="max-width:680px;margin:0 auto 18px;display:flex;justify-content:space-between;align-items:center;gap:12px"><a class="brand" href="#welcome">${mark}<span class="wordmark">Landit</span></a><a class="link" href="#welcome">Exit</a></div>${renderFlow(diagFlow)}</main></div>`;
 }
@@ -2607,6 +2611,19 @@ if(sb){
   sb.auth.getSession().then(({data})=>setUser(data.session&&data.session.user));
   sb.auth.onAuthStateChange((ev,session)=>{if(ev==="SIGNED_OUT"){if(AUTH.user){AUTH.user=null;render()}}else if(session&&(!AUTH.user||AUTH.user.id!==session.user.id))setUser(session.user)});
 }
+function authForm(up){return `<form class="auth-form" data-auth>
+      <label for="au-email">Email</label><input class="input" id="au-email" type="email" autocomplete="email" required placeholder="you@school.edu">
+      <label for="au-pw">Password</label><input class="input" id="au-pw" type="password" autocomplete="${up?"new-password":"current-password"}" minlength="6" required placeholder="${up?"At least 6 characters":""}">
+      ${AUTH.msg?`<p class="auth-msg" role="status">${esc(AUTH.msg)}</p>`:""}
+      <button class="btn primary" type="submit" ${AUTH.busy?"disabled":""}>${AUTH.busy?"One sec…":up?"Create account →":"Log in →"}</button>
+    </form>`}
+function authModal(){if(!UI.authModal||!sb||AUTH.user)return"";const up=AUTH.mode==="signup";return `<div class="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="am-h">
+    <span class="wk-eye">Your plan is ready</span>
+    <h2 class="wk-h" id="am-h">${up?`Create your <mark>free account</mark>.`:`Log in to <mark>save it</mark>.`}</h2>
+    <p class="wk-p">${up?"Save your plan so you can pick up on any device.":"We’ll save this plan to your account."}</p>
+    ${authForm(up)}
+    <div class="row" style="justify-content:space-between;gap:12px"><p class="wk-hint">${up?`Have an account? <button class="link" data-act="authmode" data-v="login">Log in</button>`:`New here? <button class="link" data-act="authmode" data-v="signup">Create an account</button>`}</p><button class="link" data-act="closeauth">Not now</button></div>
+  </div></div>`}
 function vLogin(){
   const up=AUTH.mode==="signup";
   if(!sb)return `<div class="app bare"><main><div class="auth"><a class="brand" href="#welcome">${mark}<span class="wordmark">Landit</span></a><h1 class="wk-h">Accounts aren’t available right now.</h1><p class="wk-p">Your plan is still saved on this device.</p><a class="btn primary" href="#today">Back home →</a></div></main></div>`;
@@ -2616,12 +2633,7 @@ function vLogin(){
     <span class="wk-eye">${up?"Save your plan":"Welcome back"}</span>
     <h1 class="wk-h">${up?`Create your <mark>free account</mark>.`:`Log in to <mark>your plan</mark>.`}</h1>
     <p class="wk-p">${up?"Your progress saves to your account, so you can pick up on any device.":"Pick up right where you left off."}</p>
-    <form class="auth-form" data-auth>
-      <label for="au-email">Email</label><input class="input" id="au-email" type="email" autocomplete="email" required placeholder="you@school.edu">
-      <label for="au-pw">Password</label><input class="input" id="au-pw" type="password" autocomplete="${up?"new-password":"current-password"}" minlength="6" required placeholder="${up?"At least 6 characters":""}">
-      ${AUTH.msg?`<p class="auth-msg" role="status">${esc(AUTH.msg)}</p>`:""}
-      <button class="btn primary" type="submit" ${AUTH.busy?"disabled":""}>${AUTH.busy?"One sec…":up?"Create account →":"Log in →"}</button>
-    </form>
+    ${authForm(up)}
     <p class="wk-hint">${up?`Already have an account? <button class="link" data-act="authmode" data-v="login">Log in</button>`:`New here? <button class="link" data-act="authmode" data-v="signup">Create an account</button>`}</p>
   </div></main></div>`;
 }
@@ -2652,6 +2664,7 @@ function render(){
     const show=n=>{const d=String(n).padStart(N," ");cols.forEach((c,k)=>{const ch=d[k],blank=ch===" ";c.classList.toggle("blank",blank);c.style.setProperty("--n",blank?0:(+ch+1))});od.setAttribute("aria-label",n)};
     show(W[0]);
     render.tick=setInterval(()=>{if(!document.querySelector(".odo")){clearInterval(render.tick);return}i=(i+1)%W.length;show(W[i])},2400)}
+  const am=document.querySelector(".modal #au-email");if(am&&!am.value&&document.activeElement!==am&&!document.querySelector(".modal .auth-msg"))am.focus({preventScroll:true});
   if(qw){const key=r+":"+qw.dataset.q+":"+(F?F.stack.length:0);if(key!==lastQKey){lastQKey=key;const inp=qw.querySelector("input.input,textarea");if(inp&&window.innerWidth>700)inp.focus({preventScroll:true})}}
 }
 function go(r){if(location.hash==="#"+r){onRoute()}else location.hash=r}
@@ -2683,6 +2696,7 @@ const ACT={
   how:()=>{UI.how=!UI.how;render()},
   check:el=>{const p=P(),c=p.checklist||(p.checklist={}),cur=checkCur(p),i=CHECK.findIndex(x=>x.k===el.dataset.k);if(i===cur){c[CHECK[i].k]=true;if(i+1===CHECK.length)toast("All done. You’re ready!")}else if(i===cur-1){CHECK.slice(i).forEach(x=>c[x.k]=false)}else return;save();render()},
   wkgo:el=>wkGo(+el.dataset.d),
+  closeauth:()=>{UI.authModal=false;AUTH.msg="";render()},
   authmode:el=>{AUTH.mode=el.dataset.v;AUTH.msg="";render()},
   logout:async()=>{if(sb)await sb.auth.signOut();delete S.profiles.you;S.active="sample";try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}AUTH.user=null;toast("Logged out");go("welcome")},
   wkrdl:async()=>{const url="img/wk/amelia-resume-template.pdf";let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null}catch(e){}
