@@ -2588,8 +2588,10 @@ const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
 const AUTH={user:null,mode:"signup",msg:"",busy:false};
 const fromEmail=/access_token=|type=signup|type=magiclink|error_description=/.test(location.hash);
-function cloudRow(){const y=S.profiles.you;return {id:AUTH.user.id,first_name:y.first==="there"?null:y.first,company:(y.job&&y.job.company)||null,steps_done:checkCur(y),state:y,updated_at:new Date().toISOString()}}
-function cloudSave(){if(!sb||!AUTH.user||!S.profiles.you)return;clearTimeout(cloudSave.t);cloudSave.t=setTimeout(async()=>{const {error}=await sb.from("students").upsert(cloudRow());if(error)console.warn("Cloud save failed:",error.message)},800)}
+function cloudRow(){const y=S.profiles.you,c=y.checklist||{},cur=checkCur(y);return {id:AUTH.user.id,first_name:y.first==="there"?null:y.first,company:(y.job&&y.job.company)||null,steps_done:cur,state:y,updated_at:new Date().toISOString()}}
+const CLOUD_STEPS={linkedin:"done_linkedin",who:"done_contacts",email:"done_outreach",pitch:"done_chat_prep",resume:"done_resume",interview:"done_interview"};
+function cloudDetail(y){const c=y.checklist||{},cur=checkCur(y),o={current_step:cur<CHECK.length?ckT(CHECK[cur],y):"All done"};CHECK.forEach(x=>o[CLOUD_STEPS[x.k]]=!!c[x.k]);return o}
+function cloudSave(){if(!sb||!AUTH.user||!S.profiles.you)return;clearTimeout(cloudSave.t);cloudSave.t=setTimeout(async()=>{const row=cloudRow();let {error}=await sb.from("students").upsert(Object.assign({},row,cloudDetail(S.profiles.you)));if(error)({error}=await sb.from("students").upsert(row));if(error)console.warn("Cloud save failed:",error.message)},800)}
 async function cloudLoad(){
   const {data,error}=await sb.from("students").select("state").eq("id",AUTH.user.id).maybeSingle();
   if(error){console.warn("Cloud load failed:",error.message);return}

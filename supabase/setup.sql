@@ -35,3 +35,12 @@ create policy "Students update own row" on public.students
 
 create policy "Students delete own row" on public.students
   for delete to authenticated using ((select auth.uid()) = id);
+
+-- Step-by-step progress columns, so the Table Editor shows each step.
+alter table public.students add column if not exists current_step     text;
+alter table public.students add column if not exists done_linkedin    boolean not null default false;
+alter table public.students add column if not exists done_contacts    boolean not null default false;
+alter table public.students add column if not exists done_outreach    boolean not null default false;
+alter table public.students add column if not exists done_chat_prep   boolean not null default false;
+alter table public.students add column if not exists done_resume      boolean not null default false;
+alter table public.students add column if not exists done_interview   boolean not null default false;
