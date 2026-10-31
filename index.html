@@ -1197,6 +1197,13 @@ a{color:var(--accent)}
 .phone .today-h{font-size:34px}.phone .today-time{font-size:14px}.phone .today-eye{font-size:11.5px}
 .phone .today-btn{min-width:0;width:100%;font-size:14px;padding:15px}
 .phone-home{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:120px;height:5px;border-radius:5px;background:#0A0B0C}
+.teaser{display:flex;align-items:center;gap:14px;text-align:left;border:2px dashed #C9CED3;border-radius:18px;padding:12px 16px;margin:6px 0 10px;width:100%;max-width:420px}
+.teaser>div{display:flex;flex-direction:column;gap:2px}
+.teaser span{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.teaser b{font-size:17px;font-weight:600}.teaser em{font-style:normal;font-size:13px;color:var(--muted)}
+.wk-slide .teaser{margin-top:10px}
+.wk-nav .btn{white-space:nowrap}
+@media (max-width:420px){.wk-nav .btn.primary{padding-left:18px;padding-right:18px;letter-spacing:.08em}}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -2696,12 +2703,15 @@ function lan(mood,size,pose){const s=size||96,src=pose||"wave",P=LAN_PART[src],i
     part=`<span class="lan-part ${P.m}" style="background-image:url(${img});transform-origin:${pc(P.o[0],P.w)} ${pc(P.o[1],P.h)};--mask:radial-gradient(ellipse ${pc((x1-x0)/2,P.w)} ${pc((y1-y0)/2,P.h)} at ${pc(cx,P.w)} ${pc(cy,P.h)},#000 78%,transparent 100%)"></span>`}
   return `<span class="lan lan-p-${src}" style="width:${s}px;height:${s}px"><span class="lan-fit" style="${(()=>{const r=P?P.w/P.h:1;return r>1?`width:${s}px;height:${Math.round(s/r)}px`:`height:${s}px;width:${Math.round(s*r)}px`})()}"><img src="${img}" alt="" draggable="false">${part}</span></span>`}
 function says(text,mood,big){return `<div class="says${big?" big":""}">${lan(mood||"wave",big?120:72)}<div class="bubble">${text}</div></div>`}
+function nextTeaser(k){const i=CHECK.findIndex(c=>c.k===k),n=CHECK[i+1];if(!n)return"";
+  return `<div class="teaser">${lan("idle",64,LAN_POSE[n.k])}<div><span>Up next · Step ${i+2}</span><b>${esc(n.n)}</b><em>About ${esc(n.m)}</em></div></div>`}
 function vReward(p){const r=UI.reward,x=CHECK.find(c=>c.k===r.k),cur=checkCur(p);
   return `<div class="app bare duo-screen"><main class="duo-center">
     <div class="pop-in">${lan("cheer",120)}</div>
     <h1 class="duo-title">${cur===CHECK.length?"All steps done!":"Step complete!"}</h1>
     <p class="duo-sub">${esc(x?ckT(x,p):"")}</p>
     <p class="duo-left">${CHECK.length-cur?`${CHECK.length-cur} step${CHECK.length-cur===1?"":"s"} left`:"You’re ready to go land it."}</p>
+    ${nextTeaser(r.k)}
     <button class="btn primary duo-cta" data-act="claim">Continue</button>
   </main></div>`}
 function vPlanReady(p){const pl=plan(p);
@@ -2756,7 +2766,7 @@ function vWorkshop(){
   return shell("today",`<div class="wk">
     <div class="wk-top"><div class="wk-parts">${order.map((x,j)=>`<span class="wk-part${j===k?" on":""}${(k>j||sl.sec==="end")?" done":""}">${cfg.names[x]}</span>`).join("")}</div><button class="link" data-act="wkexit">Save &amp; exit</button></div>
     <div class="wk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${S_.length}" aria-valuenow="${i+1}"><i style="width:${((i+1)/S_.length*100).toFixed(1)}%"></i></div>
-    <section class="wk-slide${sl.start?" wk-start":""}${UI.wkDir?" in-"+UI.wkDir:""}" aria-live="polite">${sl.start?lan("walk",96,LAN_POSE[cfg.done]):""}${sl.r(p,w)}</section>
+    <section class="wk-slide${sl.start?" wk-start":""}${UI.wkDir?" in-"+UI.wkDir:""}" aria-live="polite">${sl.start?lan("walk",96,LAN_POSE[cfg.done]):""}${sl.r(p,w)}${last?nextTeaser(cfg.done):""}</section>
     <div class="wk-nav">${i===0?"<span></span>":`<button class="btn ghost sm" data-act="wkgo" data-d="-1">← Back</button>`}
       ${last?`<button class="btn primary" data-act="wkdone">${done?"Back home →":cfg.label}</button>`:`<button class="btn primary" data-act="wkgo" data-d="1">${i===0?"Start workshop →":"Next →"}</button>`}</div>
   </div>`);
