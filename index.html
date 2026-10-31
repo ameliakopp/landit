@@ -1083,6 +1083,16 @@ a{color:var(--accent)}
 .chip[aria-pressed="true"],.opt[aria-pressed="true"],.wk-tick[aria-pressed="true"] span,.wk-pick[aria-pressed="true"]{animation:sel .28s cubic-bezier(.2,1.6,.4,1)}
 @keyframes sel{0%{transform:scale(.94)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){.wk-slide.in-r,.wk-slide.in-l,.xp-float,.chip[aria-pressed="true"],.opt[aria-pressed="true"],.wk-tick[aria-pressed="true"] span,.wk-pick[aria-pressed="true"]{animation:none}.xp-float{display:none}}
+.buddy{display:flex;flex-direction:column;align-items:center}
+.buddy-lan{position:relative;z-index:0;margin-bottom:-34px}
+.buddy-lan .lan{animation:hop 2.4s ease-in-out infinite}
+.buddy-card{position:relative;z-index:1;width:100%;background:#fff;border:2px solid #EEF0F2;border-radius:22px;padding:18px 20px;box-shadow:0 14px 30px -22px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:14px}
+.buddy-msg{font-size:16.5px;line-height:1.45;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.buddy-stats{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.buddy-stats>div{border:2px solid #EEF0F2;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.buddy-stats b{font-size:19px}.buddy-stats span{font-size:12.5px;color:var(--muted)}
+.sd-mock .buddy-lan{margin-bottom:-26px}
+@media (prefers-reduced-motion:reduce){.buddy-lan .lan{animation:none}}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -2683,8 +2693,15 @@ function homeBody(p,mock){
   const wr=x&&{linkedin:"workshop",who:"contacts",email:"outreach",pitch:"pitch",resume:"resume",interview:"interview"}[x.k],ws=wr&&p[WKS[wr].store],btn=!x?"":wr?`<button class="btn primary big" data-act="go" data-r="${wr}">${(ws&&ws.i)?"Continue":"Start"} →</button>`:`<button class="btn primary big" data-act="check" data-k="${x.k}">Done ✓</button>`;
   const won=!mock&&UI.celebrate&&CHECK.find(c=>c.k===UI.celebrate);
   return `<div class="sd${mock?" sd-mock":""}">${mock?"":saveBanner()+installTip()}${won?`<div class="win" role="status"><span class="win-check">✓</span><div><b>${esc(won.s)} done!</b><span>${cur===N?"All 6 steps complete. You’re ready.":`${cur} of ${N} · next up: ${esc(ckT(CHECK[cur],p))}`}</span></div></div>`:""}
-    ${mock?"":hudChips(p)}<header class="sd-hi"><h1>${p.first==="there"?"Hi!":`Hi ${esc(p.first)}!`}</h1>${pl?`<p><b>${(n=>n+(n===1?" day":" days"))(Math.max(0,daysBetween(TODAY,pl.start)))}</b> to land your ${esc(pl.t.label.split(" ")[0])} internship${p.job&&p.job.company?` at <b>${esc(p.job.company)}</b>`:""}. Apply by <b>${fmt(pl.deadline)}</b>.</p>`:""}</header>
-    <div class="sd-prog"><div class="sd-bar">${CHECK.map((c,i)=>`<i class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"></i>`).join("")}</div><span class="${!mock&&UI.celebrate?"bump":""}">${cur} of ${N} done</span></div>
+    <header class="sd-hi"><h1>${p.first==="there"?"Hi!":`Hi ${esc(p.first)}!`}</h1>${pl?`<p><b>${(n=>n+(n===1?" day":" days"))(Math.max(0,daysBetween(TODAY,pl.start)))}</b> to land your ${esc(pl.t.label.split(" ")[0])} internship${p.job&&p.job.company?` at <b>${esc(p.job.company)}</b>`:""}. Apply by <b>${fmt(pl.deadline)}</b>.</p>`:""}</header>
+    <section class="buddy">
+      <div class="buddy-lan">${lan(cur===N||won?"cheer":"wave",mock?120:190)}</div>
+      <div class="buddy-card">
+        <p class="buddy-msg">${esc(cur===N?"You did it! Now go land that internship.":late?`Let’s catch up on this one: ${ckT(x,p).replace(/^./,m=>m.toLowerCase())}. You’ve got this!`:cur===0?"Let’s start with your LinkedIn. One small step today!":`Nice work! Next up: ${ckT(x,p).replace(/^./,m=>m.toLowerCase())}.`)}</p>
+        <div class="sd-prog"><div class="sd-bar">${CHECK.map((c,i)=>`<i class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"></i>`).join("")}</div><span class="${!mock&&UI.celebrate?"bump":""}">${cur} of ${N} done</span></div>
+      </div>
+      ${mock?"":`<div class="buddy-stats"><div><b>🔥 ${streakOf(p)}</b><span>Day streak</span></div><div><b>⚡ ${p.xp||0}</b><span>XP</span></div><div><b>📅 ${pl?Math.max(0,daysBetween(TODAY,pl.deadline)):"–"}</b><span>Days to apply</span></div></div>`}
+    </section>
     ${x?`<section class="sd-now${late?" late":""}">
       <span class="sd-eye">Step ${cur+1} · ${when}</span>
       <h2>${esc(ckT(x,p))}</h2>
