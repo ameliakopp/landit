@@ -1153,7 +1153,7 @@ a{color:var(--accent)}
 .lan img{width:100%;height:100%;object-fit:contain;display:block;user-select:none}
 .hello-lan{width:auto!important;height:auto!important;border:0!important;background:none!important;border-radius:0!important;overflow:visible!important;align-self:flex-end;padding-bottom:6px}
 .says.big .lan{animation:none}
-@media (prefers-reduced-motion:reduce){.lan,.lan img{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.lan,.lan img,.lan-fit,.lan-part{animation:none!important}}
 .today{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:4vh 0 2vh}
 .today-lan{margin-bottom:6px}
 .today-eye{font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
@@ -1171,8 +1171,19 @@ a{color:var(--accent)}
 .cs.late{border-color:#E5484D;background:#FFF1F0}.cs.late .cs-date{color:#B42318}
 .cs.apply{border-style:dashed;border-color:#8DB51C}.cs.apply .cs-dot{background:#F4FBDF}
 .lan img{transform-origin:50% 100%}
-.lan img{animation:hop 1.2s ease-in-out infinite}
-@keyframes hop{0%,50%,100%{transform:translateY(0)}25%{transform:translateY(-2.5%)}}
+.lan{display:inline-grid;place-items:center}
+.lan-fit{position:relative;display:block}
+.lan-fit img{width:100%;height:100%;display:block}
+.lan-part{position:absolute;inset:0;background-size:100% 100%;-webkit-mask-image:var(--mask);mask-image:var(--mask);will-change:transform}
+.lan-p-wave .lan-fit{animation:lhop 1.3s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes lhop{0%,55%,100%{transform:translateY(0)}25%{transform:translateY(-3%)}}
+.lp-wave{animation:lpwave 1.3s ease-in-out infinite}@keyframes lpwave{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
+.lp-type{animation:lptype .45s steps(2) infinite}@keyframes lptype{0%{transform:translateY(0)}50%{transform:translateY(.6%)}}
+.lp-tie{animation:lptie 3.2s ease-in-out infinite}@keyframes lptie{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-6deg)}80%{transform:rotate(4deg)}90%{transform:rotate(-2deg)}}
+.lp-page{animation:lppage 3.6s ease-in-out infinite}@keyframes lppage{0%,100%{transform:rotate(0) skewY(0)}50%{transform:rotate(-2deg) skewY(1deg)}}
+.lp-talk{animation:lptalk 1.8s ease-in-out infinite}@keyframes lptalk{0%,100%{transform:rotate(0)}50%{transform:rotate(-5deg)}}
+.lp-write{animation:lpwrite .7s ease-in-out infinite}@keyframes lpwrite{0%,100%{transform:rotate(0) translateX(0)}50%{transform:rotate(4deg) translateX(.6%)}}
+.lp-mag{animation:lpmag 2.6s ease-in-out infinite}@keyframes lpmag{0%,100%{transform:translateX(0)}50%{transform:translateX(-1.6%)}}
 .phone{width:min(340px,86vw);margin:0 auto;padding:12px;border-radius:56px;background:#0A0B0C;box-shadow:0 50px 90px -40px rgba(10,20,40,.45),0 0 0 2px #2A2D31 inset}
 .phone-screen{position:relative;background:#fff;border-radius:44px;overflow:hidden;aspect-ratio:9/19.5;display:flex;flex-direction:column;padding:0 18px;text-align:left;color:#050505}
 .phone-status{display:flex;justify-content:space-between;align-items:center;height:48px;font-size:14px;padding:0 10px}
@@ -2669,9 +2680,21 @@ const WKS={
 const curW=()=>WKS[route()]||WKS.workshop;
 const wkSlides=()=>curW().slides();
 /* ---------- Lan the mascot ---------- */
-const LAN_POSE={linkedin:"laptop",who:"friends",email:"laptop",pitch:"friends",resume:"book",interview:"suit"};
-function lan(mood,size,pose){const s=size||96,src=pose||(mood==="cheer"?"friends":"suit");
-  return `<span class="lan lan-${mood||"idle"} lan-p-${src}" style="width:${s}px;height:${s}px"><img src="img/lan/${src}.png" alt="" draggable="false"></span>`}
+const LAN_POSE={linkedin:"laptop",who:"magnify",email:"write",pitch:"talk",resume:"book",interview:"suit"};
+// Each pose: image size, the moving part's box [x0,y0,x1,y1], its pivot [x,y], and the motion.
+const LAN_PART={
+  wave:{w:328,h:400,box:[235,175,335,265],o:[262,250],m:"lp-wave"},
+  laptop:{w:400,h:358,box:[440,250,600,330],o:[520,300],m:"lp-type"},
+  suit:{w:293,h:400,box:[68,205,118,268],o:[93,218],m:"lp-tie"},
+  book:{w:330,h:400,box:[140,200,335,335],o:[235,320],m:"lp-page"},
+  talk:{w:400,h:342,box:[180,170,255,265],o:[215,255],m:"lp-talk"},
+  write:{w:358,h:400,box:[55,235,150,355],o:[95,345],m:"lp-write"},
+  magnify:{w:343,h:400,box:[225,85,343,285],o:[275,270],m:"lp-mag"},
+};
+function lan(mood,size,pose){const s=size||96,src=pose||"wave",P=LAN_PART[src],img=`img/lan/${src}.png`;
+  let part="";if(P){const pc=(v,d)=>(v/d*100).toFixed(1)+"%",[x0,y0,x1,y1]=P.box,cx=(x0+x1)/2,cy=(y0+y1)/2;
+    part=`<span class="lan-part ${P.m}" style="background-image:url(${img});transform-origin:${pc(P.o[0],P.w)} ${pc(P.o[1],P.h)};--mask:radial-gradient(ellipse ${pc((x1-x0)/2,P.w)} ${pc((y1-y0)/2,P.h)} at ${pc(cx,P.w)} ${pc(cy,P.h)},#000 78%,transparent 100%)"></span>`}
+  return `<span class="lan lan-p-${src}" style="width:${s}px;height:${s}px"><span class="lan-fit" style="${(()=>{const r=P?P.w/P.h:1;return r>1?`width:${s}px;height:${Math.round(s/r)}px`:`height:${s}px;width:${Math.round(s*r)}px`})()}"><img src="${img}" alt="" draggable="false">${part}</span></span>`}
 function says(text,mood,big){return `<div class="says${big?" big":""}">${lan(mood||"wave",big?120:72)}<div class="bubble">${text}</div></div>`}
 function vReward(p){const r=UI.reward,x=CHECK.find(c=>c.k===r.k),cur=checkCur(p);
   return `<div class="app bare duo-screen"><main class="duo-center">
@@ -2760,7 +2783,7 @@ function homeBody(p,mock){
   if(tab==="cal")return `<div class="sd">${top}${calendarView(p,pl,due,cur)}</div>`;
   return `<div class="sd${mock?" sd-mock":""}">${top}
     <section class="today">
-      <span class="today-lan">${lan(won?"cheer":"walk",mock?90:120,!x||won?"friends":LAN_POSE[x.k])}</span>
+      <span class="today-lan">${lan(won?"cheer":"walk",mock?90:120,!x||won?"wave":LAN_POSE[x.k])}</span>
       ${x?`<p class="today-eye">Today’s task</p>
       <h1 class="today-h">${esc(x.n)}</h1>
       <p class="today-time">⏱ About ${esc(x.m)}</p>
