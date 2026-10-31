@@ -2861,7 +2861,7 @@ const ALIAS={next:1,log:1,reflect:1,checkin:1};
 const route=()=>{const r=(location.hash||"").slice(1);return ALIAS[r]?"today":ROUTES[r]?r:"welcome"};
 function render(){
   F=null;let r=route();
-  if(AUTH.user){if(S.profiles.you)S.active="you";if(r==="welcome"){location.hash=S.profiles.you?"today":"start";return}if(!S.profiles.you&&r!=="start"&&r!=="login"){location.hash="start";return}}
+  if(AUTH.user){if(S.profiles.you)S.active="you";if(!S.profiles.you&&r!=="start"&&r!=="login"&&r!=="welcome"){location.hash="start";return}}
   document.getElementById("app").innerHTML=ROUTES[r]();
   UI.wkDir=null;UI.xpPop=false;
   const bi=document.querySelector(".wk-bar i,.duo-bar i");if(bi){const to=bi.style.width,key=r;if(UI.barW&&UI.barW.k===key&&UI.barW.w!==to){bi.style.transition="none";bi.style.width=UI.barW.w;requestAnimationFrame(()=>requestAnimationFrame(()=>{bi.style.transition="";bi.style.width=to}))}UI.barW={k:key,w:to}}
