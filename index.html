@@ -2748,7 +2748,7 @@ function homeBody(p,mock){
   const won=!mock&&UI.celebrate&&CHECK.find(c=>c.k===UI.celebrate),tab=mock?"today":(UI.tab||"today");
   const stepsLeft=N-cur?`${N-cur} step${N-cur===1?"":"s"} left`:"All done";
   const tabs=mock?"":`<div class="dtabs" role="tablist"><button role="tab" data-act="tab" data-v="today" aria-selected="${tab==="today"}">Today</button><button role="tab" data-act="tab" data-v="cal" aria-selected="${tab==="cal"}">My plan</button></div>`;
-  const top=`${tabs}${mock?"":saveBanner()+installTip()}${won?`<div class="win" role="status"><span class="win-check">✓</span><div><b>${esc(won.s)} done!</b><span>${cur===N?"All 6 steps complete. You’re ready.":`${stepsLeft} · next up: ${esc(ckT(CHECK[cur],p))}`}</span></div></div>`:""}`;
+  const top=`${tabs}${mock?"":saveBanner()+installTip()}${won?`<div class="win" role="status"><span class="win-check">✓</span><div><b>${esc(won.s)} done!</b><span>${cur===N?"All steps complete.":`Next: ${esc(CHECK[cur].n)}`}</span></div></div>`:""}`;
   if(tab==="cal")return `<div class="sd">${top}${calendarView(p,pl,due,cur)}</div>`;
   return `<div class="sd${mock?" sd-mock":""}">${top}
     <section class="today">
