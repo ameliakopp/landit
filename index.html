@@ -2775,7 +2775,7 @@ function vReward(p){const r=UI.reward,x=CHECK.find(c=>c.k===r.k),cur=checkCur(p)
     <h1 class="duo-title">${cur===CHECK.length?"All steps done!":"Step complete!"}</h1>
     <p class="duo-sub">${esc(x?ckT(x,p):"")}</p>
     <div class="tstep">${CHECK.map((c,i)=>`<span class="${i<cur?"done":i===cur?"now":""}${c.k===r.k?" fill":""}"><i>${i<cur?"✓":i+1}</i></span>`).join("")}</div>
-    <p class="tstep-l">${CHECK.length-cur?`${cur} of ${CHECK.length} done · ${CHECK.length-cur} to go`:"All 6 done. You’re ready to go land it."}</p>
+    <p class="tstep-l">${cur} of ${CHECK.length} done</p>
     <button class="btn primary duo-cta" data-act="claim">Continue</button>
   </main></div>`}
 function vPlanReady(p){const pl=plan(p);
