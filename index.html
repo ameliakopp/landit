@@ -2776,7 +2776,7 @@ function vReward(p){const r=UI.reward,x=CHECK.find(c=>c.k===r.k),cur=checkCur(p)
     <h1 class="duo-title">${cur===CHECK.length?"All steps done!":"Step complete!"}</h1>
     <p class="duo-sub">${esc(x?ckT(x,p):"")}</p>
     <div class="tstep">${CHECK.map((c,i)=>`<span class="${i<cur?"done":i===cur?"now":""}${c.k===r.k?" fill":""}"><i>${i<cur?"✓":i+1}</i></span>`).join("")}</div>
-    <p class="tstep-l">${cur} of ${CHECK.length} done</p>
+    <p class="tstep-l">${cur} of ${CHECK.length} steps done</p>
     <button class="btn primary duo-cta" data-act="claim">Continue</button>
   </main></div>`}
 function vPlanReady(p){const pl=plan(p);
@@ -2852,7 +2852,6 @@ function homeBody(p,mock,ftab){
   const left=x&&due[cur]?daysBetween(TODAY,due[cur]):0,when=!x?"":late?`Overdue · was due ${fmt(due[cur])}`:due[cur]?`Due ${fmt(due[cur])} · ${left<=0?"today":left===1?"1 day left":left<14?left+" days left":Math.round(left/7)+" weeks left"}`:"";
   const wr=x&&{linkedin:"workshop",who:"contacts",email:"outreach",pitch:"pitch",resume:"resume",interview:"interview"}[x.k],ws=wr&&p[WKS[wr].store],btn=!x?"":wr?`<button class="btn primary big" data-act="go" data-r="${wr}">${(ws&&ws.i)?"Continue":"Start"}</button>`:`<button class="btn primary big" data-act="check" data-k="${x.k}">Mark done</button>`;
   const won=!mock&&UI.celebrate&&CHECK.find(c=>c.k===UI.celebrate),tab=ftab||(mock?"today":(UI.tab||"today"));
-  const stepsLeft=N-cur?`${N-cur} step${N-cur===1?"":"s"} left`:"All done";
   const tabs=mock?"":`<div class="dtabs" role="tablist"><button role="tab" data-act="tab" data-v="today" aria-selected="${tab==="today"}">Today</button><button role="tab" data-act="tab" data-v="cal" aria-selected="${tab==="cal"}">My plan</button></div>`;
   const top=`${tabs}${mock?"":saveBanner()+installTip()}`;
   if(tab==="cal")return `<div class="sd${mock?" sd-mock":""}">${top}${calendarView(p,pl,due,cur,mock)}</div>`;
@@ -2864,7 +2863,7 @@ function homeBody(p,mock,ftab){
       <p class="today-time">⏱ About ${esc(x.m)}</p>
       ${btn.replace('class="btn primary big"','class="btn primary big today-btn"')}
       <div class="tstep" aria-label="Step ${cur+1} of ${N}">${CHECK.map((c,i)=>`<span class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"><i>${i<cur?"✓":i+1}</i></span>`).join("")}</div>
-      <p class="tstep-l">Step ${cur+1} of ${N} · ${N-cur-1?`${N-cur-1} more after this`:"last one!"}</p>`:`<p class="today-eye">All done</p><h1 class="today-h">You’re ready. Go apply!</h1>`}
+      <p class="tstep-l">${cur} of ${N} steps done</p>`:`<p class="today-eye">All done</p><h1 class="today-h">You’re ready. Go apply!</h1>`}
     </section>
   </div>`;
 }
