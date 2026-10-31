@@ -1029,7 +1029,8 @@ a{color:var(--accent)}
 .says .bubble b{font-size:19px;font-weight:700;letter-spacing:-.01em}
 .says .bubble span{font-size:14.5px;color:var(--muted)}
 .says.big{flex-direction:column;text-align:center;gap:18px}
-.says.big .bubble{font-size:21px;font-weight:600;max-width:360px}
+.says.big .bubble{font-size:21px;font-weight:600;max-width:360px;line-height:1.35}
+.says .bubble,.says .bubble b{font-family:"Figtree",var(--f-display);letter-spacing:0;word-spacing:normal}
 .says.big .bubble::before{left:50%;top:auto;bottom:-9px;transform:translateX(-50%) rotate(-45deg)}
 .says.big .lan{order:2;animation:hop 1.6s ease-in-out infinite}
 @keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
