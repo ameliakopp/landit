@@ -1049,6 +1049,7 @@ a{color:var(--accent)}
 .duo-center{max-width:520px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px 0}
 .duo-title{font-family:var(--f-display);font-weight:800;font-size:clamp(32px,7vw,44px);letter-spacing:-.03em;color:#5C8A00}
 .duo-sub{color:var(--muted);font-size:16px}
+.duo-left{font-weight:800;font-size:18px;margin:6px 0 10px}
 .stat3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%;margin:8px 0 10px}
 .stat{border:2px solid;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;animation:pop .5s cubic-bezier(.2,1.5,.4,1) both}
 .stat:nth-child(2){animation-delay:.12s}.stat:nth-child(3){animation-delay:.24s}
@@ -1059,17 +1060,6 @@ a{color:var(--accent)}
 .stat.b{border-color:#1CB0F6}.stat.b span{background:#1CB0F6}.stat.b b{color:#0A84C2}
 .pop-in{animation:pop .6s cubic-bezier(.2,1.5,.4,1) both}
 @keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
-.flame{font-size:96px;line-height:1;margin-top:8px}
-.streak-n{font-family:var(--f-display);font-weight:900;font-size:88px;line-height:.9;color:#F28C00}
-.streak-l{font-weight:800;font-size:20px;color:#F28C00;margin-top:-6px}
-.week{display:flex;gap:10px;margin:8px 0 14px}
-.week span{display:flex;flex-direction:column;align-items:center;gap:6px}
-.week em{font-style:normal;font-size:12px;font-weight:700;color:var(--faint)}
-.week i{width:34px;height:34px;border-radius:50%;background:#E9ECEF;display:grid;place-items:center;font-style:normal;font-weight:900;color:#fff}
-.week span.on i{background:#F28C00}.week span.today em{color:#F28C00}
-.hud{display:flex;gap:8px;justify-content:flex-end;margin-bottom:-8px}
-.hud-c{font-size:14px;font-weight:800;padding:6px 12px;border-radius:999px;border:2px solid var(--line);background:#fff}
-.hud-c.off{filter:grayscale(1);opacity:.6}
 @media (max-width:420px){.stat b{font-size:15px}.week{gap:6px}.week i{width:30px;height:30px}}
 @media (prefers-reduced-motion:reduce){.says.big .lan,.pop-in,.stat{animation:none}}
 .wk-slide.in-r{animation:inR .32s cubic-bezier(.2,.9,.3,1)}
@@ -1077,8 +1067,6 @@ a{color:var(--accent)}
 @keyframes inR{from{opacity:0;transform:translateX(36px)}to{opacity:1;transform:none}}
 @keyframes inL{from{opacity:0;transform:translateX(-36px)}to{opacity:1;transform:none}}
 .wk{position:relative}
-.xp-float{position:absolute;right:8px;bottom:64px;font-weight:800;font-size:14px;background:#C6F432;color:#0A0B0C;padding:5px 10px;border-radius:999px;box-shadow:0 3px 0 #8DB51C;pointer-events:none;animation:xpf 1.1s ease-out forwards}
-@keyframes xpf{0%{opacity:0;transform:translateY(10px) scale(.7)}20%{opacity:1;transform:translateY(0) scale(1.08)}70%{opacity:1;transform:translateY(-14px) scale(1)}100%{opacity:0;transform:translateY(-26px)}}
 .wk-bar i{transition:width .45s cubic-bezier(.2,1.3,.4,1)}
 .chip[aria-pressed="true"],.opt[aria-pressed="true"],.wk-tick[aria-pressed="true"] span,.wk-pick[aria-pressed="true"]{animation:sel .28s cubic-bezier(.2,1.6,.4,1)}
 @keyframes sel{0%{transform:scale(.94)}100%{transform:scale(1)}}
@@ -2152,7 +2140,7 @@ function vStart(){
       <p class="muted">These are first reads from one conversation. They’ll get sharper every time you log something and reflect.</p>
       <div class="row"><button class="btn primary" data-act="go" data-r="today">Open my dashboard</button><button class="btn ghost" data-act="go" data-r="next">See the full next step</button></div></div></div></main></div>`}
   if(UI.justFinished){UI.justFinished=false;return `<div class="app bare"></div>`}
-  if(!diagFlow||diagFlow.done){diagFlow=makeFlow(DIAG_FAST,f=>{const a=Object.assign({},f.a,{name:(f.a.me&&f.a.me.name||"").trim()||undefined,linkedin:(f.a.me&&f.a.me.linkedin||"").trim(),goal:f.a.goal||f.a.goalPreset,flow:f.a.flowTagsText||"",drainText:f.a.drainTagsText||""});S.profiles.you=profileFromDiag(a);S.active="you";markActive(S.profiles.you);addXP(S.profiles.you,20);save();UI.planReady=true;if(sb&&!AUTH.user){UI.authModal=true;AUTH.mode="signup";AUTH.msg=""}UI.diagSummary=false;diagFlow=null;UI.justFinished=true;location.hash="today"});if(UI.presetWhen){diagFlow.a.whenPreset=UI.presetWhen;diagFlow.a.when=UI.presetWhen;diagFlow.idx=nextIdx(diagFlow,-1);diagFlow.note=DIAG_FAST[0].coach(diagFlow.a)}}
+  if(!diagFlow||diagFlow.done){diagFlow=makeFlow(DIAG_FAST,f=>{const a=Object.assign({},f.a,{name:(f.a.me&&f.a.me.name||"").trim()||undefined,linkedin:(f.a.me&&f.a.me.linkedin||"").trim(),goal:f.a.goal||f.a.goalPreset,flow:f.a.flowTagsText||"",drainText:f.a.drainTagsText||""});S.profiles.you=profileFromDiag(a);S.active="you";save();UI.planReady=true;if(sb&&!AUTH.user){UI.authModal=true;AUTH.mode="signup";AUTH.msg=""}UI.diagSummary=false;diagFlow=null;UI.justFinished=true;location.hash="today"});if(UI.presetWhen){diagFlow.a.whenPreset=UI.presetWhen;diagFlow.a.when=UI.presetWhen;diagFlow.idx=nextIdx(diagFlow,-1);diagFlow.note=DIAG_FAST[0].coach(diagFlow.a)}}
   F=diagFlow;
   return `<div class="app bare"><main>${renderFlow(diagFlow)}</main></div>`;
 }
@@ -2572,7 +2560,7 @@ const WKS={
 };
 const curW=()=>WKS[route()]||WKS.workshop;
 const wkSlides=()=>curW().slides();
-/* ---------- Lan the mascot, XP and streaks ---------- */
+/* ---------- Lan the mascot ---------- */
 function lan(mood,size){const s=size||96,cheer=mood==="cheer",wave=mood==="wave",K="#0A0B0C",L="#C6F432",D="#7FA815",C="#FFF6C9",sw=3.2;
   const spk=[[50,21,-80],[60,24,-55],[66,33,-25],[68,45,-15],[76,57,-40],[87,63,-55],[98,67,-60]].map(([x,y,a])=>`<path d="M-4 1 L0 -6 L4 1 Z" transform="translate(${x} ${y}) rotate(${a+90}) scale(1.45)" fill="${D}" stroke="${K}" stroke-width="1.7" stroke-linejoin="round"/>`).join("");
   const arm=(x,y,up)=>up?`<path d="M${x} ${y} q-9 0 -15 -7" fill="none" stroke="${K}" stroke-width="7" stroke-linecap="round"/><path d="M${x} ${y} q-9 0 -15 -7" fill="none" stroke="${L}" stroke-width="3" stroke-linecap="round"/>`
@@ -2590,30 +2578,13 @@ function lan(mood,size){const s=size||96,cheer=mood==="cheer",wave=mood==="wave"
     <ellipse cx="45" cy="45" rx="4" ry="2.6" fill="${D}" opacity=".45"/>
   </svg>`}
 function says(text,mood,big){return `<div class="says${big?" big":""}">${lan(mood||"wave",big?150:92)}<div class="bubble">${text}</div></div>`}
-function markActive(p){const d=p.days||(p.days=[]);if(d.includes(TODAY))return false;d.push(TODAY);return true}
-function streakOf(p){const d=new Set(p.days||[]);let n=0,i=d.has(TODAY)?0:1;while(d.has(addDays(TODAY,-i))){n++;i++}return n}
-function addXP(p,n){p.xp=(p.xp||0)+n}
-function hudChips(p){const st=streakOf(p),xp=p.xp||0;return `<div class="hud"><span class="hud-c${st?"":" off"}" title="Day streak">🔥 ${st}</span><span class="hud-c" title="XP">⚡ ${xp} XP</span></div>`}
 function vReward(p){const r=UI.reward,x=CHECK.find(c=>c.k===r.k),cur=checkCur(p);
   return `<div class="app bare duo-screen"><main class="duo-center">
     <div class="pop-in">${lan("cheer",150)}</div>
     <h1 class="duo-title">${cur===CHECK.length?"All steps done!":"Step complete!"}</h1>
     <p class="duo-sub">${esc(x?ckT(x,p):"")}</p>
-    <div class="stat3">
-      <div class="stat y"><span>XP earned</span><b>⚡ ${r.xp}</b></div>
-      <div class="stat g"><span>Progress</span><b>🎯 ${cur} of ${CHECK.length}</b></div>
-      <div class="stat b"><span>Time</span><b>⏱ ${r.mins} min</b></div>
-    </div>
-    <button class="btn primary duo-cta" data-act="claim">Claim XP</button>
-  </main></div>`}
-function vStreak(p){const n=streakOf(p),mon=addDays(TODAY,-((new Date(TODAY+"T12:00").getDay()+6)%7)),days=[...Array(7)].map((_,i)=>addDays(mon,i)),set=new Set(p.days||[]),L=["M","T","W","T","F","S","S"];
-  return `<div class="app bare duo-screen"><main class="duo-center">
-    ${says(n>1?"You’re on a roll! Come back tomorrow to keep it going.":"Your streak just started! Do one thing each day to keep it going.","cheer")}
-    <div class="flame pop-in">🔥</div>
-    <div class="streak-n">${n}</div>
-    <p class="streak-l">day streak</p>
-    <div class="week">${days.map((d,i)=>`<span class="${set.has(d)?"on":""}${d===TODAY?" today":""}"><em>${L[i]}</em><i>${set.has(d)?"✓":""}</i></span>`).join("")}</div>
-    <button class="btn primary duo-cta" data-act="streakok">Continue</button>
+    <p class="duo-left">${CHECK.length-cur?`${CHECK.length-cur} step${CHECK.length-cur===1?"":"s"} left`:"You’re ready to go land it."}</p>
+    <button class="btn primary duo-cta" data-act="claim">Continue</button>
   </main></div>`}
 function vPlanReady(p){const pl=plan(p);
   return `<div class="app bare duo-screen"><main class="duo-center">
@@ -2650,16 +2621,14 @@ const sfx={
   next(){const c=SOUND&&actx();if(!c)return;const t=c.currentTime;swoosh(c,t,true);tone(c,1568,t+.12,.35,.07);tone(c,2093,t+.16,.4,.045)},
   back(){const c=SOUND&&actx();if(!c)return;swoosh(c,c.currentTime,false)},
 };
-const SFX_ACT={next:"next",skip:"next",planok:"next",claim:"next",streakok:"next",pick:"select",toggle:"select",wkset:"select",wkobj:"select",wkopen:"select",wktick:"select",wkpoll:"select",authmode:"tap",back:"back"};
+const SFX_ACT={next:"next",skip:"next",planok:"next",claim:"next",pick:"select",toggle:"select",wkset:"select",wkobj:"select",wkopen:"select",wktick:"select",wkpoll:"select",authmode:"tap",back:"back"};
 function playFor(el){const a=el.dataset.act;if(a==="wkdone"||a==="check")return;
   if(a==="wkgo"){(+el.dataset.d>0?sfx.next:sfx.back)();return}
   const k=SFX_ACT[a];if(k){sfx[k]();return}
   if(el.matches(".btn,.chip,.opt"))sfx.tap()}
 function ding(){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const ctx=ding.c||(ding.c=new A());if(ctx.state==="suspended")ctx.resume();const t=ctx.currentTime;
   [[1318.5,0],[1975.5,.11]].forEach(([f,d])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(0,t+d);g.gain.linearRampToValueAtTime(.22,t+d+.01);g.gain.exponentialRampToValueAtTime(.001,t+d+.6);o.connect(g).connect(ctx.destination);o.start(t+d);o.stop(t+d+.65)})}catch(e){}}
-function celebrate(k){const p=P(),wk=Object.values(WKS).find(c=>c.done===k),w=wk&&p[wk.store],gain=50+((w&&w.xpEarned)||0),mins=w&&w.t0?Math.max(1,Math.round((Date.now()-w.t0)/60000)):1;
-  addXP(p,50);const newDay=markActive(p);const shownToday=p.streakShown===TODAY;if(!shownToday)p.streakShown=TODAY;save();
-  UI.reward={k,xp:gain,mins,streak:!shownToday};ding()}
+function celebrate(k){UI.reward={k};ding()}
 function fibText(tpl,f){return tpl.replace(/\{([^}]+)\}/g,(_,l)=>(f[l]||"").trim()||"["+l+"]")}
 function fib(k,tpl,w,defs){const f=w[k+"_f"]||(w[k+"_f"]={});if(defs)Object.entries(defs).forEach(([l,v])=>{if(f[l]==null&&v)f[l]=v});w[k]=fibText(tpl,f);
   return `<div class="fib" data-fib="${k}" data-tpl="${esc(tpl)}">${tpl.split(/(\{[^}]+\})/).map(part=>{const m=part.match(/^\{(.+)\}$/);if(!m)return part?`<span>${esc(part)}</span>`:"";const l=m[1],v=f[l]||"";return `<input class="fib-in" data-fl="${esc(l)}" value="${esc(v)}" placeholder="${esc(l)}" size="${Math.max(l.length,v.length)+1}" aria-label="${esc(l)}" autocomplete="off">`}).join("")}</div>`}
@@ -2674,12 +2643,11 @@ function vWorkshop(){
       ${last?`<button class="btn primary" data-act="wkdone">${done?"Back home →":cfg.label}</button>`:`<button class="btn primary" data-act="wkgo" data-d="1">${i===0?"Start workshop →":"Next →"}</button>`}</div>
   </div>`);
 }
-function wkGo(d){const p=P(),w=wkData(p);if(!w.t0)w.t0=Date.now();UI.wkDir=d>0?"r":"l";w.i=clamp((w.i||0)+d,0,wkSlides().length-1);if(d>0&&w.i>(w.max||0)){w.max=w.i;w.xpEarned=(w.xpEarned||0)+5;addXP(p,5);UI.xpPop=true;if(markActive(p)){}}save();render();window.scrollTo(0,0)}
+function wkGo(d){const p=P(),w=wkData(p);if(!w.t0)w.t0=Date.now();UI.wkDir=d>0?"r":"l";w.i=clamp((w.i||0)+d,0,wkSlides().length-1);if(d>0&&w.i>(w.max||0)){w.max=w.i;}save();render();window.scrollTo(0,0)}
 function vToday(){
   const p=P();
   if(UI.planReady&&p.id==="you")return vPlanReady(p);
   if(UI.reward)return vReward(p);
-  if(UI.streakScreen)return vStreak(p);
   if(UI.result)return shell("today",resultView());
   if(UI.checkResult)return shell("today",checkResultView());
   if(logFlow)return focus(TYPES[logFlow.type].label,logFlow);
@@ -2880,7 +2848,7 @@ function render(){
   F=null;let r=route();
   if(AUTH.user){if(S.profiles.you)S.active="you";if(!S.profiles.you&&r!=="start"&&r!=="login"&&r!=="welcome"){location.hash="start";return}}
   document.getElementById("app").innerHTML=ROUTES[r]();
-  UI.wkDir=null;UI.xpPop=false;
+  UI.wkDir=null;
   const bi=document.querySelector(".wk-bar i,.duo-bar i");if(bi){const to=bi.style.width,key=r;if(UI.barW&&UI.barW.k===key&&UI.barW.w!==to){bi.style.transition="none";bi.style.width=UI.barW.w;requestAnimationFrame(()=>requestAnimationFrame(()=>{bi.style.transition="";bi.style.width=to}))}UI.barW={k:key,w:to}}
   if(UI.celebrate&&r==="today"){const k=UI.celebrate;setTimeout(()=>{if(UI.celebrate===k)UI.celebrate=null},50)}
   const qw=document.querySelector(".q-wrap");
@@ -2926,8 +2894,7 @@ const ACT={
   wkgo:el=>wkGo(+el.dataset.d),
   sound:()=>{SOUND=!SOUND;try{localStorage.setItem("landit.sound.v2",SOUND?"on":"off")}catch(e){}if(SOUND)sfx.select();render()},
   planok:()=>{UI.planReady=false;render();window.scrollTo(0,0)},
-  claim:()=>{const r=UI.reward;UI.reward=null;if(r&&r.streak){UI.streakScreen=r.k}else{UI.celebrate=r&&r.k}render();window.scrollTo(0,0)},
-  streakok:()=>{UI.celebrate=UI.streakScreen;UI.streakScreen=null;render();window.scrollTo(0,0)},
+  claim:()=>{const r=UI.reward;UI.reward=null;UI.celebrate=r&&r.k;render();window.scrollTo(0,0)},
   install:async()=>{if(!installEvt)return;installEvt.prompt();await installEvt.userChoice.catch(()=>{});installEvt=null;render()},
   hideinstall:()=>{try{localStorage.setItem("landit.installHint","off")}catch(e){}render()},
   closeauth:()=>{UI.authModal=false;AUTH.msg="";render()},
