@@ -2721,7 +2721,7 @@ function nextTeaser(k){const i=CHECK.findIndex(c=>c.k===k),n=CHECK[i+1];if(!n)re
   return `<div class="teaser">${lan("idle",64,LAN_POSE[n.k])}<div><span>Up next · Step ${i+2}</span><b>${esc(n.n)}</b><em>About ${esc(n.m)}</em></div></div>`}
 function vReward(p){const r=UI.reward,x=CHECK.find(c=>c.k===r.k),cur=checkCur(p);
   return `<div class="app bare duo-screen"><main class="duo-center">
-    <div class="pop-in">${lan("cheer",120)}</div>
+    <div class="pop-in">${lan("cheer",120,x?LAN_POSE[x.k]:"wave")}</div>
     <h1 class="duo-title">${cur===CHECK.length?"All steps done!":"Step complete!"}</h1>
     <p class="duo-sub">${esc(x?ckT(x,p):"")}</p>
     <p class="duo-left">${CHECK.length-cur?`${CHECK.length-cur} step${CHECK.length-cur===1?"":"s"} left`:"You’re ready to go land it."}</p>
