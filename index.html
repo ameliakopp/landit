@@ -1036,7 +1036,7 @@ a{color:var(--accent)}
 .duo-top{display:flex;align-items:center;gap:14px}
 .duo-back{width:36px;height:36px;display:grid;place-items:center;border:0;background:none;font-size:22px;color:var(--muted);cursor:pointer;text-decoration:none}
 .duo-bar{flex:1;height:16px;border-radius:999px;background:#E9ECEF;overflow:hidden}
-.duo-bar i{display:block;height:100%;border-radius:999px;background:#C6F432;transition:width .5s cubic-bezier(.2,1.2,.4,1);position:relative}
+.duo-bar i{display:block;height:100%;border-radius:999px;background:#C6F432;transition:width .45s cubic-bezier(.2,1.3,.4,1);position:relative}
 .duo-bar i::after{content:"";position:absolute;left:10px;right:10px;top:4px;height:4px;border-radius:4px;background:rgba(255,255,255,.55)}
 .duo-say{flex:1;display:grid;place-items:center;padding:6vh 0}
 .duo-body .opt,.duo-body .chip{border-width:2px;border-bottom-width:4px;border-radius:16px}
@@ -1071,6 +1071,17 @@ a{color:var(--accent)}
 .hud-c.off{filter:grayscale(1);opacity:.6}
 @media (max-width:420px){.stat b{font-size:15px}.week{gap:6px}.week i{width:30px;height:30px}}
 @media (prefers-reduced-motion:reduce){.says.big .lan,.pop-in,.stat{animation:none}}
+.wk-slide.in-r{animation:inR .32s cubic-bezier(.2,.9,.3,1)}
+.wk-slide.in-l{animation:inL .32s cubic-bezier(.2,.9,.3,1)}
+@keyframes inR{from{opacity:0;transform:translateX(36px)}to{opacity:1;transform:none}}
+@keyframes inL{from{opacity:0;transform:translateX(-36px)}to{opacity:1;transform:none}}
+.wk{position:relative}
+.xp-float{position:absolute;right:8px;bottom:64px;font-weight:800;font-size:14px;background:#C6F432;color:#0A0B0C;padding:5px 10px;border-radius:999px;box-shadow:0 3px 0 #8DB51C;pointer-events:none;animation:xpf 1.1s ease-out forwards}
+@keyframes xpf{0%{opacity:0;transform:translateY(10px) scale(.7)}20%{opacity:1;transform:translateY(0) scale(1.08)}70%{opacity:1;transform:translateY(-14px) scale(1)}100%{opacity:0;transform:translateY(-26px)}}
+.wk-bar i{transition:width .45s cubic-bezier(.2,1.3,.4,1)}
+.chip[aria-pressed="true"],.opt[aria-pressed="true"],.wk-tick[aria-pressed="true"] span,.wk-pick[aria-pressed="true"]{animation:sel .28s cubic-bezier(.2,1.6,.4,1)}
+@keyframes sel{0%{transform:scale(.94)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.wk-slide.in-r,.wk-slide.in-l,.xp-float,.chip[aria-pressed="true"],.opt[aria-pressed="true"],.wk-tick[aria-pressed="true"] span,.wk-pick[aria-pressed="true"]{animation:none}.xp-float{display:none}}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -1993,7 +2004,7 @@ function shell(route,inner){
     ${AUTH.user?"":`<div class="seg" role="group" aria-label="Switch profile"><button data-act="switch" data-k="sample" aria-pressed="${S.active==="sample"}">Sample</button>${you?`<button data-act="switch" data-k="you" aria-pressed="${S.active==="you"}">You</button>`:`<button data-act="go" data-r="start" aria-pressed="false">+ You</button>`}</div>`}${sb?(AUTH.user?"":`<button class="link acct" data-act="go" data-r="login">Log in</button>`):""}
   </header><main class="stack" style="gap:0">${inner}</main>
   ${authModal()}
-  <footer class="foot">${p.id==="sample"?"<span>Sample student · all data is fictional</span>":""}<button class="link" data-act="go" data-r="start">Retake the diagnostic</button>${AUTH.user?`<span>Signed in as ${esc(AUTH.user.email||"")}</span><button class="link" data-act="logout">Log out</button>`:`<button class="link" data-act="reset">Reset demo data</button>`}</footer></div>`;
+  <footer class="foot"><button class="link" data-act="sound">${SOUND?"🔊 Sound on":"🔇 Sound off"}</button>${p.id==="sample"?"<span>Sample student · all data is fictional</span>":""}<button class="link" data-act="go" data-r="start">Retake the diagnostic</button>${AUTH.user?`<span>Signed in as ${esc(AUTH.user.email||"")}</span><button class="link" data-act="logout">Log out</button>`:`<button class="link" data-act="reset">Reset demo data</button>`}</footer></div>`;
 }
 const AVATAR={"Priya S.":"img/priya.jpg","Marcus O.":"img/marcus.jpg","Dana L.":"img/dana.jpg"};
 const LI=n=>`<span class="li-btn" role="img" aria-label="${n} on LinkedIn" title="${n} on LinkedIn"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4v11H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.82-2.06 3.75-2.06 4 0 4.74 2.63 4.74 6.06v5.4h-4v-4.8c0-1.14-.02-2.62-1.6-2.62-1.6 0-1.84 1.25-1.84 2.54v4.88h-4z"/></svg></span>`;
@@ -2609,6 +2620,24 @@ function renderDuo(f){
     <div class="q-wrap duo-body" data-q="${q.id}"><div class="q-body">${body}</div><p class="q-err" id="q-err" hidden></p></div>
     <div class="duo-foot">${ok||!q.optional?`<button class="btn primary duo-cta" data-act="next">${last?"Build my plan":"Continue"}</button>`:`<button class="btn duo-cta duo-skip" data-act="skip">${last?"Skip and build my plan":"Skip for now"}</button>`}</div>
   </div>`}
+/* ---------- sound effects ---------- */
+let SOUND=true;try{SOUND=localStorage.getItem("landit.sound")!=="off"}catch(e){}
+function actx(){const A=window.AudioContext||window.webkitAudioContext;if(!A)return null;const c=ding.c||(ding.c=new A());if(c.state==="suspended")c.resume();return c}
+function tone(c,f,t,dur,vol,type,f2){const o=c.createOscillator(),g=c.createGain();o.type=type||"sine";o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0005,t+dur);o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+.02)}
+function swoosh(c,t,up){const n=c.sampleRate*.28,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1);
+  const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type="bandpass";f.Q.value=1.2;f.frequency.setValueAtTime(up?500:2600,t);f.frequency.exponentialRampToValueAtTime(up?2600:500,t+.25);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.09,t+.06);g.gain.exponentialRampToValueAtTime(.0005,t+.28);src.connect(f).connect(g).connect(c.destination);src.start(t)}
+const sfx={
+  tap(){const c=SOUND&&actx();if(!c)return;tone(c,620,c.currentTime,.07,.06,"triangle",420)},
+  select(){const c=SOUND&&actx();if(!c)return;const t=c.currentTime;tone(c,880,t,.09,.07,"sine",1320)},
+  next(){const c=SOUND&&actx();if(!c)return;const t=c.currentTime;swoosh(c,t,true);tone(c,1568,t+.12,.35,.07);tone(c,2093,t+.16,.4,.045)},
+  back(){const c=SOUND&&actx();if(!c)return;swoosh(c,c.currentTime,false)},
+};
+const SFX_ACT={next:"next",skip:"next",planok:"next",claim:"next",streakok:"next",pick:"select",toggle:"select",wkset:"select",wkobj:"select",wkopen:"select",wktick:"select",wkpoll:"select",authmode:"tap",back:"back"};
+function playFor(el){const a=el.dataset.act;if(a==="wkdone"||a==="check")return;
+  if(a==="wkgo"){(+el.dataset.d>0?sfx.next:sfx.back)();return}
+  const k=SFX_ACT[a];if(k){sfx[k]();return}
+  if(el.matches(".btn,.chip,.opt"))sfx.tap()}
 function ding(){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const ctx=ding.c||(ding.c=new A());if(ctx.state==="suspended")ctx.resume();const t=ctx.currentTime;
   [[1318.5,0],[1975.5,.11]].forEach(([f,d])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(0,t+d);g.gain.linearRampToValueAtTime(.22,t+d+.01);g.gain.exponentialRampToValueAtTime(.001,t+d+.6);o.connect(g).connect(ctx.destination);o.start(t+d);o.stop(t+d+.65)})}catch(e){}}
 function celebrate(k){const p=P(),wk=Object.values(WKS).find(c=>c.done===k),w=wk&&p[wk.store],gain=50+((w&&w.xpEarned)||0),mins=w&&w.t0?Math.max(1,Math.round((Date.now()-w.t0)/60000)):1;
@@ -2623,12 +2652,12 @@ function vWorkshop(){
   return shell("today",`<div class="wk">
     <div class="wk-top"><div class="wk-parts">${order.map((x,j)=>`<span class="wk-part${j===k?" on":""}${(k>j||sl.sec==="end")?" done":""}">${cfg.names[x]}</span>`).join("")}</div><button class="link" data-act="wkexit">Save &amp; exit</button></div>
     <div class="wk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${S_.length}" aria-valuenow="${i+1}"><i style="width:${((i+1)/S_.length*100).toFixed(1)}%"></i></div>
-    <section class="wk-slide${sl.start?" wk-start":""}" aria-live="polite">${sl.r(p,w)}</section>
+    <section class="wk-slide${sl.start?" wk-start":""}${UI.wkDir?" in-"+UI.wkDir:""}" aria-live="polite">${sl.r(p,w)}</section>${UI.xpPop?`<span class="xp-float" aria-hidden="true">+5 XP</span>`:""}
     <div class="wk-nav">${i===0?"<span></span>":`<button class="btn ghost sm" data-act="wkgo" data-d="-1">← Back</button>`}
       ${last?`<button class="btn primary" data-act="wkdone">${done?"Back home →":cfg.label}</button>`:`<button class="btn primary" data-act="wkgo" data-d="1">${i===0?"Start workshop →":"Next →"}</button>`}</div>
   </div>`);
 }
-function wkGo(d){const p=P(),w=wkData(p);if(!w.t0)w.t0=Date.now();w.i=clamp((w.i||0)+d,0,wkSlides().length-1);if(d>0&&w.i>(w.max||0)){w.max=w.i;w.xpEarned=(w.xpEarned||0)+5;addXP(p,5);if(markActive(p)){}}save();render();window.scrollTo(0,0)}
+function wkGo(d){const p=P(),w=wkData(p);if(!w.t0)w.t0=Date.now();UI.wkDir=d>0?"r":"l";w.i=clamp((w.i||0)+d,0,wkSlides().length-1);if(d>0&&w.i>(w.max||0)){w.max=w.i;w.xpEarned=(w.xpEarned||0)+5;addXP(p,5);UI.xpPop=true;if(markActive(p)){}}save();render();window.scrollTo(0,0)}
 function vToday(){
   const p=P();
   if(UI.planReady&&p.id==="you")return vPlanReady(p);
@@ -2828,6 +2857,8 @@ function render(){
   F=null;let r=route();
   if(AUTH.user){if(S.profiles.you)S.active="you";if(r==="welcome"){location.hash=S.profiles.you?"today":"start";return}if(!S.profiles.you&&r!=="start"&&r!=="login"){location.hash="start";return}}
   document.getElementById("app").innerHTML=ROUTES[r]();
+  UI.wkDir=null;UI.xpPop=false;
+  const bi=document.querySelector(".wk-bar i,.duo-bar i");if(bi){const to=bi.style.width,key=r;if(UI.barW&&UI.barW.k===key&&UI.barW.w!==to){bi.style.transition="none";bi.style.width=UI.barW.w;requestAnimationFrame(()=>requestAnimationFrame(()=>{bi.style.transition="";bi.style.width=to}))}UI.barW={k:key,w:to}}
   if(UI.celebrate&&r==="today"){const k=UI.celebrate;setTimeout(()=>{if(UI.celebrate===k)UI.celebrate=null},50)}
   const qw=document.querySelector(".q-wrap");
   initOrbs();
@@ -2870,6 +2901,7 @@ const ACT={
   how:()=>{UI.how=!UI.how;render()},
   check:el=>{const p=P(),c=p.checklist||(p.checklist={}),cur=checkCur(p),i=CHECK.findIndex(x=>x.k===el.dataset.k);if(i===cur){c[CHECK[i].k]=true;celebrate(CHECK[i].k)}else if(i===cur-1){CHECK.slice(i).forEach(x=>c[x.k]=false)}else return;save();render()},
   wkgo:el=>wkGo(+el.dataset.d),
+  sound:()=>{SOUND=!SOUND;try{localStorage.setItem("landit.sound",SOUND?"on":"off")}catch(e){}if(SOUND)sfx.select();render()},
   planok:()=>{UI.planReady=false;render();window.scrollTo(0,0)},
   claim:()=>{const r=UI.reward;UI.reward=null;if(r&&r.streak){UI.streakScreen=r.k}else{UI.celebrate=r&&r.k}render();window.scrollTo(0,0)},
   streakok:()=>{UI.celebrate=UI.streakScreen;UI.streakScreen=null;render();window.scrollTo(0,0)},
@@ -2925,7 +2957,7 @@ const ACT={
   skip:()=>{if(!F)return;advance(F)},
   back:()=>{if(!F||!F.stack.length)return;F.idx=F.stack.pop();F.note=null;render()},
 };
-document.addEventListener("click",e=>{const el=e.target.closest("[data-act]");if(!el)return;const fn=ACT[el.dataset.act];if(fn){e.preventDefault();fn(el,e)}});
+document.addEventListener("click",e=>{const el=e.target.closest("[data-act]");if(!el)return;const fn=ACT[el.dataset.act];if(fn){e.preventDefault();try{playFor(el)}catch(err){}fn(el,e)}});
 document.addEventListener("input",e=>{const el=e.target;
   if(el.classList&&el.classList.contains("fib-in")){const box=el.closest(".fib"),k=box.dataset.fib,w=wkData(P()),f=w[k+"_f"]||(w[k+"_f"]={}),l=el.dataset.fl;f[l]=el.value;
     box.querySelectorAll(".fib-in").forEach(x=>{if(x!==el&&x.dataset.fl===l)x.value=el.value;if(x.dataset.fl===l)x.size=Math.max(l.length,el.value.length)+1});wkSet(k,fibText(box.dataset.tpl,f));return}
