@@ -2807,7 +2807,7 @@ function homeBody(p,mock,ftab){
   if(tab==="cal")return `<div class="sd${mock?" sd-mock":""}">${top}${calendarView(p,pl,due,cur,mock)}</div>`;
   return `<div class="sd${mock?" sd-mock":""}">${top}
     <section class="today">
-      <span class="today-lan">${lan(won?"cheer":"walk",mock?90:120,!x||won?"wave":LAN_POSE[x.k])}</span>
+      <span class="today-lan">${lan(won?"cheer":"walk",mock?90:120,!x?"wave":LAN_POSE[x.k])}</span>
       ${x?`<p class="today-eye">Today’s task</p>
       <h1 class="today-h">${esc(x.n)}</h1>
       <p class="today-time">⏱ About ${esc(x.m)}</p>
