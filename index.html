@@ -1258,7 +1258,9 @@ a{color:var(--accent)}
 .tstep i{width:28px;height:28px;flex:none;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;background:#F1F3F5;color:var(--faint);border:2px solid #E4E7EA}
 .tstep .done i{background:#C6F432;border-color:#C6F432;color:#0A0B0C}
 .tstep .now i{background:#0A0B0C;border-color:#0A0B0C;color:#C6F432}
-.tstep .fill i{animation:checkpop .6s .2s cubic-bezier(.2,1.6,.4,1) both}
+.tstep .fill i{animation:checkpop .6s .35s cubic-bezier(.2,1.6,.4,1) both}
+.tstep span.fill::before{transform-origin:left;animation:barfill .5s .1s ease-out both}
+.duo-center .tstep{margin-top:6px;width:340px;max-width:100%}.duo-center .tstep-l{margin-bottom:10px}
 .tstep-l{font-size:14px;color:var(--muted);margin-top:4px}
 .phone .tstep{margin-top:14px}.phone .tstep i{width:20px;height:20px;font-size:9.5px}.phone .tstep-l{font-size:11px}
 .wk-credit{font-size:12.5px;color:var(--faint)}
@@ -2772,7 +2774,8 @@ function vReward(p){const r=UI.reward,x=CHECK.find(c=>c.k===r.k),cur=checkCur(p)
     <div class="pop-in">${lan("cheer",120,x?LAN_POSE[x.k]:"wave")}</div>
     <h1 class="duo-title">${cur===CHECK.length?"All steps done!":"Step complete!"}</h1>
     <p class="duo-sub">${esc(x?ckT(x,p):"")}</p>
-    <p class="duo-left">${CHECK.length-cur?`${CHECK.length-cur} step${CHECK.length-cur===1?"":"s"} left`:"You’re ready to go land it."}</p>
+    <div class="tstep">${CHECK.map((c,i)=>`<span class="${i<cur?"done":i===cur?"now":""}${c.k===r.k?" fill":""}"><i>${i<cur?"✓":i+1}</i></span>`).join("")}</div>
+    <p class="tstep-l">${CHECK.length-cur?`${cur} of ${CHECK.length} done · ${CHECK.length-cur} to go`:"All 6 done. You’re ready to go land it."}</p>
     <button class="btn primary duo-cta" data-act="claim">Continue</button>
   </main></div>`}
 function vPlanReady(p){const pl=plan(p);
