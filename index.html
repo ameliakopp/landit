@@ -1081,6 +1081,50 @@ a{color:var(--accent)}
 .buddy-stats b{font-size:19px}.buddy-stats span{font-size:12.5px;color:var(--muted)}
 .sd-mock .buddy-lan{margin-bottom:-26px}
 @media (prefers-reduced-motion:reduce){.buddy-lan .lan{animation:none}}
+.dtabs{align-self:center;display:inline-grid;grid-template-columns:1fr 1fr;background:#ECEEF0;border-radius:999px;padding:4px;position:sticky;top:10px;z-index:4;box-shadow:0 6px 18px -12px rgba(0,0,0,.4)}
+.dtabs button{border:0;background:none;font:inherit;font-weight:800;font-size:14px;padding:9px 22px;border-radius:999px;cursor:pointer;color:var(--muted);min-width:120px}
+.dtabs button[aria-selected="true"]{background:#0A0B0C;color:#C6F432}
+.hello{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.hello h1{font-family:"Inter Tight",var(--f-display);font-weight:900;font-size:clamp(64px,15vw,112px);line-height:.86;letter-spacing:-.055em}
+.hello-lan{flex:none;width:118px;height:118px;border-radius:50%;background:#F4FBDF;border:2px solid #0A0B0C;display:grid;place-items:center;overflow:hidden}
+.sd-mock .hello-lan{width:92px;height:92px}
+.hello-sub{font-family:"Inter Tight",var(--f-display);font-weight:800;font-size:clamp(20px,3.6vw,26px);letter-spacing:-.025em;line-height:1.15;margin-top:-6px;color:#6B7177}
+.hello-sub b{color:#0A0B0C}
+.task{background:#0A0B0C;color:#fff;border-radius:26px;padding:clamp(22px,4vw,30px);display:flex;flex-direction:column;gap:12px}
+.task.late{box-shadow:0 0 0 3px #E5484D}
+.task-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.task-pill{background:#C6F432;color:#0A0B0C;font-weight:800;font-size:13px;padding:5px 12px;border-radius:999px}
+.task-meta{font-size:13px;color:#A7ADB3;font-weight:600}
+.task h2{font-family:"Inter Tight",var(--f-display);font-weight:900;font-size:clamp(30px,5.4vw,44px);line-height:1;letter-spacing:-.04em;color:#fff}
+.task p{color:#C4C9CE;font-size:16px;line-height:1.45}
+.task .link{color:#C4C9CE}
+.task-due{font-size:13px;color:#A7ADB3;border-top:1px solid #23272B;padding-top:12px}
+.task.late .task-due{color:#FF8A8F}
+.upnext{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;text-align:left;border:2px solid #EEF0F2;background:#fff;border-radius:18px;padding:14px 16px;font:inherit;cursor:pointer}
+.upnext span{grid-row:span 2;align-self:center;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.upnext b{font-size:16px}.upnext em{font-style:normal;font-size:13px;color:var(--muted)}
+.cal-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cal-sum div{border:2px solid #EEF0F2;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column}
+.cal-sum b{font-family:"Inter Tight",var(--f-display);font-weight:900;font-size:26px;letter-spacing:-.03em}
+.cal-sum span{font-size:13px;color:var(--muted)}
+.cal{display:flex;flex-direction:column;gap:14px;border:2px solid #EEF0F2;border-radius:22px;padding:16px}
+.cal-axis{position:relative;height:20px;font-size:11.5px;font-weight:700;color:var(--faint);border-bottom:1px dashed var(--line)}
+.cal-axis span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.cal-axis .cal-flag{color:#0A0B0C;background:#C6F432;padding:0 6px;border-radius:5px;top:-2px}
+.cal-axis .cal-tlabel{color:#E5484D;top:-2px}
+.cal-row{display:flex;flex-direction:column;gap:6px}
+.cal-lbl{display:flex;align-items:center;gap:8px;font-size:14px;flex-wrap:wrap}
+.cal-n{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:800;background:#ECEEF0;color:var(--muted)}
+.cal-lbl em{font-style:normal;color:var(--muted);font-size:12.5px}
+.cal-dates{margin-left:auto;font-family:var(--f-mono);font-size:11.5px;color:var(--faint)}
+.cal-track{position:relative;height:30px;background:#F5F6F7;border-radius:10px}
+.cal-bar{position:absolute;top:3px;bottom:3px;border-radius:8px;background:#DADEE2;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:800;color:#6B7177;transition:left .4s,width .4s;min-width:24px}
+.cal-today{position:absolute;top:-8px;bottom:-8px;width:2px;background:#E5484D;z-index:2;border-radius:2px}
+.cal-flagline{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed #8DB51C;z-index:1}
+.cal-row.done .cal-bar{background:#C6F432;color:#0A0B0C}.cal-row.done .cal-n{background:#C6F432;color:#0A0B0C}.cal-row.done b{color:var(--muted);text-decoration:line-through}
+.cal-row.now .cal-bar{background:#0A0B0C;color:#C6F432;box-shadow:0 0 0 3px #C6F43266}.cal-row.now .cal-n{background:#0A0B0C;color:#C6F432}
+.cal-row.late .cal-bar{background:#E5484D;color:#fff}
+.cal-note{font-size:13px;color:var(--muted)}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -1335,7 +1379,7 @@ if(S.profiles.sample&&!S.profiles.sample.target){S.profiles.sample.target=target
 if(S.profiles.sample&&!S.profiles.sample.job)S.profiles.sample.job={company:"Spotify",url:""};
 function save(){try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}if(typeof cloudSave==="function")cloudSave()}
 const P=()=>S.profiles[S.active]||S.profiles.sample;
-const UI={ind:null,opp:"all",passing:null,result:null,checkResult:null,diagSummary:null,presetGoal:null,prefill:null,smaller:false};
+const UI={tab:(()=>{try{return localStorage.getItem("landit.tab")||"today"}catch(e){return"today"}})(),ind:null,opp:"all",passing:null,result:null,checkResult:null,diagSummary:null,presetGoal:null,prefill:null,smaller:false};
 let diagFlow=null,logFlow=null,checkFlow=null,F=null,lastQKey=null;
 
 /* ---------- derived data ---------- */
@@ -2165,17 +2209,18 @@ function timelineCard(pl){
   </section>`;
 }
 const CHECK=[
-  {k:"linkedin",s:"LinkedIn",t:"Update your LinkedIn",h:"10-minute workshop: fix your profile, start posting, and the hacks I learned at LinkedIn."},
-  {k:"who",s:"Contacts",t:"Find contacts{at} to see if it’s the right fit",h:"10-minute workshop: search by role, filter for alumni, and send a note."},
-  {k:"email",s:"Outreach",t:"Draft your outreach note",h:"10-minute workshop: the who / why / what formula, real examples, and your note."},
-  {k:"pitch",s:"Chat prep",t:"Prep for the conversation with your {co}contact",h:"10-minute workshop: your intro, questions to ask, leaving the door open, and the follow-up."},
-  {k:"resume",s:"Resume",t:"Update your resume",h:"5 checks using my resume as the model, plus a template to download."},
-  {k:"interview",s:"Interview",t:"Prep for your interview{at}",h:"Interview crash course: storytell, understand the business, ask questions, prep strategically."},
+  {k:"linkedin",w:2,est:"1 hr",s:"LinkedIn",t:"Update your LinkedIn",h:"10-minute workshop: fix your profile, start posting, and the hacks I learned at LinkedIn."},
+  {k:"who",w:2,est:"45 min",s:"Contacts",t:"Find contacts{at} to see if it’s the right fit",h:"10-minute workshop: search by role, filter for alumni, and send a note."},
+  {k:"email",w:1,est:"30 min",s:"Outreach",t:"Draft your outreach note",h:"10-minute workshop: the who / why / what formula, real examples, and your note."},
+  {k:"pitch",w:3,est:"1 hr + chats",s:"Chat prep",t:"Prep for the conversation with your {co}contact",h:"10-minute workshop: your intro, questions to ask, leaving the door open, and the follow-up."},
+  {k:"resume",w:2,est:"2 hrs",s:"Resume",t:"Update your resume",h:"5 checks using my resume as the model, plus a template to download."},
+  {k:"interview",w:0,est:"3 hrs",s:"Interview",t:"Prep for your interview{at}",h:"Interview crash course: storytell, understand the business, ask questions, prep strategically."},
 ];
 function ckT(x,p){const co=p&&p.job&&p.job.company;return x.t.replace("{at}",co?" at "+co:"").replace("{co}",co?co+" ":"")}
 function checkCur(p){const c=p.checklist||{};let i=0;while(i<CHECK.length&&c[CHECK[i].k])i++;return i}
-function checkDue(p,pl){const a=p.planStart||TODAY,pre=CHECK.filter(x=>x.k!=="interview").length,span=Math.max(pre,daysBetween(a,pl.deadline));
-  return CHECK.map((x,i)=>x.k==="interview"?(addDays(pl.deadline,21)<pl.start?addDays(pl.deadline,21):addDays(pl.start,-7)):addDays(a,Math.round(span*(i+1)/pre)))}
+function checkDue(p,pl){const a=p.planStart||TODAY,pre=CHECK.filter(x=>x.k!=="interview"),W=pre.reduce((n,x)=>n+x.w,0),span=Math.max(pre.length,daysBetween(a,pl.deadline));let acc=0;
+  return CHECK.map(x=>{if(x.k==="interview")return addDays(pl.deadline,21)<pl.start?addDays(pl.deadline,21):addDays(pl.start,-7);acc+=x.w;return addDays(a,Math.round(span*acc/W))})}
+function checkStart(p,pl,due){return CHECK.map((x,i)=>i?due[i-1]:(p.planStart||TODAY))}
 function checklistCard(p){
   const pl=plan(p),due=pl?checkDue(p,pl):[],cur=checkCur(p),co=p.job&&p.job.company;
   return `<aside class="dash-side"><section class="cl">
@@ -2656,28 +2701,44 @@ function vToday(){
 }
 function homeBody(p,mock){
   const pl=plan(p),cur=checkCur(p),N=CHECK.length,due=pl?checkDue(p,pl):[],x=CHECK[cur],late=x&&due[cur]&&TODAY>due[cur];
-  const lock=`<svg width="11" height="12" viewBox="0 0 11 12" aria-hidden="true"><rect x="1" y="5" width="9" height="6.5" rx="1.6" fill="currentColor"/><path d="M3 5V3.6a2.5 2.5 0 0 1 5 0V5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
   const left=x&&due[cur]?daysBetween(TODAY,due[cur]):0,when=!x?"":late?`Overdue · was due ${fmt(due[cur])}`:due[cur]?`Due ${fmt(due[cur])} · ${left<=0?"today":left===1?"1 day left":left<14?left+" days left":Math.round(left/7)+" weeks left"}`:"";
   const wr=x&&{linkedin:"workshop",who:"contacts",email:"outreach",pitch:"pitch",resume:"resume",interview:"interview"}[x.k],ws=wr&&p[WKS[wr].store],btn=!x?"":wr?`<button class="btn primary big" data-act="go" data-r="${wr}">${(ws&&ws.i)?"Continue":"Start"} →</button>`:`<button class="btn primary big" data-act="check" data-k="${x.k}">Done ✓</button>`;
-  const won=!mock&&UI.celebrate&&CHECK.find(c=>c.k===UI.celebrate);
-  return `<div class="sd${mock?" sd-mock":""}">${mock?"":saveBanner()+installTip()}${won?`<div class="win" role="status"><span class="win-check">✓</span><div><b>${esc(won.s)} done!</b><span>${cur===N?"All 6 steps complete. You’re ready.":`${cur} of ${N} · next up: ${esc(ckT(CHECK[cur],p))}`}</span></div></div>`:""}
-    <header class="sd-hi"><h1>${p.first==="there"?"Hi!":`Hi ${esc(p.first)}!`}</h1>${pl?`<p><b>${(n=>n+(n===1?" day":" days"))(Math.max(0,daysBetween(TODAY,pl.start)))}</b> to land your ${esc(pl.t.label.split(" ")[0])} internship${p.job&&p.job.company?` at <b>${esc(p.job.company)}</b>`:""}. Apply by <b>${fmt(pl.deadline)}</b>.</p>`:""}</header>
-    <section class="buddy">
-      <div class="buddy-lan">${lan(cur===N||won?"cheer":"wave",mock?120:190)}</div>
-      <div class="buddy-card">
-        <p class="buddy-msg">${esc(cur===N?"You did it! Now go land that internship.":late?`Let’s catch up on this one: ${ckT(x,p).replace(/^./,m=>m.toLowerCase())}. You’ve got this!`:cur===0?"Let’s start with your LinkedIn. One small step today!":`Nice work! Next up: ${ckT(x,p).replace(/^./,m=>m.toLowerCase())}.`)}</p>
-        <div class="sd-prog"><div class="sd-bar">${CHECK.map((c,i)=>`<i class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"></i>`).join("")}</div><span class="${!mock&&UI.celebrate?"bump":""}">${N-cur?`${N-cur} step${N-cur===1?"":"s"} left`:"All done"}</span></div>
-      </div>
-    </section>
-    ${x?`<section class="sd-now${late?" late":""}">
-      <span class="sd-eye">Step ${cur+1} · ${when}</span>
+  const won=!mock&&UI.celebrate&&CHECK.find(c=>c.k===UI.celebrate),tab=mock?"today":(UI.tab||"today");
+  const stepsLeft=N-cur?`${N-cur} step${N-cur===1?"":"s"} left`:"All done";
+  const tabs=mock?"":`<div class="dtabs" role="tablist"><button role="tab" data-act="tab" data-v="today" aria-selected="${tab==="today"}">Today</button><button role="tab" data-act="tab" data-v="cal" aria-selected="${tab==="cal"}">Calendar</button></div>`;
+  const top=`${tabs}${mock?"":saveBanner()+installTip()}${won?`<div class="win" role="status"><span class="win-check">✓</span><div><b>${esc(won.s)} done!</b><span>${cur===N?"All 6 steps complete. You’re ready.":`${stepsLeft} · next up: ${esc(ckT(CHECK[cur],p))}`}</span></div></div>`:""}`;
+  if(tab==="cal")return `<div class="sd">${top}${calendarView(p,pl,due,cur)}</div>`;
+  const nx=CHECK[cur+1];
+  return `<div class="sd${mock?" sd-mock":""}">${top}
+    <header class="hello"><h1>Hi,<br>${p.first==="there"?"there":esc(p.first)}</h1><span class="hello-lan">${lan(cur===N||won?"cheer":"wave",mock?80:104)}</span></header>
+    ${pl?`<p class="hello-sub"><b>${(n=>n+(n===1?" day":" days"))(Math.max(0,daysBetween(TODAY,pl.start)))}</b> to land your ${esc(pl.t.label.split(" ")[0])} internship${p.job&&p.job.company?` at <b>${esc(p.job.company)}</b>`:""}</p>`:""}
+    ${x?`<section class="task${late?" late":""}">
+      <div class="task-top"><span class="task-pill">Today</span><span class="task-meta">Step ${cur+1} of ${N} · ~${esc(x.est)}</span></div>
       <h2>${esc(ckT(x,p))}</h2>
       <p>${esc(x.h)}</p>
       <div class="sd-acts">${btn}${wr?`<button class="link" data-act="check" data-k="${x.k}">Already done</button>`:""}</div>
-    </section>`:`<section class="sd-now"><span class="sd-eye">All ${N} steps done</span><h2>You’re ready. Go get it.</h2>${p.job&&p.job.url?`<div class="sd-acts"><a class="btn primary big" href="${esc(p.job.url)}" target="_blank" rel="noopener">Open the job ↗</a></div>`:""}</section>`}
-    <ol class="sd-list">${CHECK.map((c,i)=>i===cur?"":`<li class="${i<cur?"done":"next"}${!mock&&UI.celebrate===c.k?" pop":""}"><span class="sd-n">${i<cur?"✓":lock}${!mock&&UI.celebrate===c.k?`<span class="burst" aria-hidden="true">${Array.from({length:10},(_,j)=>`<b style="--a:${j*36}deg"></b>`).join("")}</span>`:""}</span><span class="sd-t">${esc(ckT(c,p))}</span>${i<cur?(i===cur-1?`<button class="link" data-act="check" data-k="${c.k}">Undo</button>`:"<span></span>"):`<span class="sd-d">${due[i]?fmt(due[i]):""}</span>`}</li>`).join("")}</ol>
-    ${pl&&!mock?`<div class="sd-foot">${UI.editDl?`<span class="row" style="gap:8px"><input class="input mono" type="date" id="dl-input" value="${pl.deadline}" min="${TODAY}" max="${addDays(pl.start,-1)}" style="width:auto;padding:6px 10px"><button class="btn primary sm" data-act="savedl">Save</button><button class="link" data-act="resetdl">Use typical</button></span>`:`<button class="link" data-act="editdl">Change apply-by date</button>`}</div>`:""}
+      <div class="task-due">${when}</div>
+    </section>`:`<section class="task"><div class="task-top"><span class="task-pill">Done</span></div><h2>You’re ready. Go get it.</h2>${p.job&&p.job.url?`<div class="sd-acts"><a class="btn primary big" href="${esc(p.job.url)}" target="_blank" rel="noopener">Open the job ↗</a></div>`:""}</section>`}
+    <div class="sd-prog"><div class="sd-bar">${CHECK.map((c,i)=>`<i class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"></i>`).join("")}</div><span class="${!mock&&UI.celebrate?"bump":""}">${stepsLeft}</span></div>
+    ${!mock&&nx?`<button class="upnext" data-act="tab" data-v="cal"><span>Up next</span><b>${esc(ckT(nx,p))}</b><em>See your calendar →</em></button>`:""}
   </div>`;
+}
+function calendarView(p,pl,due,cur){
+  if(!pl)return `<p class="wk-p">Take the quiz to build your timeline.</p>`;
+  const st=checkStart(p,pl,due),a=st[0],z=due[due.length-1],span=Math.max(1,daysBetween(a,z)),pos=d=>clamp(daysBetween(a,d)/span*100,0,100),N=CHECK.length;
+  const months=[];let m=new Date(a+"T12:00");m.setDate(1);while(true){m.setMonth(m.getMonth()+1);const iso=m.toISOString().slice(0,10);if(iso>z)break;months.push(iso)}
+  const MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const tline=TODAY>=a&&TODAY<=z?`<i class="cal-today" style="left:${pos(TODAY)}%"></i>`:"";
+  return `<header class="hello"><h1>Your<br>timeline</h1></header>
+    <div class="cal-sum"><div><b>${cur}</b><span>of ${N} done</span></div><div><b>${N-cur}</b><span>steps left</span></div><div><b>${fmt(pl.deadline)}</b><span>apply by</span></div></div>
+    <section class="cal">
+      <div class="cal-axis">${months.filter(d=>Math.abs(pos(d)-pos(pl.deadline))>7&&Math.abs(pos(d)-pos(TODAY))>7).map(d=>`<span style="left:${pos(d)}%">${MN[+d.slice(5,7)-1]}</span>`).join("")}<span class="cal-flag" style="left:${pos(pl.deadline)}%">Apply</span>${TODAY>=a&&TODAY<=z?`<span class="cal-tlabel" style="left:${pos(TODAY)}%">Today</span>`:""}</div>
+      ${CHECK.map((c,i)=>{const s0=st[i],e=due[i],stt=i<cur?"done":i===cur?(TODAY>e?"now late":"now"):"next",days=Math.max(1,daysBetween(s0,e));
+        return `<div class="cal-row ${stt}"><div class="cal-lbl"><span class="cal-n">${i<cur?"✓":i+1}</span><b>${esc(c.s)}</b><em>~${esc(c.est)}</em><span class="cal-dates">${fmt(s0)} – ${fmt(e)}</span></div>
+          <div class="cal-track">${tline}<i class="cal-flagline" style="left:${pos(pl.deadline)}%"></i><div class="cal-bar" style="left:${pos(s0)}%;width:${Math.max(3,pos(e)-pos(s0))}%"><span>${days<10?days+"d":Math.round(days/7)+"w"}</span></div></div></div>`}).join("")}
+    </section>
+    <p class="cal-note">Suggested pace. Each bar is the window to finish that step; ~ is the hands-on time.</p>
+    <div class="sd-foot">${UI.editDl?`<span class="row" style="gap:8px"><input class="input mono" type="date" id="dl-input" value="${pl.deadline}" min="${TODAY}" max="${addDays(pl.start,-1)}" style="width:auto;padding:6px 10px"><button class="btn primary sm" data-act="savedl">Save</button><button class="link" data-act="resetdl">Use typical</button></span>`:`<button class="link" data-act="editdl">Change apply-by date</button>`}</div>`;
 }
 function countdownStrip(pl,mock,pp){
   if(!pl)return"";
@@ -2892,6 +2953,7 @@ const ACT={
   how:()=>{UI.how=!UI.how;render()},
   check:el=>{const p=P(),c=p.checklist||(p.checklist={}),cur=checkCur(p),i=CHECK.findIndex(x=>x.k===el.dataset.k);if(i===cur){c[CHECK[i].k]=true;celebrate(CHECK[i].k)}else if(i===cur-1){CHECK.slice(i).forEach(x=>c[x.k]=false)}else return;save();render()},
   wkgo:el=>wkGo(+el.dataset.d),
+  tab:el=>{UI.tab=el.dataset.v;try{localStorage.setItem("landit.tab",UI.tab)}catch(e){}render();window.scrollTo(0,0)},
   sound:()=>{SOUND=!SOUND;try{localStorage.setItem("landit.sound.v2",SOUND?"on":"off")}catch(e){}if(SOUND)sfx.select();render()},
   planok:()=>{UI.planReady=false;render();window.scrollTo(0,0)},
   claim:()=>{const r=UI.reward;UI.reward=null;UI.celebrate=r&&r.k;render();window.scrollTo(0,0)},
