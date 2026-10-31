@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Landit</title>
+<meta name="theme-color" content="#FFFFFF">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Landit">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="description" content="A week-by-week plan to land your internship, one clear step at a time.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1004,6 +1012,11 @@ a{color:var(--accent)}
 .sd-prog span.bump{display:inline-block;animation:bump .5s .6s ease}
 @keyframes bump{50%{transform:scale(1.3);color:#5C8A00}}
 @media (prefers-reduced-motion:reduce){.win,.win-check,.sd-list li.pop,.sd-list li.pop .sd-n,.burst b,.sd-bar i.fill,.sd-prog span.bump{animation:none}}
+.install-tip{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;font-size:14px;line-height:1.4}
+.install-tip img{width:40px;height:40px;border-radius:10px;flex:none}
+.install-tip>span{flex:1}.install-tip>span>b:first-child{display:block;font-size:15px}
+.install-tip .btn{border-radius:10px}
+@media (display-mode: standalone){.foot{padding-bottom:calc(env(safe-area-inset-bottom) + 16px)}.top{padding-top:env(safe-area-inset-top)}}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -2512,7 +2525,7 @@ function homeBody(p,mock){
   const left=x&&due[cur]?daysBetween(TODAY,due[cur]):0,when=!x?"":late?`Overdue · was due ${fmt(due[cur])}`:due[cur]?`Due ${fmt(due[cur])} · ${left<=0?"today":left===1?"1 day left":left<14?left+" days left":Math.round(left/7)+" weeks left"}`:"";
   const wr=x&&{linkedin:"workshop",who:"contacts",email:"outreach",pitch:"pitch",resume:"resume",interview:"interview"}[x.k],ws=wr&&p[WKS[wr].store],btn=!x?"":wr?`<button class="btn primary big" data-act="go" data-r="${wr}">${(ws&&ws.i)?"Continue":"Start"} →</button>`:`<button class="btn primary big" data-act="check" data-k="${x.k}">Done ✓</button>`;
   const won=!mock&&UI.celebrate&&CHECK.find(c=>c.k===UI.celebrate);
-  return `<div class="sd${mock?" sd-mock":""}">${mock?"":saveBanner()}${won?`<div class="win" role="status"><span class="win-check">✓</span><div><b>${esc(won.s)} done!</b><span>${cur===N?"All 6 steps complete. You’re ready.":`${cur} of ${N} · next up: ${esc(ckT(CHECK[cur],p))}`}</span></div></div>`:""}
+  return `<div class="sd${mock?" sd-mock":""}">${mock?"":saveBanner()+installTip()}${won?`<div class="win" role="status"><span class="win-check">✓</span><div><b>${esc(won.s)} done!</b><span>${cur===N?"All 6 steps complete. You’re ready.":`${cur} of ${N} · next up: ${esc(ckT(CHECK[cur],p))}`}</span></div></div>`:""}
     <header class="sd-hi"><h1>${p.first==="there"?"Hi!":`Hi ${esc(p.first)}!`}</h1>${pl?`<p><b>${pl.weeks} weeks</b> to land your ${esc(pl.t.label)} internship${p.job&&p.job.company?` at <b>${esc(p.job.company)}</b>`:""}. Apply by <b>${fmt(pl.deadline)}</b>.</p>`:""}</header>
     <div class="sd-prog"><div class="sd-bar">${CHECK.map((c,i)=>`<i class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"></i>`).join("")}</div><span class="${!mock&&UI.celebrate?"bump":""}">${cur} of ${N} done</span></div>
     ${x?`<section class="sd-now${late?" late":""}">
@@ -2677,6 +2690,14 @@ async function authSubmit(form){
   if(AUTH.mode==="signup"&&!res.data.session){AUTH.msg="Check your email and click the link to confirm your account. Your plan is saved on this device until then.";render();return}
   AUTH.msg="";
 }
+const STANDALONE=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+const IOS=/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;
+let installEvt=null;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e;if(route()==="today"&&!F)render()});
+window.addEventListener("appinstalled",()=>{installEvt=null;try{localStorage.setItem("landit.installHint","off")}catch(e){}render()});
+if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+function installTip(){let off=false;try{off=localStorage.getItem("landit.installHint")==="off"}catch(e){}
+  if(STANDALONE||off||window.innerWidth>820||!(installEvt||IOS))return"";
+  return `<div class="install-tip"><img src="icons/icon-192.png" alt=""><span><b>Get the Landit app</b>${installEvt?"Add it to your home screen.":`Tap <b>Share</b> <span aria-hidden="true">⬆︎</span>, then <b>Add to Home Screen</b>.`}</span>${installEvt?`<button class="btn primary sm" data-act="install">Install</button>`:""}<button class="link" data-act="hideinstall" aria-label="Dismiss">✕</button></div>`}
 function saveBanner(){return (sb&&!AUTH.user&&S.active==="you")?`<div class="save-banner"><span><b>Your plan is only saved on this device.</b> Create a free account to keep it.</span><button class="btn primary sm" data-act="go" data-r="login">Save my plan</button></div>`:""}
 const ROUTES={login:vLogin,welcome:vWelcome,how:vHow,start:vStart,today:vToday,workshop:vWorkshop,contacts:vWorkshop,outreach:vWorkshop,pitch:vWorkshop,resume:vWorkshop,interview:vWorkshop,insights:vInsights,timeline:vTimeline,opportunities:vOpps};
 const ALIAS={next:1,log:1,reflect:1,checkin:1};
@@ -2727,6 +2748,8 @@ const ACT={
   how:()=>{UI.how=!UI.how;render()},
   check:el=>{const p=P(),c=p.checklist||(p.checklist={}),cur=checkCur(p),i=CHECK.findIndex(x=>x.k===el.dataset.k);if(i===cur){c[CHECK[i].k]=true;celebrate(CHECK[i].k)}else if(i===cur-1){CHECK.slice(i).forEach(x=>c[x.k]=false)}else return;save();render()},
   wkgo:el=>wkGo(+el.dataset.d),
+  install:async()=>{if(!installEvt)return;installEvt.prompt();await installEvt.userChoice.catch(()=>{});installEvt=null;render()},
+  hideinstall:()=>{try{localStorage.setItem("landit.installHint","off")}catch(e){}render()},
   closeauth:()=>{UI.authModal=false;AUTH.msg="";render()},
   authmode:el=>{AUTH.mode=el.dataset.v;AUTH.msg="";render()},
   logout:async()=>{if(sb)await sb.auth.signOut();delete S.profiles.you;S.active="sample";try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}AUTH.user=null;toast("Logged out");go("welcome")},
