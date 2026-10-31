@@ -1272,6 +1272,7 @@ a{color:var(--accent)}
 @keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(.8) rotate(12deg);opacity:.75}}
 @keyframes spinslow{0%,100%{transform:rotate(-6deg) scale(1)}50%{transform:rotate(6deg) scale(1.06)}}
 @media (prefers-reduced-motion:reduce){.star{animation:none;transform:translate(-50%,-50%)}.star svg{animation:none}}
+.sound-t{font-size:12px}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -2194,7 +2195,7 @@ function shell(route,inner){
     ${AUTH.user?"":`<div class="seg" role="group" aria-label="Switch profile"><button data-act="switch" data-k="sample" aria-pressed="${S.active==="sample"}">Sample</button>${you?`<button data-act="switch" data-k="you" aria-pressed="${S.active==="you"}">You</button>`:`<button data-act="go" data-r="start" aria-pressed="false">+ You</button>`}</div>`}${sb?(AUTH.user?"":`<button class="link acct" data-act="go" data-r="login">Log in</button>`):""}
   </header><main class="stack" style="gap:0">${inner}</main>
   ${authModal()}
-  <footer class="foot"><button class="link" data-act="sound">${SOUND?"🔊 Sound on":"🔇 Sound off"}</button>${p.id==="sample"?"<span>Sample student · all data is fictional</span>":""}<button class="link" data-act="go" data-r="start">Retake the diagnostic</button>${AUTH.user?`<span>Signed in as ${esc(AUTH.user.email||"")}</span><button class="link" data-act="logout">Log out</button>`:`<button class="link" data-act="reset">Reset demo data</button>`}</footer></div>`;
+  <footer class="foot"><button class="link sound-t" data-act="sound">${SOUND?"Sound on":"Sound off"}</button>${p.id==="sample"?"<span>Sample student · all data is fictional</span>":""}<button class="link" data-act="go" data-r="start">Retake the diagnostic</button>${AUTH.user?`<span>Signed in as ${esc(AUTH.user.email||"")}</span><button class="link" data-act="logout">Log out</button>`:`<button class="link" data-act="reset">Reset demo data</button>`}</footer></div>`;
 }
 const AVATAR={"Priya S.":"img/priya.jpg","Marcus O.":"img/marcus.jpg","Dana L.":"img/dana.jpg"};
 const LI=n=>`<span class="li-btn" role="img" aria-label="${n} on LinkedIn" title="${n} on LinkedIn"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4v11H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.82-2.06 3.75-2.06 4 0 4.74 2.63 4.74 6.06v5.4h-4v-4.8c0-1.14-.02-2.62-1.6-2.62-1.6 0-1.84 1.25-1.84 2.54v4.88h-4z"/></svg></span>`;
