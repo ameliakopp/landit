@@ -2698,9 +2698,8 @@ function homeBody(p,mock){
       <div class="buddy-lan">${lan(cur===N||won?"cheer":"wave",mock?120:190)}</div>
       <div class="buddy-card">
         <p class="buddy-msg">${esc(cur===N?"You did it! Now go land that internship.":late?`Let’s catch up on this one: ${ckT(x,p).replace(/^./,m=>m.toLowerCase())}. You’ve got this!`:cur===0?"Let’s start with your LinkedIn. One small step today!":`Nice work! Next up: ${ckT(x,p).replace(/^./,m=>m.toLowerCase())}.`)}</p>
-        <div class="sd-prog"><div class="sd-bar">${CHECK.map((c,i)=>`<i class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"></i>`).join("")}</div><span class="${!mock&&UI.celebrate?"bump":""}">${cur} of ${N} done</span></div>
+        <div class="sd-prog"><div class="sd-bar">${CHECK.map((c,i)=>`<i class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"></i>`).join("")}</div><span class="${!mock&&UI.celebrate?"bump":""}">${N-cur?`${N-cur} step${N-cur===1?"":"s"} left`:"All done"}</span></div>
       </div>
-      ${mock?"":`<div class="buddy-stats"><div><b>🔥 ${streakOf(p)}</b><span>Day streak</span></div><div><b>⚡ ${p.xp||0}</b><span>XP</span></div><div><b>📅 ${pl?Math.max(0,daysBetween(TODAY,pl.deadline)):"–"}</b><span>Days to apply</span></div></div>`}
     </section>
     ${x?`<section class="sd-now${late?" late":""}">
       <span class="sd-eye">Step ${cur+1} · ${when}</span>
