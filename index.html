@@ -2768,9 +2768,10 @@ async function cloudLoad(){
 }
 async function setUser(u){
   const was=AUTH.user&&AUTH.user.id;AUTH.user=u||null;
-  if(AUTH.user&&AUTH.user.id!==was){await cloudLoad();if(fromEmail||route()==="login")location.hash=S.profiles.you?"today":"start";if(!F)render()}
+  if(AUTH.user&&AUTH.user.id!==was){await cloudLoad();if(fromEmail||route()==="login"||route()==="welcome")location.hash=S.profiles.you?"today":"start";if(!F)render()}
   else if(!!AUTH.user!==!!was&&!F)render();
 }
+try{if(sb&&S.profiles.you&&localStorage.getItem("sb-bzumycapvgqkejenexpq-auth-token")&&route()==="welcome")history.replaceState(null,"","#today")}catch(e){}
 if(sb){
   sb.auth.getSession().then(({data})=>setUser(data.session&&data.session.user));
   sb.auth.onAuthStateChange((ev,session)=>{if(ev==="SIGNED_OUT"){if(AUTH.user){AUTH.user=null;render()}}else if(session&&(!AUTH.user||AUTH.user.id!==session.user.id))setUser(session.user)});
@@ -2825,7 +2826,7 @@ const ALIAS={next:1,log:1,reflect:1,checkin:1};
 const route=()=>{const r=(location.hash||"").slice(1);return ALIAS[r]?"today":ROUTES[r]?r:"welcome"};
 function render(){
   F=null;let r=route();
-  if(AUTH.user){if(S.profiles.you)S.active="you";else if(r!=="start"&&r!=="login"&&r!=="welcome"){location.hash="start";return}}
+  if(AUTH.user){if(S.profiles.you)S.active="you";if(r==="welcome"){location.hash=S.profiles.you?"today":"start";return}if(!S.profiles.you&&r!=="start"&&r!=="login"){location.hash="start";return}}
   document.getElementById("app").innerHTML=ROUTES[r]();
   if(UI.celebrate&&r==="today"){const k=UI.celebrate;setTimeout(()=>{if(UI.celebrate===k)UI.celebrate=null},50)}
   const qw=document.querySelector(".q-wrap");
