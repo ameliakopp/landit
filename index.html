@@ -1219,6 +1219,48 @@ a{color:var(--accent)}
 .wk-nav .btn.primary{width:280px;justify-content:center}
 @media (max-width:600px){.wk-nav .btn.primary{width:62%}}
 .wk-slide{min-height:0}
+/* condensed workshop: everything fits above the pinned Next button */
+.wk{gap:12px}
+.wk-top{margin-bottom:-4px}
+.wk-slide{gap:12px;padding-top:0}
+.wk-slide .wk-h{font-size:clamp(24px,3vw,32px);line-height:1.08}
+.wk-start .wk-h{font-size:clamp(34px,5vw,48px)}
+.wk-slide .wk-p{font-size:15.5px}
+.wk-eye{font-size:11.5px}
+.wk-li-entry img,.wk-shot img{max-height:190px;object-fit:cover;object-position:top}
+.wk-li-entry.wide img{max-height:none}
+.wk-new,.wk-about,.wk-desc,.wk-nodesc{font-size:14px!important;padding:10px 12px!important}
+.wk-about p,.wk-desc p{font-size:13.5px!important;line-height:1.45!important}
+.wk-fix{gap:8px}
+.wk-tag{margin-top:0}
+.wk-formula{font-size:14px;margin-top:0}
+.wk-you{padding-top:10px;gap:8px}
+.wk-you .ta{min-height:70px}
+.fib{padding:8px 12px;line-height:2.1;font-size:15px}
+.wk-msg img{max-height:170px;object-fit:cover;object-position:top}
+.wk-msg figcaption{padding:10px 12px}
+.wk-vs-card{padding:12px 14px}.wk-vs-card b{font-size:18px}
+.wk-car-img{height:min(330px,42vh)}
+.wk-hk-card{padding:12px 14px;gap:6px}.wk-hk-vis{min-height:44px;padding:8px}
+.wk-timer{padding:12px;gap:8px}.wk-clock{font-size:34px}
+.wk-row{padding:6px 0}
+.wk-rules{gap:4px;font-size:14px}
+.wk-build label{margin-top:2px}
+.wk-ex{padding:12px 14px}
+.wk-li-entry img[src*='teo-head']{max-height:96px}
+.wk-ba2 .wk-li-entry img[src*='reagan']{max-height:80px}
+.wk-ba2{gap:12px}
+.tstep{display:flex;align-items:center;width:min(360px,100%);margin-top:26px}
+.tstep span{flex:1;display:flex;align-items:center}
+.tstep span:not(:first-child)::before{content:"";flex:1;height:3px;background:#E4E7EA;margin:0 4px;border-radius:2px}
+.tstep span.done::before,.tstep span.now::before{background:#C6F432}
+.tstep span:first-child{flex:0 0 auto}
+.tstep i{width:28px;height:28px;flex:none;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;background:#F1F3F5;color:var(--faint);border:2px solid #E4E7EA}
+.tstep .done i{background:#C6F432;border-color:#C6F432;color:#0A0B0C}
+.tstep .now i{background:#0A0B0C;border-color:#0A0B0C;color:#C6F432}
+.tstep .fill i{animation:checkpop .6s .2s cubic-bezier(.2,1.6,.4,1) both}
+.tstep-l{font-size:14px;color:var(--muted);margin-top:4px}
+.phone .tstep{margin-top:14px}.phone .tstep i{width:20px;height:20px;font-size:9.5px}.phone .tstep-l{font-size:11px}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -2368,29 +2410,27 @@ const WK=[
     <div class="wk-ba">${shot("harry","Harry’s profile before","pcrop","Before")}<div class="wk-new"><span class="lbl">Harry’s new headline</span><span>NYU Music Business Student | A &amp; R @ Columbia Records, Lede, Victor Victor</span></div></div>
     <div class="wk-you"><label>Now write yours</label><p class="wk-hint">Fill in the blanks. The gray text stays.</p>
       ${fib("headline","{school} {major} Student | {role} @ {company}, {another company}",w,{school:p.wkc&&p.wkc.school})}<button class="btn ghost sm" style="align-self:flex-start" data-act="wkcopy" data-k="headline">Copy</button>
-      ${wkLiCard(p,w)}</div>`},
+      </div>`},
   {sec:"profile",id:"about",r:(p,w)=>`<span class="wk-eye">Profile · 2 of 3</span>
     <h2 class="wk-h">Add an “About”</h2>
-    <p class="wk-p">Teo’s profile had no About section, so visitors saw his school and nothing else. Here’s his before and after.</p>
+    
     <div class="wk-ba2">
       <div class="wk-fix"><span class="wk-tag before">Before</span>
       <div class="wk-li-entry"><img src="img/wk/teo-head.jpg" alt="Teo León Villa’s profile header: Undergraduate Student at New York University"><div class="wk-about"><b>About</b><div class="wk-nodesc" style="border:0;padding:0;background:none"><span class="wk-x2" aria-hidden="true">✕</span>Empty. Nobody knows what he’s interested in or looking for.</div></div></div>
       </div><div class="wk-fix"><span class="wk-tag after">After</span>
       <div class="wk-li-entry"><img src="img/wk/teo-head.jpg" alt=""><div class="wk-about now"><b>About</b><p>I’m an International Business student at NYU. I spent my first year in Madrid, where I co-founded the Model UN and Business Clubs. I’m interested in how companies grow across borders, and I’m looking for Summer 2027 internships in consulting or international strategy.</p></div></div>
       </div></div>
-    <p class="wk-formula"><b>The formula:</b> who you are + one thing you’ve done + <mark>what you’re looking for</mark>.</p>
     <div class="wk-you"><label>Now write yours: fill in the blanks</label>
       ${fib("about","I’m a {major} student at {school}. I {one thing you’ve done}. I’m interested in {topic}, and I’m looking for {season} internships in {field}.",w,{school:p.wkc&&p.wkc.school})}<button class="btn ghost sm" style="align-self:flex-start" data-act="wkcopy" data-k="about">Copy</button></div>`},
   {sec:"profile",id:"exp",r:(p,w)=>`<span class="wk-eye">Profile · 3 of 3</span>
     <h2 class="wk-h">Add details to your experience</h2>
-    <p class="wk-p">Most students list a job with no description, so recruiters can’t tell what they actually did. Here’s Reagan’s before and after.</p>
+    
     <div class="wk-ba2">
       <div class="wk-fix"><span class="wk-tag before">Before</span>
       <div class="wk-li-entry"><img src="img/wk/reagan-cisco.jpg" alt="Experience entry: CISCO Extern, Cisco, Internship"><div class="wk-nodesc"><span class="wk-x2" aria-hidden="true">✕</span>No description. A recruiter can’t tell what she did.</div></div>
       </div><div class="wk-fix"><span class="wk-tag after">After</span>
       <div class="wk-li-entry"><img src="img/wk/reagan-cisco.jpg" alt=""><div class="wk-desc"><p>One of <mark>40</mark> high school students chosen for Cisco’s <mark>6-week</mark> summer externship. Worked on a <mark>5-person</mark> team to design a cybersecurity awareness campaign for small businesses, and presented it to <mark>4</mark> Cisco managers. Finished <mark>25+ hours</mark> of training in networking and cybersecurity, and met with <mark>8</mark> Cisco employees to learn how their teams work.</p></div></div>
       </div></div>
-    <p class="wk-formula"><b>The formula:</b> what you did + who you did it with + <mark>numbers</mark> (how many, how long, what happened).</p>
     <div class="wk-you"><label>Now rewrite one of yours</label>
       ${fib("exp","{Led / Built / Grew} {what you did} with {how many people} over {how long}, resulting in {a number: views, sales, signups}.",w)}<button class="btn ghost sm" style="align-self:flex-start" data-act="wkcopy" data-k="exp">Copy</button>
       <p class="wk-hint${/\d/.test(w.exp||"")?" ok":""}" data-live-hint="exp">${wkExpHint(w.exp)}</p></div>`},
@@ -2818,7 +2858,9 @@ function homeBody(p,mock,ftab){
       ${x?`<p class="today-eye">Today’s task</p>
       <h1 class="today-h">${esc(x.n)}</h1>
       <p class="today-time">⏱ About ${esc(x.m)}</p>
-      ${btn.replace('class="btn primary big"','class="btn primary big today-btn"')}`:`<p class="today-eye">All done</p><h1 class="today-h">You’re ready. Go apply!</h1>`}
+      ${btn.replace('class="btn primary big"','class="btn primary big today-btn"')}
+      <div class="tstep" aria-label="Step ${cur+1} of ${N}">${CHECK.map((c,i)=>`<span class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"><i>${i<cur?"✓":i+1}</i></span>`).join("")}</div>
+      <p class="tstep-l">Step ${cur+1} of ${N} · ${N-cur-1?`${N-cur-1} more after this`:"last one!"}</p>`:`<p class="today-eye">All done</p><h1 class="today-h">You’re ready. Go apply!</h1>`}
     </section>
   </div>`;
 }
