@@ -2122,7 +2122,7 @@ function vWelcome(){
   <header class="band lnav"><div class="wrap"><a class="brand" href="#welcome">${mark}<span class="wordmark">Landit</span></a>
     <nav class="lnav-links" aria-label="Sections"><button data-act="go" data-r="today">${AUTH.user?"My plan":"See a sample"}</button>${sb&&!AUTH.user?`<button data-act="go" data-r="login" data-mode="login">Log in</button>`:""}</nav></div></header>
   <section class="band sl-hero"><div class="wrap">
-    <h1 class="sl-h1">Land an<br>internship<br>in <span class="odo" role="img" aria-label="${daysBetween(TODAY,targets()[0].start)}">${[0,1,2].map(k=>`<span class="dg" style="--d:${k}"><span class="strip"><i> </i>${[0,1,2,3,4,5,6,7,8,9].map(n=>`<i>${n}</i>`).join("")}</span></span>`).join("")}</span> days</h1>
+    <h1 class="sl-h1">Land an<br>internship<br>in <span class="odo" role="img" aria-label="3">${[0].map(k=>`<span class="dg" style="--d:${k}"><span class="strip"><i> </i>${[0,1,2,3,4,5,6,7,8,9].map(n=>`<i>${n}</i>`).join("")}</span></span>`).join("")}</span> weeks</h1>
     <p class="sl-sub">A week-by-week plan to land your internship, with one clear step at a time.</p>
     <div class="sl-ctas"><button class="btn lime sl-btn" data-act="startwhen" data-v="">Create your plan →</button></div>
     <p class="sl-micro">Free · about a minute · skip anything</p>
@@ -2870,7 +2870,7 @@ function render(){
   initOrbs();
   clearInterval(render.tick);
   const od=document.querySelector(".odo");
-  if(od){const all=targets().map(t=>daysBetween(TODAY,t.start)),three=all.filter(n=>n>=100&&n<1000),W=three.length?three:all,N=Math.max(3,...W.map(n=>String(n).length));let i=0;
+  if(od){const W=[3,5,9],N=1;let i=0;
     const cols=[...od.querySelectorAll(".dg")];
     const show=n=>{const d=String(n).padStart(N," ");cols.forEach((c,k)=>{const ch=d[k],blank=ch===" ";c.classList.toggle("blank",blank);c.style.setProperty("--n",blank?0:(+ch+1))});od.setAttribute("aria-label",n)};
     show(W[0]);
