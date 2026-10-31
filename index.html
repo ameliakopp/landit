@@ -1204,6 +1204,15 @@ a{color:var(--accent)}
 .wk-slide .teaser{margin-top:10px}
 .wk-nav .btn{white-space:nowrap}
 @media (max-width:420px){.wk-nav .btn.primary{padding-left:18px;padding-right:18px;letter-spacing:.08em}}
+.phones{display:flex;justify-content:center;gap:clamp(16px,4vw,56px);flex-wrap:wrap}
+.phones .phone{margin:0}
+.phone-icons svg{display:block;fill:#0A0B0C;color:#0A0B0C}
+.phone-icons{gap:5px}
+.phone .sd-mock .csteps{gap:6px;margin-top:0}
+.phone .cs{padding:9px 10px;font-size:12.5px;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;border-radius:12px}
+.phone .cs-dot{width:22px;height:22px;font-size:11px}
+.phone .cs-date{font-size:10.5px}
+.phone .sd-mock:has(.csteps){justify-content:flex-start;padding-top:6px}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -2230,16 +2239,21 @@ function vHow(){
   <footer class="band lfoot light"><div class="wrap"><span class="wordmark" style="font-size:13px;color:var(--muted)">Landit</span><span>Prototype · sample data and stories are placeholders</span></div></footer>
   </div>`;
 }
-function dashMock(){
-  const sp=Object.assign({},S.profiles.sample,{checklist:{},wk:{i:0}});
-  return `<div class="phone" role="img" aria-label="Preview of the Landit app on a phone, showing today’s task">
+function phoneMock(sp,tab){
+  const sig=`<svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>`;
+  const wifi=`<svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.2c2.1 0 4 .8 5.5 2.1l1.2-1.3A9.6 9.6 0 0 0 7.5.4 9.6 9.6 0 0 0 .8 3l1.2 1.3a7.8 7.8 0 0 1 5.5-2.1Zm0 3.4c1.2 0 2.3.4 3.1 1.2l1.2-1.3a6.3 6.3 0 0 0-8.6 0l1.2 1.3c.8-.8 1.9-1.2 3.1-1.2Zm0 3.2-1.6 1.7 1.6 1.6 1.6-1.6Z"/></svg>`;
+  const bat=`<svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="8" rx="2"/><path d="M23 4v4c.8-.3 1.3-1.1 1.3-2S23.8 4.3 23 4Z" opacity=".4"/></svg>`;
+  return `<div class="phone" role="img" aria-label="Preview of the Landit app: ${tab==="cal"?"My plan":"today’s task"}">
     <div class="phone-screen">
-      <div class="phone-status"><b>9:41</b><span class="phone-island"></span><span class="phone-icons"><i></i><i></i><i></i></span></div>
+      <div class="phone-status"><b>9:41</b><span class="phone-island"></span><span class="phone-icons">${sig}${wifi}${bat}</span></div>
       <div class="phone-top"><span class="br-brand">${mark}<span class="wordmark" style="font-size:10px">Landit</span></span><img class="br-me" src="img/amelia.jpg" alt=""></div>
-      <div class="phone-tabs"><span class="on">Today</span><span>My plan</span></div>
-      ${homeBody(sp,true).replace(/<button([^>]*?)data-act="[^"]*"([^>]*)>/g,"<span$1$2>").replace(/<\/button>/g,"</span>")}
+      <div class="phone-tabs"><span class="${tab==="cal"?"":"on"}">Today</span><span class="${tab==="cal"?"on":""}">My plan</span></div>
+      ${homeBody(sp,true,tab).replace(/<button([^>]*?)data-act="[^"]*"([^>]*)>/g,"<span$1$2>").replace(/<\/button>/g,"</span>")}
       <span class="phone-home"></span>
-    </div></div>`;
+    </div></div>`}
+function dashMock(){
+  const sp=Object.assign({},S.profiles.sample,{checklist:{linkedin:true},wk:{i:0}}),sp0=Object.assign({},sp,{checklist:{}});
+  return `<div class="phones">${phoneMock(sp0,"today")}${phoneMock(sp0,"cal")}</div>`;
 }
 function vWelcome(){
   return `<div class="land short sl">
@@ -2782,15 +2796,15 @@ function vToday(){
   if(checkFlow)return focus("Weekly check-in · 2 min",checkFlow);
   return shell("today",homeBody(p));
 }
-function homeBody(p,mock){
+function homeBody(p,mock,ftab){
   const pl=plan(p),cur=checkCur(p),N=CHECK.length,due=pl?checkDue(p,pl):[],x=CHECK[cur],late=x&&due[cur]&&TODAY>due[cur];
   const left=x&&due[cur]?daysBetween(TODAY,due[cur]):0,when=!x?"":late?`Overdue · was due ${fmt(due[cur])}`:due[cur]?`Due ${fmt(due[cur])} · ${left<=0?"today":left===1?"1 day left":left<14?left+" days left":Math.round(left/7)+" weeks left"}`:"";
   const wr=x&&{linkedin:"workshop",who:"contacts",email:"outreach",pitch:"pitch",resume:"resume",interview:"interview"}[x.k],ws=wr&&p[WKS[wr].store],btn=!x?"":wr?`<button class="btn primary big" data-act="go" data-r="${wr}">${(ws&&ws.i)?"Continue":"Start"}</button>`:`<button class="btn primary big" data-act="check" data-k="${x.k}">Mark done</button>`;
-  const won=!mock&&UI.celebrate&&CHECK.find(c=>c.k===UI.celebrate),tab=mock?"today":(UI.tab||"today");
+  const won=!mock&&UI.celebrate&&CHECK.find(c=>c.k===UI.celebrate),tab=ftab||(mock?"today":(UI.tab||"today"));
   const stepsLeft=N-cur?`${N-cur} step${N-cur===1?"":"s"} left`:"All done";
   const tabs=mock?"":`<div class="dtabs" role="tablist"><button role="tab" data-act="tab" data-v="today" aria-selected="${tab==="today"}">Today</button><button role="tab" data-act="tab" data-v="cal" aria-selected="${tab==="cal"}">My plan</button></div>`;
   const top=`${tabs}${mock?"":saveBanner()+installTip()}${won?`<div class="win" role="status"><span class="win-check">✓</span><div><b>${esc(won.s)} done!</b><span>${cur===N?"All steps complete.":`Next: ${esc(CHECK[cur].n)}`}</span></div></div>`:""}`;
-  if(tab==="cal")return `<div class="sd">${top}${calendarView(p,pl,due,cur)}</div>`;
+  if(tab==="cal")return `<div class="sd${mock?" sd-mock":""}">${top}${calendarView(p,pl,due,cur,mock)}</div>`;
   return `<div class="sd${mock?" sd-mock":""}">${top}
     <section class="today">
       <span class="today-lan">${lan(won?"cheer":"walk",mock?90:120,!x||won?"wave":LAN_POSE[x.k])}</span>
@@ -2801,13 +2815,13 @@ function homeBody(p,mock){
     </section>
   </div>`;
 }
-function calendarView(p,pl,due,cur){
+function calendarView(p,pl,due,cur,mock){
   if(!pl)return `<p class="wk-p">Take the quiz to build your plan.</p>`;
   const ri=CHECK.findIndex(c=>c.k==="resume");
   const row=(c,i)=>{const done=i<cur,now=i===cur,late=now&&TODAY>due[i];
     return `<li class="cs ${done?"done":now?"now":""}${late?" late":""}"><span class="cs-dot">${done?"✓":i+1}</span><span class="cs-name">${esc(c.n)}</span><span class="cs-date">${done?"Done":(late?"Late · ":"by ")+fmt(due[i])}</span></li>`};
   return `<ol class="csteps">${CHECK.map((c,i)=>row(c,i)+(i===ri?`<li class="cs apply"><span class="cs-dot">🎯</span><span class="cs-name">Apply</span><span class="cs-date">by ${fmt(pl.deadline)}</span></li>`:"")).join("")}</ol>
-    <div class="sd-foot">${UI.editDl?`<span class="row" style="gap:8px"><input class="input mono" type="date" id="dl-input" value="${pl.deadline}" min="${TODAY}" max="${addDays(pl.start,-1)}" style="width:auto;padding:6px 10px"><button class="btn primary sm" data-act="savedl">Save</button><button class="link" data-act="resetdl">Use typical</button></span>`:`<button class="link" data-act="editdl">Change apply-by date</button>`}</div>`;
+    ${mock?"":`<div class="sd-foot">${UI.editDl?`<span class="row" style="gap:8px"><input class="input mono" type="date" id="dl-input" value="${pl.deadline}" min="${TODAY}" max="${addDays(pl.start,-1)}" style="width:auto;padding:6px 10px"><button class="btn primary sm" data-act="savedl">Save</button><button class="link" data-act="resetdl">Use typical</button></span>`:`<button class="link" data-act="editdl">Change apply-by date</button>`}</div>`}`;
 }
 function countdownStrip(pl,mock,pp){
   if(!pl)return"";
