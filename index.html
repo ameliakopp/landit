@@ -2782,7 +2782,7 @@ function vWorkshop(){
   return shell("today",`<div class="wk">
     <div class="wk-top"><div class="wk-parts">${order.map((x,j)=>`<span class="wk-part${j===k?" on":""}${(k>j||sl.sec==="end")?" done":""}">${cfg.names[x]}</span>`).join("")}</div><button class="link" data-act="wkexit">Save &amp; exit</button></div>
     <div class="wk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${S_.length}" aria-valuenow="${i+1}"><i style="width:${((i+1)/S_.length*100).toFixed(1)}%"></i></div>
-    <section class="wk-slide${sl.start?" wk-start":""}${UI.wkDir?" in-"+UI.wkDir:""}" aria-live="polite">${sl.start?lan("walk",96,LAN_POSE[cfg.done]):""}${sl.r(p,w)}</section>
+    <section class="wk-slide${sl.start?" wk-start":""}${UI.wkDir?" in-"+UI.wkDir:""}" aria-live="polite">${sl.start?(c=>`<span class="wk-eye">Step ${CHECK.indexOf(c)+1}</span><h1 class="wk-h">${esc(c.n)}</h1><p class="wk-p">⏱ About ${esc(c.m)}</p>`)(CHECK.find(c=>c.k===cfg.done)):sl.r(p,w)}</section>
     <div class="wk-nav">${i===0?"<span></span>":`<button class="btn ghost sm" data-act="wkgo" data-d="-1">← Back</button>`}
       ${last?`<button class="btn primary" data-act="wkdone">${done?"Back home →":cfg.label}</button>`:`<button class="btn primary" data-act="wkgo" data-d="1">${i===0?"Start workshop →":"Next →"}</button>`}</div>
   </div>`);
