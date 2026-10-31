@@ -2806,7 +2806,7 @@ async function setUser(u){
   if(AUTH.user&&AUTH.user.id!==was){await cloudLoad();if(fromEmail||route()==="login"||route()==="welcome")location.hash=S.profiles.you?"today":"start";if(!F)render()}
   else if(!!AUTH.user!==!!was&&!F)render();
 }
-try{if(sb&&S.profiles.you&&localStorage.getItem("sb-bzumycapvgqkejenexpq-auth-token")&&route()==="welcome")history.replaceState(null,"","#today")}catch(e){}
+try{if(S.profiles.you&&route()==="welcome"&&!/[#&](access_token|error)/.test(location.hash))history.replaceState(null,"","#today")}catch(e){}
 if(sb){
   sb.auth.getSession().then(({data})=>setUser(data.session&&data.session.user));
   sb.auth.onAuthStateChange((ev,session)=>{if(ev==="SIGNED_OUT"){if(AUTH.user){AUTH.user=null;render()}}else if(session&&(!AUTH.user||AUTH.user.id!==session.user.id))setUser(session.user)});
