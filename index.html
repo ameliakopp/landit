@@ -2977,11 +2977,6 @@ function vPlanReady(p){const pl=plan(p);
     <div class="stars pl-stars" aria-hidden="true">${[[50,46,70,0,"#C6F432"],[14,30,26,.12,"#C6F432"],[86,28,30,.2,"#0A0B0C"],[26,78,20,.3,"#FFC9A6"],[74,80,22,.26,"#C6F432"],[4,62,14,.4,"#0A0B0C"],[96,60,16,.45,"#BCD0F0"],[38,8,16,.35,"#BCD0F0"],[64,6,14,.5,"#FFC9A6"]].map(([x,y,sz,d,f],i)=>`<span class="star${i?"":" big"}" style="left:${x}%;top:${y}%;--d:${d}s">${STAR_SVG(sz,f)}</span>`).join("")}</div>
     <h1 class="duo-title pl-title">Your plan is ready!</h1>
     <p class="duo-sub pl-sub">${p.first&&p.first!=="there"?esc(p.first)+", let’s":"Let’s"} get you that internship.</p>
-    ${pl?`<div class="stat3">
-      <div class="stat y"><span>Weeks to go</span><b>${pl.weeks}</b></div>
-      <div class="stat g"><span>Steps</span><b>${CK(p).length}</b></div>
-      <div class="stat b"><span>Apply by</span><b>${fmt(pl.deadline)}</b></div>
-    </div>`:""}
     <button class="btn primary duo-cta pl-cta" data-act="planok">Let’s go</button>
   </main></div>`}
 function hasAns(v){if(v==null)return false;if(Array.isArray(v))return v.length>0;if(typeof v==="object")return Object.values(v).some(x=>String(x||"").trim());return String(v).trim()!==""}
@@ -3078,10 +3073,8 @@ function homeBody(p,mock,ftab){
       <span class="today-lan">${lan(won?"cheer":"walk",mock?90:120,!x?"wave":LAN_POSE[x.k])}</span>
       ${x?`${rest?`<p class="today-eye">Next task</p>
       <h1 class="today-h">${esc(x.n)}</h1>
-      <p class="today-time">Not due until <b>${fmt(due[cur])}</b> · ${dleft<14?`${dleft} days away`:`${Math.round(dleft/7)} weeks away`}</p>
-      <p class="rest-msg">🎉 That’s all for today. Nice work!</p>
-      <button class="btn primary big today-btn" data-act="go" data-r="welcome">Back to home</button>
-      ${btn.replace(/class="btn primary big"[^>]*>([^<]*)</,(m)=>m.replace('class="btn primary big"','class="link rest-early"').replace(/>[^<]*</,">Start it early<"))}`:`<p class="today-eye">Today’s task</p>
+      <p class="today-time">Not due until <b>${fmt(due[cur])}</b></p>
+      <button class="btn primary big today-btn" data-act="go" data-r="welcome">Back to home</button>`:`<p class="today-eye">Today’s task</p>
       <h1 class="today-h">${esc(x.n)}</h1>
       <p class="today-time">⏱ About ${esc(x.m)}</p>
       ${btn.replace('class="btn primary big"','class="btn primary big today-btn"')}`}
