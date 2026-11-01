@@ -1463,6 +1463,12 @@ body:has(.wk),body:has(.today){background:var(--paper)}
 .app>main:has(.today){display:flex;flex-direction:column}
 .app>main:has(.today)>.sd{flex:1;justify-content:center;padding-bottom:6vh}
 .today{margin:auto 0}
+.qpairs{display:flex;flex-direction:column;gap:10px}
+.qpair{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.qpair>span{font-size:13px;color:var(--muted);font-weight:600}
+.qpair .chip{width:100%;text-align:center;padding:14px}
+.qmatch em{font-style:normal;font-weight:600;color:var(--ink)}
+.qwhy{color:#5B6152!important}
 </style>
 </head>
 <body>
@@ -2168,8 +2174,8 @@ const DIAG_FAST=[
     validate:v=>{const u=String(v.url||"").trim();return u&&!/^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(u)?"That doesn’t look like a link. Copy it from your browser’s address bar.":null}},
   {id:"help",kind:"multi",optional:true,when:a=>a.goal==="interviews",max:3,grid:true,text:false,prompt:a=>{const c=companyFrom(a.job);return `What do you need help with${c?" to get into "+esc(c):""}?`},options:HELP.map(h=>({v:h.v,label:h.label}))},
   ...RCQ,
-  {id:"flowTags",kind:"tags",set:"like",optional:true,when:a=>a.goal!=="interviews",max:3,grid:true,text:false,keys:["people","problems","creative","data","building","presenting","helping","writing"],prompt:"What kind of work makes you lose track of time?"},
-  {id:"careers",kind:"multi",optional:true,when:a=>a.goal!=="interviews",max:3,grid:true,options:["Consulting","Product management","Product marketing","UX research","Data analytics","Finance","Software engineering","Startups / venture"],prompt:"Which directions are you curious about?",textLabel:"Something else? (optional)",textPh:"e.g. Sports media"},
+  {id:"flowTags",kind:"tags",set:"like",optional:true,when:()=>false,max:3,grid:true,text:false,keys:["people","problems","creative","data","building","presenting","helping","writing"],prompt:"What kind of work makes you lose track of time?"},
+  {id:"careers",kind:"multi",optional:true,when:()=>false,max:3,grid:true,options:["Consulting","Product management","Product marketing","UX research","Data analytics","Finance","Software engineering","Startups / venture"],prompt:"Which directions are you curious about?",textLabel:"Something else? (optional)",textPh:"e.g. Sports media"},
 ];
 function profileFromDiag(a){
   const goal=a.goal||a.goalPreset,stage=STAGES.find(s=>s.v===a.stage);
@@ -2464,7 +2470,7 @@ function timelineCard(pl){
     <div class="tlc-foot"><p class="small">Now: <b>${esc(pl.cur.name)}</b> · until ${fmt(pl.cur.to)}</p>${UI.editDl?`<span class="row" style="gap:8px"><label class="small muted" for="dl-input">Apply by</label><input class="input mono" type="date" id="dl-input" value="${pl.deadline}" min="${TODAY}" max="${addDays(pl.start,-1)}" style="width:auto;padding:8px 10px"><button class="btn primary sm" data-act="savedl">Save</button><button class="link" data-act="resetdl">Use typical</button></span>`:`<button class="link" data-act="editdl">${pl.custom?"Change apply-by date":"Set your real apply-by date"}</button>`}</div>
   </section>`;
 }
-const CHECK=[
+const CHECK_BASE=[
   {k:"linkedin",n:"Update your LinkedIn",m:"10 min",w:2,est:"1 hr",s:"LinkedIn",t:"Update your LinkedIn",h:"10-minute workshop: fix your profile, start posting, and the hacks I learned at LinkedIn."},
   {k:"who",n:"Find the right contacts",m:"10 min",w:2,est:"45 min",s:"Contacts",t:"Find contacts{at} to see if it’s the right fit",h:"10-minute workshop: search by role, filter for alumni, and send a note."},
   {k:"email",n:"Write your outreach note",m:"10 min",w:1,est:"30 min",s:"Outreach",t:"Draft your outreach note",h:"10-minute workshop: the who / why / what formula, real examples, and your note."},
@@ -2472,22 +2478,24 @@ const CHECK=[
   {k:"resume",n:"Fix your resume",m:"15 min",w:2,est:"2 hrs",s:"Resume",t:"Update your resume",h:"5 checks using my resume as the model, plus a template to download."},
   {k:"interview",n:"Prep for your interview",m:"15 min",w:0,est:"3 hrs",s:"Interview",t:"Prep for your interview{at}",h:"Interview crash course: storytell, understand the business, ask questions, prep strategically."},
 ];
+const QUIZ_STEP={k:"quiz",n:"Take the career quiz",m:"5 min",w:1,est:"5 min",s:"Career quiz",t:"Take the career quiz",h:"7 quick questions to find 3 directions worth testing."};
+function CK(p){p=p||P();return p&&p.id==="you"&&p.goal==="what"?[QUIZ_STEP,...CHECK_BASE]:CHECK_BASE}
 function ckT(x,p){const co=p&&p.job&&p.job.company;return x.t.replace("{at}",co?" at "+co:"").replace("{co}",co?co+" ":"")}
-function checkCur(p){const c=p.checklist||{};let i=0;while(i<CHECK.length&&c[CHECK[i].k])i++;return i}
-function checkDue(p,pl){const a=p.planStart||TODAY,pre=CHECK.filter(x=>x.k!=="interview"),W=pre.reduce((n,x)=>n+x.w,0),span=Math.max(pre.length,daysBetween(a,pl.deadline));let acc=0;
-  return CHECK.map(x=>{if(x.k==="interview")return addDays(pl.deadline,21)<pl.start?addDays(pl.deadline,21):addDays(pl.start,-7);acc+=x.w;return addDays(a,Math.round(span*acc/W))})}
-function checkStart(p,pl,due){return CHECK.map((x,i)=>i?due[i-1]:(p.planStart||TODAY))}
+function checkCur(p){const c=p.checklist||{};let i=0;while(i<CK(typeof p!=="undefined"?p:null).length&&c[CK(typeof p!=="undefined"?p:null)[i].k])i++;return i}
+function checkDue(p,pl){const a=p.planStart||TODAY,pre=CK(typeof p!=="undefined"?p:null).filter(x=>x.k!=="interview"),W=pre.reduce((n,x)=>n+x.w,0),span=Math.max(pre.length,daysBetween(a,pl.deadline));let acc=0;
+  return CK(typeof p!=="undefined"?p:null).map(x=>{if(x.k==="interview")return addDays(pl.deadline,21)<pl.start?addDays(pl.deadline,21):addDays(pl.start,-7);acc+=x.w;return addDays(a,Math.round(span*acc/W))})}
+function checkStart(p,pl,due){return CK(typeof p!=="undefined"?p:null).map((x,i)=>i?due[i-1]:(p.planStart||TODAY))}
 function checklistCard(p){
   const pl=plan(p),due=pl?checkDue(p,pl):[],cur=checkCur(p),co=p.job&&p.job.company;
   return `<aside class="dash-side"><section class="cl">
-    <div class="cl-head"><span class="eyebrow">Before you apply${co?" to "+esc(co):""}</span><span class="cl-count">${cur}/${CHECK.length}</span></div>
-    <div class="cl-bar"><i style="width:${cur/CHECK.length*100}%"></i></div>
-    <ol class="cl-mods">${CHECK.map((x,i)=>{const st=i<cur?"done":i===cur?"now":"locked";
+    <div class="cl-head"><span class="eyebrow">Before you apply${co?" to "+esc(co):""}</span><span class="cl-count">${cur}/${CK(typeof p!=="undefined"?p:null).length}</span></div>
+    <div class="cl-bar"><i style="width:${cur/CK(typeof p!=="undefined"?p:null).length*100}%"></i></div>
+    <ol class="cl-mods">${CK(typeof p!=="undefined"?p:null).map((x,i)=>{const st=i<cur?"done":i===cur?"now":"locked";
       return `<li class="mod ${st}"><div class="mod-row"><span class="mod-n" aria-hidden="true">${st==="done"?"✓":st==="locked"?`<svg width="11" height="12" viewBox="0 0 11 12"><rect x="1" y="5" width="9" height="6.5" rx="1.6" fill="currentColor"/><path d="M3 5V3.6a2.5 2.5 0 0 1 5 0V5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`:i+1}</span>${x.k==="linkedin"&&st!=="locked"?`<button class="mod-title" data-act="go" data-r="workshop"><b>${esc(ckT(x,p))}</b></button>`:`<b>${esc(ckT(x,p))}</b>`}${st==="done"&&i===cur-1?`<button class="link mod-undo" data-act="check" data-k="${x.k}">Undo</button>`:""}</div>
         ${st==="now"&&due[i]?`<p class="mod-lock" style="margin-top:-6px;color:${TODAY>due[i]?"#B42318":"var(--muted)"}">Due ${fmt(due[i])}</p>`:""}${st==="now"?(x.k==="linkedin"?`<p class="mod-h">${x.h}</p><div class="mod-acts"><button class="btn primary sm mod-btn" data-act="go" data-r="workshop">${(p.wk&&p.wk.i)?"Continue workshop →":"Start workshop →"}</button><button class="link small" data-act="check" data-k="${x.k}">Already done</button></div>`:`<p class="mod-h">${x.h}</p><button class="btn primary sm mod-btn" data-act="check" data-k="${x.k}">Mark complete →</button>`):""}
         ${x.k==="linkedin"&&st==="done"?`<button class="link mod-sub" data-act="go" data-r="workshop" style="text-align:left">Revisit the workshop</button>`:""}
         ${st==="locked"?`<p class="mod-lock">Unlocks after step ${i}${due[i]?" · due "+fmt(due[i]):""}</p>`:""}</li>`}).join("")}</ol>
-    <p class="cl-foot">${cur===CHECK.length?"You’re ready.":`Step ${cur+1} of ${CHECK.length}`}</p>
+    <p class="cl-foot">${cur===CK(typeof p!=="undefined"?p:null).length?"You’re ready.":`Step ${cur+1} of ${CK(typeof p!=="undefined"?p:null).length}`}</p>
   </section></aside>`;
 }
 /* ---------- LinkedIn workshop (from "The Internship Insider") ---------- */
@@ -2853,18 +2861,69 @@ WKI[2].id="biz";WKI[4].id="prep";
 const wkDrop=(arr,keys)=>{for(let i=arr.length-1;i>=0;i--){const t=arr[i].r.toString();if(keys.some(k=>t.includes(k)))arr.splice(i,1)}};
 wkDrop(WK,['<span class="wk-eye">Next up</span>','Your game plan','What’s holding you back','But what should you post?','What makes these posts good?']);
 wkDrop(WKC,['How it works','Your game plan']);wkDrop(WKO,['Your game plan']);wkDrop(WKP,['Your game plan']);wkDrop(WKR,['Your checklist']);wkDrop(WKI,['Your game plan']);
+/* ---------- Career personality quiz (step 1 for "I don't know what I want") ---------- */
+const QSAT=[["make","🎨 Making something"],["org","📋 Organizing people or an event"],["fig","🧩 Figuring something out"],["help","🤝 Helping a friend"]];
+const QAREA=[["biz","Business"],["arts","Arts & design"],["stem","Science & tech"],["soc","Social science"],["hum","Writing & humanities"],["comm","Media & comms"]];
+const QPAIRS=[["t1","people","Talking to people","alone","Working solo"],["t2","numbers","Numbers","words","Words"],["t3","plan","Planning ahead","improv","Figuring it out live"],["t4","big","Big company","small","Small team"]];
+const QFOR=[["advice","Advice"],["tech","Fixing tech"],["design","Making things look good"],["organize","Organizing"],["explain","Explaining things"],["hype","Hyping people up"]];
+const QVAL=[["money","💰 Money"],["learn","📈 Learning fast"],["creative","✨ Creativity"],["impact","💛 Helping people"],["prestige","🏆 Prestige"],["flex","🌴 Flexibility"]];
+const QIND=[["tech","Tech"],["fashion","Fashion & beauty"],["media","Media & entertainment"],["finance","Finance"],["health","Health"],["climate","Climate"],["sports","Sports"],["nonprofit","Nonprofit"],["consumer","Food & consumer"]];
+const QNOT=[["sales","Sales"],["code","Coding"],["camera","Being on camera"],["travel","Lots of travel"],["numbers","Heavy math"]];
+const QLAB=Object.fromEntries([...QSAT,...QAREA,...QFOR,...QVAL,...QIND,...QPAIRS.flatMap(p=>[[p[1],p[2]],[p[3],p[4]]])].map(([k,l])=>[k,l.replace(/^\S+\s(?=[A-Z])/u,"").toLowerCase()]));
+const DIRS=[
+  {t:"Brand marketing",role:"brand marketing intern",ind:["fashion","consumer"],tags:["make","creative","design","words","people","comm","arts"],not:[]},
+  {t:"Social media & content",role:"social media intern",ind:["media","fashion","consumer"],tags:["make","creative","words","hype","comm","improv"],not:["camera"]},
+  {t:"Partnerships",role:"partnerships intern",ind:["tech","sports","media"],tags:["people","org","hype","advice","biz","small"],not:["sales"]},
+  {t:"Product management",role:"product management intern",ind:["tech"],tags:["fig","org","plan","explain","stem","learn","people"],not:[]},
+  {t:"UX & product design",role:"UX design intern",ind:["tech"],tags:["make","design","creative","arts","fig","alone"],not:[]},
+  {t:"Data analytics",role:"data analyst intern",ind:["tech","finance","sports","health"],tags:["fig","numbers","alone","stem","plan","learn"],not:["numbers"]},
+  {t:"Consulting",role:"consulting intern",ind:["finance","health","climate"],tags:["fig","explain","advice","plan","prestige","money","biz","people","big"],not:["travel"]},
+  {t:"Investment banking & finance",role:"finance intern",ind:["finance"],tags:["numbers","money","prestige","plan","big","biz"],not:["numbers"]},
+  {t:"Software engineering",role:"software engineering intern",ind:["tech"],tags:["fig","make","tech","stem","alone","money","learn"],not:["code"]},
+  {t:"Event & experiential marketing",role:"events intern",ind:["fashion","sports","media","consumer"],tags:["org","people","hype","plan","improv","creative"],not:["travel"]},
+  {t:"Communications & PR",role:"communications intern",ind:["media","fashion","nonprofit"],tags:["words","explain","people","comm","hum","hype"],not:[]},
+  {t:"Editorial & journalism",role:"editorial intern",ind:["media"],tags:["words","hum","comm","alone","creative","explain"],not:[]},
+  {t:"People & HR",role:"people operations intern",ind:["tech","nonprofit","health"],tags:["help","people","advice","organize","soc","impact"],not:[]},
+  {t:"Operations",role:"operations intern",ind:["consumer","tech","health"],tags:["org","organize","plan","numbers","small","fig"],not:[]},
+  {t:"Sales & business development",role:"business development intern",ind:["tech","sports","consumer"],tags:["people","hype","money","improv","biz"],not:["sales"]},
+  {t:"Program & community work",role:"program intern",ind:["nonprofit","health","climate"],tags:["help","impact","people","org","soc"],not:[]},
+  {t:"Sustainability",role:"sustainability intern",ind:["climate","consumer"],tags:["impact","fig","plan","stem","soc"],not:[]},
+  {t:"Research & strategy",role:"strategy intern",ind:["media","tech","consumer","health"],tags:["fig","explain","words","alone","soc","hum","learn"],not:[]},
+];
+function qWant(w){const v=[w.sat,w.area,w.t1,w.t2,w.t3,w.t4,...(w.qfor||[]),...(w.qval||[])].filter(Boolean);return v}
+function qMatches(w){const want=qWant(w),ind=w.qind||[],no=w.qnot||[];
+  return DIRS.map(d=>{const hit=d.tags.filter(t=>want.includes(t)),ih=d.ind.filter(i=>ind.includes(i));
+    return {d,score:hit.length+ih.length*1.5-(d.not.some(n=>no.includes(n))?4:0),why:[...hit.slice(0,2).map(t=>QLAB[t]),...ih.slice(0,1).map(i=>QLAB[i])].filter(Boolean)}}).sort((a,b)=>b.score-a.score).slice(0,3)}
+const qChips=(w,k,opts,multi,max)=>`<div class="wk-chips">${opts.map(([v,l])=>`<button class="chip" data-act="${multi?"wkmulti":"wkset"}" data-k="${k}" data-v="${v}"${max?` data-max="${max}"`:""} aria-pressed="${multi?(w[k]||[]).includes(v):w[k]===v}">${esc(l)}</button>`).join("")}</div>`;
+const WKQ=[
+  {sec:"intro",start:1,r:()=>""},
+  {sec:"you",r:(p,w)=>`<span class="wk-eye">1 of 7</span><h2 class="wk-h">Pick the one that sounds most like you on a free Saturday.</h2>${qChips(w,"sat",QSAT)}`},
+  {sec:"you",r:(p,w)=>`<span class="wk-eye">2 of 7</span><h2 class="wk-h">Which class or project made you lose track of time?</h2>${qChips(w,"area",QAREA)}
+    <div class="wk-you" style="border:0;padding:0"><input class="input" data-wk="proj" value="${esc(w.proj||"")}" placeholder="Optional: the project was…"></div>`},
+  {sec:"you",r:(p,w)=>`<span class="wk-eye">3 of 7 · This or that</span><h2 class="wk-h">Which would you rather do for a whole afternoon?</h2>
+    <div class="qpairs">${QPAIRS.map(([k,a,al,b,bl])=>`<div class="qpair"><button class="chip" data-act="wkset" data-k="${k}" data-v="${a}" aria-pressed="${w[k]===a}">${al}</button><span>or</span><button class="chip" data-act="wkset" data-k="${k}" data-v="${b}" aria-pressed="${w[k]===b}">${bl}</button></div>`).join("")}</div>`},
+  {sec:"you",r:(p,w)=>`<span class="wk-eye">4 of 7</span><h2 class="wk-h">What do people come to you for?</h2><p class="wk-hint">Pick up to 2.</p>${qChips(w,"qfor",QFOR,1,2)}`},
+  {sec:"want",r:(p,w)=>`<span class="wk-eye">5 of 7</span><h2 class="wk-h">What matters most in your first job?</h2><p class="wk-hint">Pick 2.</p>${qChips(w,"qval",QVAL,1,2)}`},
+  {sec:"want",r:(p,w)=>`<span class="wk-eye">6 of 7</span><h2 class="wk-h">Any industries you’re curious about?</h2><p class="wk-hint">Tap all that sound interesting.</p>${qChips(w,"qind",QIND,1)}`},
+  {sec:"want",r:(p,w)=>`<span class="wk-eye">7 of 7 · Optional</span><h2 class="wk-h">Anything you already know you don’t want?</h2>${qChips(w,"qnot",QNOT,1)}`},
+  {sec:"match",r:(p,w)=>{const m=qMatches(w);w.matches=m.map(x=>x.d.t);
+    return `<span class="wk-eye">Your matches</span><h2 class="wk-h">Here are 3 directions worth testing.</h2>
+    <div class="wk-hk">${m.map((x,i)=>`<div class="wk-hk-card qmatch"><span class="wk-hk-n">${i+1}</span><b>${esc(x.d.t)}</b><p>Search for: <em>${esc(x.d.role)}</em></p><p class="qwhy">${x.why.length?"Because you like "+esc(x.why.join(", ")):"A good one to test early."}</p></div>`).join("")}</div>
+    <div class="wk-you" style="border:0;padding:0"><label>Pick one to explore first</label>${qChips(w,"pick",m.map(x=>[x.d.t,x.d.t]))}<p class="wk-hint">You can change it later.</p></div>`}},
+];
 const WKS={
   workshop:{slides:()=>WK,store:"wk",done:"linkedin",parts:["profile","net","hacks"],names:WK_SEC,label:"Mark LinkedIn done →"},
   contacts:{slides:()=>WKC,store:"wkc",done:"who",parts:["search","filter","note"],names:{search:"Search",filter:"Filter",note:"Note"},label:"Mark contacts done →"},
   outreach:{slides:()=>WKO,store:"wko",done:"email",parts:["formula","examples","write"],names:{formula:"Formula",examples:"Examples",write:"Write"},label:"Mark note done →"},
   pitch:{slides:()=>WKP,store:"wkp",done:"pitch",parts:["you","qs","door","follow"],names:{you:"Intro",qs:"Questions",door:"Door open",follow:"Follow up"},label:"Mark prep done →"},
   resume:{slides:()=>WKR,store:"wkr",done:"resume",parts:["bullets","content","format"],names:{bullets:"Bullets",content:"Content",format:"Format"},label:"Mark resume done →"},
+  careerquiz:{slides:()=>WKQ,store:"wkq",done:"quiz",parts:["you","want","match"],names:{you:"You",want:"What you want",match:"Your matches"},label:"Save my match →"},
   interview:{slides:()=>WKI,store:"wki",done:"interview",parts:["story","biz","ask","prep"],names:{story:"Storytell",biz:"Business",ask:"Questions",prep:"Prep"},label:"Mark interview prep done →"},
 };
 const curW=()=>WKS[route()]||WKS.workshop;
 const wkSlides=()=>curW().slides();
 /* ---------- Lan the mascot ---------- */
-const LAN_POSE={linkedin:"laptop",who:"magnify",email:"write",pitch:"talk",resume:"book",interview:"suit"};
+const LAN_POSE={quiz:"wave",linkedin:"laptop",who:"magnify",email:"write",pitch:"talk",resume:"book",interview:"suit"};
 // Each pose: image size, the moving part's box [x0,y0,x1,y1], its pivot [x,y], and the motion.
 const LAN_PART={
   wave:{w:258,h:341,box:[180,160,258,240],o:[195,228],m:"lp-wave"},
@@ -2880,10 +2939,10 @@ function lan(mood,size,pose){const s=size||96,src=pose||"wave",P=LAN_PART[src],i
     part=`<span class="lan-part ${P.m}" style="background-image:url(${img});transform-origin:${pc(P.o[0],P.w)} ${pc(P.o[1],P.h)};--mask:radial-gradient(ellipse ${pc((x1-x0)/2,P.w)} ${pc((y1-y0)/2,P.h)} at ${pc(cx,P.w)} ${pc(cy,P.h)},#000 78%,transparent 100%)"></span>`}
   return `<span class="lan lan-p-${src}" style="width:${s}px;height:${s}px"><span class="lan-fit" style="${(()=>{const r=P?P.w/P.h:1;return r>1?`width:${s}px;height:${Math.round(s/r)}px`:`height:${s}px;width:${Math.round(s*r)}px`})()}"><img src="${img}" alt="" draggable="false">${part}</span></span>`}
 function says(text,mood,big){return `<div class="says${big?" big":""}">${lan(mood||"wave",big?120:72)}<div class="bubble">${text}</div></div>`}
-function vReward(p){const r=UI.reward,x=CHECK.find(c=>c.k===r.k),cur=checkCur(p);
+function vReward(p){const r=UI.reward,x=CK(typeof p!=="undefined"?p:null).find(c=>c.k===r.k),cur=checkCur(p);
   return `<div class="app bare duo-screen"><main class="duo-center">
     <div class="stars" aria-hidden="true">${[[50,50,64,0],[18,38,26,.15],[82,34,30,.25],[30,80,20,.35],[72,78,22,.3],[8,70,14,.45],[92,64,16,.5],[40,14,16,.4],[62,12,14,.55]].map(([x,y,sz,d],i)=>`<span class="star${i?"":" big"}" style="left:${x}%;top:${y}%;--s:${sz}px;--d:${d}s"><svg viewBox="0 0 24 24" width="${sz}" height="${sz}"><path d="M12 1.5l3.1 6.6 7.1.9-5.2 5 1.3 7.1L12 17.7 5.7 21.1 7 14l-5.2-5 7.1-.9z" fill="${i%3===2?"#0A0B0C":"#C6F432"}" stroke="#0A0B0C" stroke-width="1.6" stroke-linejoin="round"/></svg></span>`).join("")}</div>
-    <h1 class="duo-title">${cur===CHECK.length?"All steps done!":"Step complete!"}</h1>
+    <h1 class="duo-title">${cur===CK(typeof p!=="undefined"?p:null).length?"All steps done!":"Step complete!"}</h1>
     <button class="btn primary duo-cta" data-act="claim">Continue</button>
   </main></div>`}
 function vPlanReady(p){const pl=plan(p);
@@ -2891,7 +2950,7 @@ function vPlanReady(p){const pl=plan(p);
     ${says(`${p.first&&p.first!=="there"?esc(p.first)+", your":"Your"} plan is ready! Let’s get you that internship.`,"cheer",true)}
     ${pl?`<div class="stat3">
       <div class="stat y"><span>Weeks to go</span><b>${pl.weeks}</b></div>
-      <div class="stat g"><span>Steps</span><b>${CHECK.length}</b></div>
+      <div class="stat g"><span>Steps</span><b>${CK(typeof p!=="undefined"?p:null).length}</b></div>
       <div class="stat b"><span>Apply by</span><b>${fmt(pl.deadline)}</b></div>
     </div>`:""}
     <button class="btn primary duo-cta" data-act="planok">Let’s go</button>
@@ -2938,7 +2997,7 @@ function vWorkshop(){
   return shell("today",`<div class="wk">
     <div class="wk-top"><div class="wk-parts">${order.map((x,j)=>`<span class="wk-part${j===k?" on":""}${(k>j||sl.sec==="end")?" done":""}">${cfg.names[x]}</span>`).join("")}</div><button class="link" data-act="wkexit">Save &amp; exit</button></div>
     <div class="wk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${S_.length}" aria-valuenow="${i+1}"><i style="width:${((i+1)/S_.length*100).toFixed(1)}%"></i></div>
-    <section class="wk-slide${sl.start?" wk-start":""}${UI.wkDir?" in-"+UI.wkDir:""}" aria-live="polite">${sl.start?(c=>`<span class="wk-eye">Step ${CHECK.indexOf(c)+1}</span><h1 class="wk-h">${esc(c.n)}</h1><p class="wk-p">⏱ About ${esc(c.m)}</p>`)(CHECK.find(c=>c.k===cfg.done)):sl.r(p,w)}</section>
+    <section class="wk-slide${sl.start?" wk-start":""}${UI.wkDir?" in-"+UI.wkDir:""}" aria-live="polite">${sl.start?(c=>`<span class="wk-eye">Step ${CK(typeof p!=="undefined"?p:null).indexOf(c)+1}</span><h1 class="wk-h">${esc(c.n)}</h1><p class="wk-p">⏱ About ${esc(c.m)}</p>`)(CK(typeof p!=="undefined"?p:null).find(c=>c.k===cfg.done)):sl.r(p,w)}</section>
     <div class="wk-nav">${i===0?"<span></span>":`<button class="btn ghost sm" data-act="wkgo" data-d="-1">← Back</button>`}
       ${last?`<button class="btn primary" data-act="wkdone">${done?"Back home →":cfg.label}</button>`:`<button class="btn primary" data-act="wkgo" data-d="1">${i===0?"Start workshop →":"Next →"}</button>`}</div>
   </div>`);
@@ -2954,11 +3013,12 @@ function deckify(){const sl=document.querySelector(".wk-slide");if(!sl||sl.class
   box.addEventListener("touchmove",e=>{if(x0==null)return;const dx=e.touches[0].clientX-x0,c=cur();if(c)c.style.transform=`translateX(${dx}px) rotate(${dx/18}deg)`},{passive:true});
   box.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;const c=cur();if(c){c.style.transition="";c.style.transform=""}
     const i=+box.dataset.i||0,n=+box.dataset.n;if(Math.abs(dx)>50&&((dx<0&&i<n-1)||(dx>0&&i>0))){const dd=dx<0?1:-1;try{(dd>0?sfx.next:sfx.back)()}catch(er){}deckShow(box,i+dd,dd,dx)}});
-  deckShow(box,UI.deckBack?n-1:0,1);UI.deckBack=false}
+  const key=route()+":"+(wkData(P()).i||0),mem=(UI.deckMem||(UI.deckMem={}))[key];box.dataset.key=key;
+  if(mem){box.dataset.i=mem.i;deckShow(box,mem.i,0);if(mem.seen){sl.classList.add("deck-seen");sl.classList.remove("deck-pending")}}else deckShow(box,UI.deckBack?n-1:0,1);UI.deckBack=false}
 function deckCards(d){return [...d.children].filter(c=>!c.classList.contains("deck-fly"))}
 function deckShow(d,i,dir,drag){const cards=deckCards(d),n=cards.length,prev=+d.dataset.i;
   if(!isNaN(prev)&&prev!==i&&cards[prev]){const f=cards[prev].cloneNode(true);f.classList.remove("deck-off","in-r","in-l");f.classList.add("deck-fly",dir>0?"fly-l":"fly-r");if(drag)f.style.setProperty("--dx",drag+"px");d.appendChild(f);setTimeout(()=>f.remove(),450)}
-  d.dataset.i=i;d.classList.toggle("deck-last",i>=n-1);
+  d.dataset.i=i;d.classList.toggle("deck-last",i>=n-1);if(d.dataset.key){const m=(UI.deckMem||(UI.deckMem={}))[d.dataset.key]||{};UI.deckMem[d.dataset.key]={i,seen:m.seen||i>=n-1}}
   cards.forEach((c,k)=>{c.classList.toggle("deck-off",k!==i);if(k===i){c.classList.remove("in-r","in-l");void c.offsetWidth;c.classList.add(dir>0?"in-r":"in-l")}});
   const ctl=d.nextElementSibling;if(ctl&&ctl.classList.contains("deck-ctl")){ctl.querySelectorAll(".deck-dots i").forEach((x,k)=>x.classList.toggle("on",k<=i));ctl.querySelector(".deck-n").textContent=`${i+1} / ${n}`;
     const a=ctl.querySelectorAll(".deck-arrow");a[0].disabled=i===0;a[1].classList.toggle("pulse",i<n-1)}
@@ -2976,14 +3036,14 @@ function vToday(){
   return shell("today",homeBody(p));
 }
 function homeBody(p,mock,ftab){
-  const pl=plan(p),cur=checkCur(p),N=CHECK.length,due=pl?checkDue(p,pl):[],x=CHECK[cur],late=x&&due[cur]&&TODAY>due[cur];
+  const pl=plan(p),cur=checkCur(p),N=CK(typeof p!=="undefined"?p:null).length,due=pl?checkDue(p,pl):[],x=CK(typeof p!=="undefined"?p:null)[cur],late=x&&due[cur]&&TODAY>due[cur];
   const left=x&&due[cur]?daysBetween(TODAY,due[cur]):0,when=!x?"":late?`Overdue · was due ${fmt(due[cur])}`:due[cur]?`Due ${fmt(due[cur])} · ${left<=0?"today":left===1?"1 day left":left<14?left+" days left":Math.round(left/7)+" weeks left"}`:"";
-  const wr=x&&{linkedin:"workshop",who:"contacts",email:"outreach",pitch:"pitch",resume:"resume",interview:"interview"}[x.k],ws=wr&&p[WKS[wr].store],btn=!x?"":wr?`<button class="btn primary big" data-act="go" data-r="${wr}">${(ws&&ws.i)?"Continue":"Start"}</button>`:`<button class="btn primary big" data-act="check" data-k="${x.k}">Mark done</button>`;
-  const won=!mock&&UI.celebrate&&CHECK.find(c=>c.k===UI.celebrate),tab=ftab||(mock?"today":(UI.tab||"today"));
+  const wr=x&&{quiz:"careerquiz",linkedin:"workshop",who:"contacts",email:"outreach",pitch:"pitch",resume:"resume",interview:"interview"}[x.k],ws=wr&&p[WKS[wr].store],btn=!x?"":wr?`<button class="btn primary big" data-act="go" data-r="${wr}">${(ws&&ws.i)?"Continue":"Start"}</button>`:`<button class="btn primary big" data-act="check" data-k="${x.k}">Mark done</button>`;
+  const won=!mock&&UI.celebrate&&CK(typeof p!=="undefined"?p:null).find(c=>c.k===UI.celebrate),tab=ftab||(mock?"today":(UI.tab||"today"));
   const tabs=mock?"":`<div class="dtabs" role="tablist"><button role="tab" data-act="tab" data-v="today" aria-selected="${tab==="today"}">Today</button><button role="tab" data-act="tab" data-v="cal" aria-selected="${tab==="cal"}">My plan</button></div>`;
   const top=`${tabs}${mock?"":saveBanner()+installTip()}`;
   if(tab==="cal")return `<div class="sd${mock?" sd-mock":""}">${top}${calendarView(p,pl,due,cur,mock)}</div>`;
-  const dleft=x&&due[cur]?daysBetween(TODAY,due[cur]):0,rest=!mock&&x&&cur>0&&(p.doneOn||{})[CHECK[cur-1].k]===TODAY&&dleft>2;
+  const dleft=x&&due[cur]?daysBetween(TODAY,due[cur]):0,rest=!mock&&x&&cur>0&&(p.doneOn||{})[CK(typeof p!=="undefined"?p:null)[cur-1].k]===TODAY&&dleft>2;
   return `<div class="sd${mock?" sd-mock":""}">${top}
     <section class="today">
       <span class="today-lan">${lan(won?"cheer":"walk",mock?90:120,!x?"wave":LAN_POSE[x.k])}</span>
@@ -2996,28 +3056,28 @@ function homeBody(p,mock,ftab){
       <h1 class="today-h">${esc(x.n)}</h1>
       <p class="today-time">⏱ About ${esc(x.m)}</p>
       ${btn.replace('class="btn primary big"','class="btn primary big today-btn"')}`}
-      <div class="tstep" aria-label="Step ${cur+1} of ${N}">${CHECK.map((c,i)=>`<span class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"><i>${i<cur?"✓":i+1}</i></span>`).join("")}</div>
+      <div class="tstep" aria-label="Step ${cur+1} of ${N}">${CK(typeof p!=="undefined"?p:null).map((c,i)=>`<span class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"><i>${i<cur?"✓":i+1}</i></span>`).join("")}</div>
       <p class="tstep-l">${cur} of ${N} steps done</p>`:`<p class="today-eye">All done</p><h1 class="today-h">You’re ready. Go apply!</h1>`}
     </section>
   </div>`;
 }
 function calendarView(p,pl,due,cur,mock){
   if(!pl)return `<p class="wk-p">Take the quiz to build your plan.</p>`;
-  const ri=CHECK.findIndex(c=>c.k==="resume");
+  const ri=CK(typeof p!=="undefined"?p:null).findIndex(c=>c.k==="resume");
   const row=(c,i)=>{const done=i<cur,now=i===cur,late=now&&TODAY>due[i];
     return `<li class="cs ${done?"done":now?"now":""}${late?" late":""}"><span class="cs-dot">${done?"✓":i+1}</span><span class="cs-name">${esc(c.n)}</span><span class="cs-date">${done?"Done":(late?"Late · ":"by ")+fmt(due[i])}</span></li>`};
-  return `<ol class="csteps">${CHECK.map((c,i)=>row(c,i)+(i===ri?`<li class="cs apply"><span class="cs-dot">🎯</span><span class="cs-name">Apply</span><span class="cs-date">by ${fmt(pl.deadline)}</span></li>`:"")).join("")}</ol>
+  return `<ol class="csteps">${CK(typeof p!=="undefined"?p:null).map((c,i)=>row(c,i)+(i===ri?`<li class="cs apply"><span class="cs-dot">🎯</span><span class="cs-name">Apply</span><span class="cs-date">by ${fmt(pl.deadline)}</span></li>`:"")).join("")}</ol>
     ${mock?"":`<div class="sd-foot">${UI.editDl?`<span class="row" style="gap:8px"><input class="input mono" type="date" id="dl-input" value="${pl.deadline}" min="${TODAY}" max="${addDays(pl.start,-1)}" style="width:auto;padding:6px 10px"><button class="btn primary sm" data-act="savedl">Save</button><button class="link" data-act="resetdl">Use typical</button></span>`:`<button class="link" data-act="editdl">Change apply-by date</button>`}</div>`}`;
 }
 function countdownStrip(pl,mock,pp){
   if(!pl)return"";
-  const p=pp||P(),cur=checkCur(p),due=checkDue(p,pl),a=p.planStart||TODAY,span=Math.max(1,daysBetween(a,pl.deadline)),el=clamp(daysBetween(a,TODAY)/span,0,1),N=CHECK.length;
+  const p=pp||P(),cur=checkCur(p),due=checkDue(p,pl),a=p.planStart||TODAY,span=Math.max(1,daysBetween(a,pl.deadline)),el=clamp(daysBetween(a,TODAY)/span,0,1),N=CK(typeof p!=="undefined"?p:null).length;
   const allDone=cur===N,late=!allDone&&TODAY>due[cur],left=allDone?0:daysBetween(TODAY,due[cur]);
   const pace=allDone?`<span class="cd-pace ok">All ${N} done · go apply</span>`:late?`<span class="cd-pace late">Behind · was due ${fmt(due[cur])}</span>`:`<span class="cd-pace ok">On track · ${left===0?"due today":left===1?"1 day left":left<14?left+" days left":Math.round(left/7)+" weeks left"}</span>`;
   return `<section class="cd">
     <div class="cd-top"><span class="cd-big">${pl.weeks} weeks to go</span><span class="cd-meta">${esc(pl.t.label)} · apply by <b>${fmt(pl.deadline)}</b></span></div>
-    <div class="cd-steps" aria-label="${cur} of ${N} steps done">${CHECK.map((x,i)=>{const st=i<cur?"done":i===cur?"now":"next";return `<div class="cd-step ${st}"><i></i><b>${i<cur?"✓ ":""}${esc(x.s)}</b><em>${fmt(due[i])}</em></div>`}).join("")}<span class="cd-today" style="left:${(el*100).toFixed(1)}%" title="Today"></span></div>
-    <div class="cd-bot"><span>${allDone?`<b>Ready to apply</b>`:`Step ${cur+1} of ${N}: <b>${esc(ckT(CHECK[cur],p))}</b> · due ${fmt(due[cur])}`}</span>${pace}</div>
+    <div class="cd-steps" aria-label="${cur} of ${N} steps done">${CK(typeof p!=="undefined"?p:null).map((x,i)=>{const st=i<cur?"done":i===cur?"now":"next";return `<div class="cd-step ${st}"><i></i><b>${i<cur?"✓ ":""}${esc(x.s)}</b><em>${fmt(due[i])}</em></div>`}).join("")}<span class="cd-today" style="left:${(el*100).toFixed(1)}%" title="Today"></span></div>
+    <div class="cd-bot"><span>${allDone?`<b>Ready to apply</b>`:`Step ${cur+1} of ${N}: <b>${esc(ckT(CK(typeof p!=="undefined"?p:null)[cur],p))}</b> · due ${fmt(due[cur])}`}</span>${pace}</div>
     ${mock?"":`<div class="cd-edit">${UI.editDl?`<span class="row" style="gap:8px"><input class="input mono" type="date" id="dl-input" value="${pl.deadline}" min="${TODAY}" max="${addDays(pl.start,-1)}" style="width:auto;padding:6px 10px"><button class="btn primary sm" data-act="savedl">Save</button><button class="link" data-act="resetdl">Use typical</button></span>`:`<button class="link" data-act="editdl">Change apply-by date</button>`}</div>`}
   </section>`;
 }
@@ -3108,7 +3168,7 @@ const AUTH={user:null,mode:"signup",msg:"",busy:false};
 const fromEmail=/access_token=|type=signup|type=magiclink|error_description=/.test(location.hash);
 function cloudRow(){const y=S.profiles.you,c=y.checklist||{},cur=checkCur(y);return {id:AUTH.user.id,first_name:y.first==="there"?null:y.first,company:(y.job&&y.job.company)||null,steps_done:cur,state:y,updated_at:new Date().toISOString()}}
 const CLOUD_STEPS={linkedin:"done_linkedin",who:"done_contacts",email:"done_outreach",pitch:"done_chat_prep",resume:"done_resume",interview:"done_interview"};
-function cloudDetail(y){const c=y.checklist||{},cur=checkCur(y),o={current_step:cur<CHECK.length?ckT(CHECK[cur],y):"All done"};CHECK.forEach(x=>o[CLOUD_STEPS[x.k]]=!!c[x.k]);return o}
+function cloudDetail(y){const c=y.checklist||{},cur=checkCur(y),o={current_step:cur<CK(y).length?ckT(CK(y)[cur],y):"All done"};CK(y).forEach(x=>CLOUD_STEPS[x.k]&&(o[CLOUD_STEPS[x.k]]=!!c[x.k]));return o}
 function cloudSave(){if(!sb||!AUTH.user||!S.profiles.you)return;clearTimeout(cloudSave.t);cloudSave.t=setTimeout(async()=>{const row=cloudRow();let {error}=await sb.from("students").upsert(Object.assign({},row,cloudDetail(S.profiles.you)));if(error)({error}=await sb.from("students").upsert(row));if(error)console.warn("Cloud save failed:",error.message)},800)}
 async function cloudLoad(){
   const {data,error}=await sb.from("students").select("state").eq("id",AUTH.user.id).maybeSingle();
@@ -3171,7 +3231,7 @@ function installTip(){let off=false;try{off=localStorage.getItem("landit.install
   if(STANDALONE||off||window.innerWidth>820||!(installEvt||IOS))return"";
   return `<div class="install-tip"><img src="icons/icon-192.png" alt=""><span><b>Get the Landit app</b>${installEvt?"Add it to your home screen.":`Tap <b>Share</b> <span aria-hidden="true">⬆︎</span>, then <b>Add to Home Screen</b>.`}</span>${installEvt?`<button class="btn primary sm" data-act="install">Install</button>`:""}<button class="link" data-act="hideinstall" aria-label="Dismiss">✕</button></div>`}
 function saveBanner(){return (sb&&!AUTH.user&&S.active==="you")?`<div class="save-banner"><span><b>Your plan is only saved on this device.</b> Create a free account to keep it.</span><button class="btn primary sm" data-act="go" data-r="login">Save my plan</button></div>`:""}
-const ROUTES={login:vLogin,welcome:vWelcome,how:vHow,start:vStart,today:vToday,workshop:vWorkshop,contacts:vWorkshop,outreach:vWorkshop,pitch:vWorkshop,resume:vWorkshop,interview:vWorkshop,insights:vInsights,timeline:vTimeline,opportunities:vOpps};
+const ROUTES={login:vLogin,welcome:vWelcome,how:vHow,start:vStart,today:vToday,workshop:vWorkshop,careerquiz:vWorkshop,contacts:vWorkshop,outreach:vWorkshop,pitch:vWorkshop,resume:vWorkshop,interview:vWorkshop,insights:vInsights,timeline:vTimeline,opportunities:vOpps};
 const ALIAS={next:1,log:1,reflect:1,checkin:1};
 const route=()=>{const r=(location.hash||"").slice(1);return ALIAS[r]?"today":ROUTES[r]?r:"welcome"};
 function render(){
@@ -3221,8 +3281,9 @@ const ACT={
   ind:el=>{UI.ind=UI.ind===el.dataset.k?null:el.dataset.k;render()},
   cta:()=>{startStep();render();window.scrollTo(0,0)},
   how:()=>{UI.how=!UI.how;render()},
-  check:el=>{const p=P(),c=p.checklist||(p.checklist={}),cur=checkCur(p),i=CHECK.findIndex(x=>x.k===el.dataset.k);if(i===cur){c[CHECK[i].k]=true;(p.doneOn||(p.doneOn={}))[CHECK[i].k]=TODAY;celebrate(CHECK[i].k)}else if(i===cur-1){CHECK.slice(i).forEach(x=>c[x.k]=false)}else return;save();render()},
+  check:el=>{const p=P(),c=p.checklist||(p.checklist={}),cur=checkCur(p),i=CK(typeof p!=="undefined"?p:null).findIndex(x=>x.k===el.dataset.k);if(i===cur){c[CK(typeof p!=="undefined"?p:null)[i].k]=true;(p.doneOn||(p.doneOn={}))[CK(typeof p!=="undefined"?p:null)[i].k]=TODAY;celebrate(CK(typeof p!=="undefined"?p:null)[i].k)}else if(i===cur-1){CK(typeof p!=="undefined"?p:null).slice(i).forEach(x=>c[x.k]=false)}else return;save();render()},
   wkgo:el=>wkGo(+el.dataset.d),
+  wkmulti:el=>{const w=wkData(P()),k=el.dataset.k,a=w[k]||(w[k]=[]),v=el.dataset.v,j=a.indexOf(v),mx=+el.dataset.max||99;if(j>=0)a.splice(j,1);else{a.push(v);if(a.length>mx)a.shift()}save();render()},
   tab:el=>{UI.tab=el.dataset.v;try{localStorage.setItem("landit.tab",UI.tab)}catch(e){}render();window.scrollTo(0,0)},
   sound:()=>{SOUND=!SOUND;try{localStorage.setItem("landit.sound.v2",SOUND?"on":"off")}catch(e){}if(SOUND)sfx.select();render()},
   planok:()=>{UI.planReady=false;render();window.scrollTo(0,0)},
@@ -3245,7 +3306,7 @@ const ACT={
   wkopen:el=>{const w=wkData(P());w.open=+el.dataset.i;save();render()},
   wkcopy:el=>{const v=wkData(P())[el.dataset.k]||"";if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>toast("Copied"),()=>toast("Couldn’t copy. Select it and copy manually."));else toast("Select it and copy manually.")},
   wkexit:()=>{toast("Saved. Pick up where you left off.");go("today")},
-  wkdone:()=>{const dk=document.querySelector(".wk-slide .deck");if(dk&&(+dk.dataset.i||0)<+dk.dataset.n-1){try{sfx.next()}catch(e){}deckShow(dk,(+dk.dataset.i||0)+1,1);return}const p=P(),c=p.checklist||(p.checklist={}),k=curW().done,i=CHECK.findIndex(x=>x.k===k);if(!c[k]){c[k]=true;(p.doneOn||(p.doneOn={}))[k]=TODAY;save();celebrate(k)}go("today")},
+  wkdone:()=>{if(curW().done==="quiz"){const p=P(),w=wkData(p),pick=w.pick||(w.matches||[])[0],d=DIRS.find(x=>x.t===pick);if(d){p.direction=d.t;p.wkc=Object.assign(p.wkc||{},{role:d.role})}}const dk=document.querySelector(".wk-slide .deck");if(dk&&(+dk.dataset.i||0)<+dk.dataset.n-1){try{sfx.next()}catch(e){}deckShow(dk,(+dk.dataset.i||0)+1,1);return}const p=P(),c=p.checklist||(p.checklist={}),k=curW().done,i=CK(typeof p!=="undefined"?p:null).findIndex(x=>x.k===k);if(!c[k]){c[k]=true;(p.doneOn||(p.doneOn={}))[k]=TODAY;save();celebrate(k)}go("today")},
   editdl:()=>{UI.editDl=true;render()},
   toggleind:()=>{UI.showInd=!UI.showInd;UI.ind=null;render()},
   savedl:()=>{const v=document.getElementById("dl-input").value;if(!v){toast("Pick a date first");return}const p=P();p.deadline=v;p.planStart=p.planStart||TODAY;UI.editDl=false;save();toast("Plan rebuilt around "+fmt(v));render()},
