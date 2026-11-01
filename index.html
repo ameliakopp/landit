@@ -1577,7 +1577,7 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 /* Flashcards everywhere: bigger, taller, more breathing room */
 .wk-slide .deck{margin-top:26px!important;max-width:760px}
 .deck-hint{margin-top:14px!important}
-.fc-in{display:grid!important;height:auto!important}
+.fc-in{display:grid!important;height:auto!important;min-height:0!important}
 .fc-face{position:relative!important;inset:auto!important;grid-area:1/1;min-height:clamp(380px,56vh,520px)}
 .deck>.fc{min-height:0!important}
 .fc-ba .fc-face{justify-content:center;padding:clamp(20px,3vw,32px)!important}
@@ -1610,6 +1610,16 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 .today{position:relative}
 .today-min{position:absolute;top:18px;right:20px;font-size:12.5px;font-weight:600;color:#8E949A;background:#F4F5F1;border-radius:999px;padding:4px 10px}
 .today-min::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#A9D63A;margin-right:6px;vertical-align:1px}
+/* Flashcards: no stacked peek, full column width, fit above the Next bar */
+.deck::before,.deck::after{display:none!important}
+.wk-slide .deck{max-width:none!important;width:100%;padding-bottom:0;margin-top:22px!important}
+.wk-slide .deck>*{max-width:none!important}
+.wk-slide .fc-deck .fc-face{min-height:var(--fch,clamp(300px,52vh,500px))!important}
+.wk-slide .fc-deck:not(.fc-ba) .fc-face{padding:30px clamp(22px,5vw,48px) 30px!important}
+.wk-slide .fc-deck .fc-front{padding-bottom:64px!important}
+.fc-deck~.deck-ctl,.deck-solo+.deck-ctl{margin-top:14px}
+.fc-hint{position:absolute;bottom:20px;left:50%!important;right:auto!important;transform:translateX(-50%);white-space:nowrap;font-size:12.5px!important;font-weight:600;color:#6B7163!important;background:#F0F1EC;padding:6px 14px;border-radius:999px}
+.fc-ba .fc-hint{position:static;transform:none;align-self:center;width:auto!important;margin-top:10px}
 </style>
 </head>
 <body>
@@ -3221,7 +3231,7 @@ function deckify(){const sl=document.querySelector(".wk-slide");if(!sl||sl.class
   const ba1=baFlip(sl);if(ba1){ba1.classList.add("deck","fc-deck","deck-solo");ba1.dataset.n=1;const key=route()+":"+(wkData(P()).i||0);ba1.dataset.key=key;ba1.dataset.i=0;const mem=(UI.deckMem||(UI.deckMem={}))[key];
     if(mem&&mem.seen){ba1.firstElementChild.classList.add("flipped");sl.classList.add("deck-seen")}else{UI.deckMem[key]={i:0,seen:false};sl.classList.add("deck-pending");ba1.insertAdjacentHTML("afterend",'<div class="deck-ctl"></div>')}return}
   const box=[...sl.querySelectorAll(DECK_SEL)].find(b=>b.children.length>1&&!b.closest(".deck")&&!b.querySelector("input,textarea,.fib,[data-act]"));if(!box)return;
-  const n=box.children.length;const fc=[...box.children].map(flipify).some(Boolean);box.classList.add("deck");if(fc)box.classList.add("fc-deck");box.dataset.n=n;box.insertAdjacentHTML("beforebegin",`<p class="deck-hint">${fc?(matchMedia("(hover:none)").matches?"Tap a card to flip it, swipe for the next":"Press Next to flip each card"):(matchMedia("(hover:none)").matches?"Swipe left to see more":"Press Next or → to see more")}</p>`);
+  const n=box.children.length;const fc=[...box.children].map(flipify).some(Boolean);box.classList.add("deck");if(fc)box.classList.add("fc-deck");box.dataset.n=n;if(!fc)box.insertAdjacentHTML("beforebegin",`<p class="deck-hint">${fc?"":(matchMedia("(hover:none)").matches?"Swipe left to see more":"Press Next or → to see more")}</p>`);
   box.insertAdjacentHTML("afterend",`<div class="deck-ctl"><button class="deck-arrow" data-act="wkgo" data-d="-1" aria-label="Previous">‹</button><span class="deck-dots">${"<i></i>".repeat(n)}</span><span class="deck-n"></span><button class="deck-arrow" data-act="wkgo" data-d="1" aria-label="Next">›</button></div>`);
   let x0=null;const cur=()=>deckCards(box)[+box.dataset.i||0];
   box.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;const c=cur();if(c)c.style.transition="none"},{passive:true});
@@ -3230,6 +3240,11 @@ function deckify(){const sl=document.querySelector(".wk-slide");if(!sl||sl.class
     const i=+box.dataset.i||0,n=+box.dataset.n;if(Math.abs(dx)>50&&((dx<0&&i<n-1)||(dx>0&&i>0))){const dd=dx<0?1:-1;try{(dd>0?sfx.next:sfx.back)()}catch(er){}deckShow(box,i+dd,dd,dx)}});
   const key=route()+":"+(wkData(P()).i||0),mem=(UI.deckMem||(UI.deckMem={}))[key];box.dataset.key=key;
   if(mem){box.dataset.i=mem.i;deckShow(box,mem.i,0);if(mem.seen){sl.classList.add("deck-seen");sl.classList.remove("deck-pending")}}else deckShow(box,UI.deckBack?n-1:0,1);UI.deckBack=false}
+function fcFit(){const dk=document.querySelector(".wk-slide .fc-deck");if(!dk)return;const nav=document.querySelector(".wk-nav"),ctl=dk.nextElementSibling;
+  let top=0,e=dk;while(e){top+=e.offsetTop;e=e.offsetParent}
+  const avail=innerHeight-top-(nav&&getComputedStyle(nav).position==="fixed"?nav.offsetHeight:0)-(ctl&&ctl.classList.contains("deck-ctl")?ctl.offsetHeight+14:0)-24;
+  dk.style.setProperty("--fch",Math.round(Math.max(260,Math.min(540,avail)))+"px")}
+addEventListener("resize",()=>fcFit());
 function deckCards(d){return [...d.children].filter(c=>!c.classList.contains("deck-fly"))}
 function deckShow(d,i,dir,drag){const cards=deckCards(d),n=cards.length,prev=+d.dataset.i;
   if(!isNaN(prev)&&prev!==i&&cards[prev]){const f=cards[prev].cloneNode(true);f.classList.remove("deck-off","in-r","in-l");f.classList.add("deck-fly",dir>0?"fly-l":"fly-r");if(drag)f.style.setProperty("--dx",drag+"px");d.appendChild(f);setTimeout(()=>f.remove(),450)}
@@ -3474,7 +3489,7 @@ function render(){
   if(AUTH.user){if(S.profiles.you)S.active="you";if(!S.profiles.you&&r!=="start"&&r!=="login"&&r!=="welcome"){location.hash="start";return}}
   document.getElementById("app").innerHTML=ROUTES[r]()+(r==="start"?"":`<div id="help-root">${helpUI()}</div>`);
   UI.wkDir=null;
-  if(WKS[r])deckify();
+  if(WKS[r]){deckify();fcFit()}
   const bi=document.querySelector(".wk-bar i,.duo-bar i");if(bi){const to=bi.style.width,key=r;if(UI.barW&&UI.barW.k===key&&UI.barW.w!==to){bi.style.transition="none";bi.style.width=UI.barW.w;requestAnimationFrame(()=>requestAnimationFrame(()=>{bi.style.transition="";bi.style.width=to}))}UI.barW={k:key,w:to}}
   if(UI.celebrate&&r==="today"){const k=UI.celebrate;setTimeout(()=>{if(UI.celebrate===k)UI.celebrate=null},50)}
   const qw=document.querySelector(".q-wrap");
