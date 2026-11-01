@@ -1434,6 +1434,32 @@ body:has(.wk),body:has(.today){background:var(--paper)}
 .deck>.wk-hk-card>b,.deck>li b,.deck>li>span{font-size:clamp(20px,2.4vw,24px)!important;line-height:1.3}
 .deck>.wk-hk-card>p{font-size:16px}
 .lp-bubble{animation:lpbub 2.4s ease-in-out infinite}@keyframes lpbub{0%,100%{transform:scale(1)}50%{transform:scale(1.06) translateY(-1.5%)}}
+/* Playing-card deck */
+.deck{position:relative;isolation:isolate;padding-bottom:26px;max-width:560px;margin:0 auto;width:100%}
+.deck::before,.deck::after{content:"";position:absolute;left:5%;right:5%;bottom:12px;height:60px;background:#fff;border-radius:26px;box-shadow:0 10px 26px -18px rgba(20,24,16,.35);z-index:-1;transition:opacity .3s}
+.deck::after{left:10%;right:10%;bottom:0;opacity:.7}
+.deck.deck-last::after{opacity:0}.deck.deck-last::before{opacity:.0}
+.deck>*{position:relative;z-index:1;background:#fff!important;border:0!important;border-radius:28px!important;padding:clamp(24px,4vw,36px)!important;min-height:clamp(240px,44vh,420px);display:flex!important;flex-direction:column!important;justify-content:center;gap:14px;box-shadow:0 2px 4px rgba(20,24,16,.04),0 24px 50px -24px rgba(20,24,16,.35)!important;transition:transform .25s ease;touch-action:pan-y;user-select:none}
+.deck>* .wk-li-entry{box-shadow:none!important;border:1px solid #ECEEE8!important}
+.deck>.wk-person{display:flex!important;flex-direction:column!important;text-align:center;align-items:center}
+.deck>.wk-person img{width:110px;height:110px}
+.deck>.in-r{animation:cardin .45s cubic-bezier(.2,1.2,.35,1)}
+.deck>.in-l{animation:cardback .4s cubic-bezier(.2,1,.35,1)}
+@keyframes cardin{from{transform:translateY(26px) scale(.93);opacity:.6}to{transform:none;opacity:1}}
+@keyframes cardback{from{transform:translateX(-60%) rotate(-10deg);opacity:0}to{transform:none;opacity:1}}
+.deck-fly{position:absolute!important;top:0;left:0;right:0;z-index:3!important;pointer-events:none;margin:0!important}
+.deck-fly.fly-l{animation:flyl .42s cubic-bezier(.4,0,.6,1) forwards}
+.deck-fly.fly-r{animation:flyr .42s cubic-bezier(.4,0,.6,1) forwards}
+@keyframes flyl{from{transform:translateX(var(--dx,0)) rotate(0)}to{transform:translateX(-130%) rotate(-16deg);opacity:0}}
+@keyframes flyr{from{transform:translateX(0)}to{transform:translateY(30px) scale(.9);opacity:0}}
+.deck-hint{align-self:center;margin:0 auto -2px;font-size:12.5px;font-weight:600;color:#5B6152;background:#E9EBE5;padding:7px 16px;border-radius:999px}
+.deck-pending .deck-hint{display:block}.deck-seen .deck-hint{display:none}
+@media (prefers-reduced-motion:reduce){.deck>.in-r,.deck>.in-l,.deck-fly{animation:none}.deck-fly{display:none}}
+.deck>*{min-height:clamp(220px,36vh,340px)!important}
+.deck>* b{font-size:clamp(22px,2.6vw,28px)!important;line-height:1.25!important;letter-spacing:-.02em}
+.deck>* p,.deck>* small{font-size:16px!important}
+.deck>li{gap:14px!important}
+.deck>.deck-off.deck-off{display:none!important}
 </style>
 </head>
 <body>
@@ -2918,17 +2944,23 @@ function vWorkshop(){
 const DECK_SEL=".wk-ba,.wk-ba2,.wk-hk,.wk-q4,.wk-shots,.wk-list,.wk-pat,.wk-hacks,.wk-inbox,.wk-people,.wk-3,.wk-g3";
 function deckify(){const sl=document.querySelector(".wk-slide");if(!sl||sl.classList.contains("wk-start"))return;
   const box=[...sl.querySelectorAll(DECK_SEL)].find(b=>b.children.length>1&&!b.closest(".deck")&&!b.querySelector("input,textarea,.fib,[data-act]"));if(!box)return;
-  const n=box.children.length;box.classList.add("deck");
+  const n=box.children.length;box.classList.add("deck");box.dataset.n=n;box.insertAdjacentHTML("beforebegin",`<p class="deck-hint">${matchMedia("(hover:none)").matches?"Swipe left to see more":"Press Next or → to see more"}</p>`);
   box.insertAdjacentHTML("afterend",`<div class="deck-ctl"><button class="deck-arrow" data-act="wkgo" data-d="-1" aria-label="Previous">‹</button><span class="deck-dots">${"<i></i>".repeat(n)}</span><span class="deck-n"></span><button class="deck-arrow" data-act="wkgo" data-d="1" aria-label="Next">›</button></div>`);
-  let x0=null;box.addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});
-  box.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40){const dd=dx<0?1:-1;try{(dd>0?sfx.next:sfx.back)()}catch(er){}wkGo(dd)}});
+  let x0=null;const cur=()=>deckCards(box)[+box.dataset.i||0];
+  box.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;const c=cur();if(c)c.style.transition="none"},{passive:true});
+  box.addEventListener("touchmove",e=>{if(x0==null)return;const dx=e.touches[0].clientX-x0,c=cur();if(c)c.style.transform=`translateX(${dx}px) rotate(${dx/18}deg)`},{passive:true});
+  box.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;const c=cur();if(c){c.style.transition="";c.style.transform=""}
+    const i=+box.dataset.i||0,n=+box.dataset.n;if(Math.abs(dx)>50&&((dx<0&&i<n-1)||(dx>0&&i>0))){const dd=dx<0?1:-1;try{(dd>0?sfx.next:sfx.back)()}catch(er){}deckShow(box,i+dd,dd,dx)}});
   deckShow(box,UI.deckBack?n-1:0,1);UI.deckBack=false}
-function deckShow(d,i,dir){const n=d.children.length;d.dataset.i=i;
-  [...d.children].forEach((c,k)=>{c.classList.toggle("deck-off",k!==i);if(k===i){c.classList.remove("in-r","in-l");void c.offsetWidth;c.classList.add(dir>0?"in-r":"in-l")}});
+function deckCards(d){return [...d.children].filter(c=>!c.classList.contains("deck-fly"))}
+function deckShow(d,i,dir,drag){const cards=deckCards(d),n=cards.length,prev=+d.dataset.i;
+  if(!isNaN(prev)&&prev!==i&&cards[prev]){const f=cards[prev].cloneNode(true);f.classList.remove("deck-off","in-r","in-l");f.classList.add("deck-fly",dir>0?"fly-l":"fly-r");if(drag)f.style.setProperty("--dx",drag+"px");d.appendChild(f);setTimeout(()=>f.remove(),450)}
+  d.dataset.i=i;d.classList.toggle("deck-last",i>=n-1);
+  cards.forEach((c,k)=>{c.classList.toggle("deck-off",k!==i);if(k===i){c.classList.remove("in-r","in-l");void c.offsetWidth;c.classList.add(dir>0?"in-r":"in-l")}});
   const ctl=d.nextElementSibling;if(ctl&&ctl.classList.contains("deck-ctl")){ctl.querySelectorAll(".deck-dots i").forEach((x,k)=>x.classList.toggle("on",k<=i));ctl.querySelector(".deck-n").textContent=`${i+1} / ${n}`;
     const a=ctl.querySelectorAll(".deck-arrow");a[0].disabled=i===0;a[1].classList.toggle("pulse",i<n-1)}
   const sl=d.closest(".wk-slide");if(sl){if(i>=n-1)sl.classList.add("deck-seen");sl.classList.toggle("deck-pending",!sl.classList.contains("deck-seen"))}}
-function wkGo(d){const dk=document.querySelector(".wk-slide .deck");if(dk){const i=+dk.dataset.i||0,n=dk.children.length;if(d>0&&i<n-1){deckShow(dk,i+1,1);return}if(d<0&&i>0){deckShow(dk,i-1,-1);return}}
+function wkGo(d){const dk=document.querySelector(".wk-slide .deck");if(dk){const i=+dk.dataset.i||0,n=+dk.dataset.n;if(d>0&&i<n-1){deckShow(dk,i+1,1);return}if(d<0&&i>0){deckShow(dk,i-1,-1);return}}
   if(d<0)UI.deckBack=true;const p=P(),w=wkData(p);if(!w.t0)w.t0=Date.now();UI.wkDir=d>0?"r":"l";w.i=clamp((w.i||0)+d,0,wkSlides().length-1);if(d>0&&w.i>(w.max||0)){w.max=w.i;}save();render();window.scrollTo(0,0)}
 function vToday(){
   const p=P();
@@ -3210,7 +3242,7 @@ const ACT={
   wkopen:el=>{const w=wkData(P());w.open=+el.dataset.i;save();render()},
   wkcopy:el=>{const v=wkData(P())[el.dataset.k]||"";if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>toast("Copied"),()=>toast("Couldn’t copy. Select it and copy manually."));else toast("Select it and copy manually.")},
   wkexit:()=>{toast("Saved. Pick up where you left off.");go("today")},
-  wkdone:()=>{const p=P(),c=p.checklist||(p.checklist={}),k=curW().done,i=CHECK.findIndex(x=>x.k===k);if(!c[k]){c[k]=true;(p.doneOn||(p.doneOn={}))[k]=TODAY;save();celebrate(k)}go("today")},
+  wkdone:()=>{const dk=document.querySelector(".wk-slide .deck");if(dk&&(+dk.dataset.i||0)<+dk.dataset.n-1){try{sfx.next()}catch(e){}deckShow(dk,(+dk.dataset.i||0)+1,1);return}const p=P(),c=p.checklist||(p.checklist={}),k=curW().done,i=CHECK.findIndex(x=>x.k===k);if(!c[k]){c[k]=true;(p.doneOn||(p.doneOn={}))[k]=TODAY;save();celebrate(k)}go("today")},
   editdl:()=>{UI.editDl=true;render()},
   toggleind:()=>{UI.showInd=!UI.showInd;UI.ind=null;render()},
   savedl:()=>{const v=document.getElementById("dl-input").value;if(!v){toast("Pick a date first");return}const p=P();p.deadline=v;p.planStart=p.planStart||TODAY;UI.editDl=false;save();toast("Plan rebuilt around "+fmt(v));render()},
