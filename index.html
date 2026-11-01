@@ -1483,8 +1483,20 @@ body:has(.wk),body:has(.today){background:var(--paper)}
 .pl-done .pl-title{animation:pop .5s .25s cubic-bezier(.2,1.5,.4,1) both;color:#14170F}
 .pl-done .pl-sub{animation:msgin .4s .45s both}
 .pl-done .stat:nth-child(1){animation-delay:.6s}.pl-done .stat:nth-child(2){animation-delay:.72s}.pl-done .stat:nth-child(3){animation-delay:.84s}
-.pl-done .pl-cta{animation:msgin .4s 1s both}
+
 @media (prefers-reduced-motion:reduce){.pl-ring i,.pl-bar i,.pl-done *{animation:none!important}.pl-bar i{width:100%}}
+.pl-done{gap:12px;padding-top:16px}
+.pl-done .pl-stars{height:120px;width:240px}
+.pl-steps{list-style:none;width:100%;max-width:440px;display:flex;flex-direction:column;gap:8px;margin:6px 0 8px;position:relative}
+.pls{display:grid;grid-template-columns:26px 60px minmax(0,1fr);gap:10px;align-items:center;text-align:left;background:#fff;border:1px solid #E6E8E2;border-radius:18px;padding:8px 14px 8px 10px;box-shadow:0 10px 24px -20px rgba(20,24,16,.35);opacity:0;animation:plsin .5s calc(1.1s + var(--i)*.18s) cubic-bezier(.2,1.3,.35,1) forwards}
+@keyframes plsin{from{opacity:0;transform:translateY(18px) scale(.94)}to{opacity:1;transform:none}}
+.pls-n{width:26px;height:26px;border-radius:50%;background:#F0F1EC;display:grid;place-items:center;font-size:12px;font-weight:700;color:#5B6152}
+.pls-lan{width:60px;height:56px;display:grid;place-items:center}
+.pls-t b{display:block;font-size:15.5px;font-weight:600}.pls-t em{font-style:normal;font-size:12.5px;color:var(--muted)}
+.pls.first{border:1.5px solid #14170F;background:#F7FBEA}.pls.first .pls-n{background:#14170F;color:#C6F432}
+.pls.apply{background:#FFE9DB;border:1px dashed #F0B48A}.pls.apply .pls-n{visibility:hidden}.pls-flag{font-size:30px}
+.pl-done .pl-cta{opacity:0;animation:msgin .4s calc(1.25s + var(--i)*.18s) forwards}
+@media (prefers-reduced-motion:reduce){.pls,.pl-done .pl-cta{opacity:1}}
 </style>
 </head>
 <body>
@@ -2967,7 +2979,7 @@ function fanfare(){const c=SOUND&&actx();if(!c)return;const t=c.currentTime;
   [1046.5,1318.5,1568].forEach((f,i)=>tone(c,f,t+.5+i*.012,1.1,.06,"sine"));tone(c,2093,t+.62,.9,.035,"sine")}
 function vPlanReady(p){const pl=plan(p);
   if(!UI.planShown){if(!UI.planTimer){let k=0;UI.planTimer=setInterval(()=>{const el=document.getElementById("pl-msg");if(el){k++;el.classList.remove("swap");void el.offsetWidth;el.classList.add("swap");el.textContent=["Checking your timeline…","Lining up your steps…","Picking today’s task…"][Math.min(k,2)]}},850);
-      setTimeout(()=>{clearInterval(UI.planTimer);UI.planTimer=null;UI.planShown=true;if(UI.planReady){render();fanfare()}},2600)}
+      setTimeout(()=>{clearInterval(UI.planTimer);UI.planTimer=null;UI.planShown=true;if(UI.planReady){render();fanfare();for(let j=0;j<(UI.plCount||7);j++)setTimeout(()=>{try{if(SOUND){const c=actx();tone(c,880+j*90,c.currentTime,.12,.05,"sine",1200+j*90)}}catch(e){}},1100+j*180)}},2600)}
     return `<div class="app bare duo-screen"><main class="duo-center">
       <div class="pl-load">${lan("idle",110,"laptop")}<div class="pl-ring"><i></i></div></div>
       <p class="pl-msg" id="pl-msg">Building your plan…</p>
@@ -2977,7 +2989,10 @@ function vPlanReady(p){const pl=plan(p);
     <div class="stars pl-stars" aria-hidden="true">${[[50,46,70,0,"#C6F432"],[14,30,26,.12,"#C6F432"],[86,28,30,.2,"#0A0B0C"],[26,78,20,.3,"#FFC9A6"],[74,80,22,.26,"#C6F432"],[4,62,14,.4,"#0A0B0C"],[96,60,16,.45,"#BCD0F0"],[38,8,16,.35,"#BCD0F0"],[64,6,14,.5,"#FFC9A6"]].map(([x,y,sz,d,f],i)=>`<span class="star${i?"":" big"}" style="left:${x}%;top:${y}%;--d:${d}s">${STAR_SVG(sz,f)}</span>`).join("")}</div>
     <h1 class="duo-title pl-title">Your plan is ready!</h1>
     <p class="duo-sub pl-sub">${p.first&&p.first!=="there"?esc(p.first)+", let’s":"Let’s"} get you that internship.</p>
-    <button class="btn primary duo-cta pl-cta" data-act="planok">Let’s go</button>
+    ${pl?(()=>{const st=CK(p),due=checkDue(p,pl),ri=st.findIndex(c=>c.k==="resume");let k=0;const row=(img,n,name,sub,cls)=>`<li class="pls ${cls||""}" style="--i:${k++}"><span class="pls-n">${n}</span><span class="pls-lan">${img}</span><span class="pls-t"><b>${name}</b><em>${sub}</em></span></li>`;
+      const rows=st.map((c,i)=>row(lan("idle",56,LAN_POSE[c.k]),i+1,esc(c.n),`~${esc(c.m)} · by ${fmt(due[i])}`,i===0?"first":"")+(i===ri?row(`<span class="pls-flag">🎯</span>`,"",`Apply`,`by ${fmt(pl.deadline)}`,"apply"):"")).join("");
+      UI.plCount=k;return `<ol class="pl-steps">${rows}</ol>`})():""}
+    <button class="btn primary duo-cta pl-cta" style="--i:${UI.plCount||7}" data-act="planok">Let’s go</button>
   </main></div>`}
 function hasAns(v){if(v==null)return false;if(Array.isArray(v))return v.length>0;if(typeof v==="object")return Object.values(v).some(x=>String(x||"").trim());return String(v).trim()!==""}
 function renderDuo(f){
