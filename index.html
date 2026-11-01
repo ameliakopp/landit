@@ -1247,8 +1247,8 @@ a{color:var(--accent)}
 .wk-rules{gap:4px;font-size:14px}
 .wk-build label{margin-top:2px}
 .wk-ex{padding:12px 14px}
-.wk-li-entry img[src*='teo-head']{max-height:96px}
-.wk-ba2 .wk-li-entry img[src*='reagan']{max-height:80px}
+.wk-li-entry img[src*='andi-head']{max-height:72px;object-fit:contain}
+.wk-ba2 .wk-li-entry img[src*='james']{max-height:110px;object-fit:contain;object-position:left}
 .wk-ba2{gap:12px}
 .tstep{display:flex;align-items:center;width:min(360px,100%);margin-top:26px}
 .tstep span{flex:1;display:flex;align-items:center}
@@ -1512,6 +1512,8 @@ body:has(.wk),body:has(.today){background:var(--paper)}
 .lb .lp-tie{transform-origin:50% 0;animation:lbtie 3.2s ease-in-out infinite}@keyframes lbtie{0%,65%,100%{transform:rotate(0)}72%{transform:rotate(-12deg)}80%{transform:rotate(9deg)}88%{transform:rotate(-4deg)}}
 .today-lan .lb svg{width:78%;height:78%;margin:auto}
 @media (prefers-reduced-motion:reduce){.lb *{animation:none!important}}
+.deck .wk-shot img{max-height:300px!important;object-fit:contain!important;width:auto;max-width:100%;margin:0 auto}
+.deck>.wk-new span:not(.lbl){font-size:clamp(20px,2.4vw,26px);font-weight:600;line-height:1.3}
 </style>
 </head>
 <body>
@@ -2571,7 +2573,7 @@ const WK=[
     ${WK_THREE}`},
   {sec:"profile",id:"headline",r:(p,w)=>`<span class="wk-eye">Part 1 · Your profile · 1 of 3</span>
     <h2 class="wk-h">Upgrade your headline</h2>
-    <div class="wk-ba">${shot("harry","Harry’s profile before","pcrop","Before")}<div class="wk-new"><span class="lbl">Harry’s new headline</span><span>NYU Music Business Student | A &amp; R @ Columbia Records, Lede, Victor Victor</span></div></div>
+    <div class="wk-ba">${shot("jp-head","JP Welchans’s profile before: Student at New York University","pcrop","Before")}<div class="wk-new"><span class="lbl">JP’s new headline</span><span>NYU Student | Film Marketing @ Bleecker Street</span></div></div>
     <div class="wk-you"><label>Now write yours</label><p class="wk-hint">Fill in the blanks. The gray text stays.</p>
       ${fib("headline","{school} {major} Student | {role} @ {company}, {another company}",w,{school:p.wkc&&p.wkc.school})}<button class="btn ghost sm" style="align-self:flex-start" data-act="wkcopy" data-k="headline">Copy</button>
       </div>`},
@@ -2580,9 +2582,9 @@ const WK=[
     
     <div class="wk-ba2">
       <div class="wk-fix"><span class="wk-tag before">Before</span>
-      <div class="wk-li-entry"><img src="img/wk/teo-head.jpg" alt="Teo León Villa’s profile header: Undergraduate Student at New York University"><div class="wk-about"><b>About</b><div class="wk-nodesc" style="border:0;padding:0;background:none"><span class="wk-x2" aria-hidden="true">✕</span>Empty. Nobody knows what he’s interested in or looking for.</div></div></div>
+      <div class="wk-li-entry"><img src="img/wk/andi-head.jpg" alt="Andisheh Turner’s profile header: Sports admin/Public relations student at University of Miami"><div class="wk-about"><b>About</b><div class="wk-nodesc" style="border:0;padding:0;background:none"><span class="wk-x2" aria-hidden="true">✕</span>Empty. Nobody knows what she’s interested in or looking for.</div></div></div>
       </div><div class="wk-fix"><span class="wk-tag after">After</span>
-      <div class="wk-li-entry"><img src="img/wk/teo-head.jpg" alt=""><div class="wk-about now"><b>About</b><p>I’m an International Business student at NYU. I spent my first year in Madrid, where I co-founded the Model UN and Business Clubs. I’m interested in how companies grow across borders, and I’m looking for Summer 2027 internships in consulting or international strategy.</p></div></div>
+      <div class="wk-li-entry"><img src="img/wk/andi-head.jpg" alt=""><div class="wk-about now"><b>About</b><p>I’m a sports administration and public relations student at the University of Miami. I work event activations for the Miami Dolphins at Hard Rock Stadium. I’m interested in how teams create game-day experiences fans remember, and I’m looking for Summer 2027 internships in sports marketing or PR.</p></div></div>
       </div></div>
     <div class="wk-you"><label>Now write yours: fill in the blanks</label>
       ${fib("about","I’m a {major} student at {school}. I {one thing you’ve done}. I’m interested in {topic}, and I’m looking for {season} internships in {field}.",w,{school:p.wkc&&p.wkc.school})}<button class="btn ghost sm" style="align-self:flex-start" data-act="wkcopy" data-k="about">Copy</button></div>`},
@@ -2591,9 +2593,9 @@ const WK=[
     
     <div class="wk-ba2">
       <div class="wk-fix"><span class="wk-tag before">Before</span>
-      <div class="wk-li-entry"><img src="img/wk/reagan-cisco.jpg" alt="Experience entry: CISCO Extern, Cisco, Internship"><div class="wk-nodesc"><span class="wk-x2" aria-hidden="true">✕</span>No description. A recruiter can’t tell what she did.</div></div>
+      <div class="wk-li-entry"><img src="img/wk/james-exp.jpg" alt="James Bunting’s experience entry: Editorial Intern, Interview Magazine"><div class="wk-nodesc"><span class="wk-x2" aria-hidden="true">✕</span>No description. A recruiter can’t tell what he did.</div></div>
       </div><div class="wk-fix"><span class="wk-tag after">After</span>
-      <div class="wk-li-entry"><img src="img/wk/reagan-cisco.jpg" alt=""><div class="wk-desc"><p>One of <mark>40</mark> high school students chosen for Cisco’s <mark>6-week</mark> summer externship. Worked on a <mark>5-person</mark> team to design a cybersecurity awareness campaign for small businesses, and presented it to <mark>4</mark> Cisco managers. Finished <mark>25+ hours</mark> of training in networking and cybersecurity, and met with <mark>8</mark> Cisco employees to learn how their teams work.</p></div></div>
+      <div class="wk-li-entry"><img src="img/wk/james-exp.jpg" alt=""><div class="wk-desc"><p>Pitch <mark>3</mark> story ideas a week to a <mark>6-person</mark> editorial team; researched and fact-checked <mark>20+</mark> features, and wrote <mark>4</mark> published pieces in my first <mark>3 months</mark>.</p></div></div>
       </div></div>
     <div class="wk-you"><label>Now rewrite one of yours</label>
       ${fib("exp","{Led / Built / Grew} {what you did} with {how many people} over {how long}, resulting in {a number: views, sales, signups}.",w)}<button class="btn ghost sm" style="align-self:flex-start" data-act="wkcopy" data-k="exp">Copy</button>

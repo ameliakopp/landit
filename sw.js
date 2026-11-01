@@ -1,5 +1,5 @@
 // Landit offline support. Bump VERSION to force every phone to refresh cached images.
-const VERSION = "landit-v6";
+const VERSION = "landit-v7";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", e => {
