@@ -3133,7 +3133,7 @@ function homeBody(p,mock,ftab){
       ${x?`${rest?`<p class="today-eye">Next task</p>
       <h1 class="today-h">${esc(x.n)}</h1>
       <p class="today-time">Due ${fmt(due[cur])}</p>
-      <button class="btn primary big today-btn" data-act="tab" data-v="cal">Next steps</button>`:`<p class="today-eye">Today’s task</p>
+      ${btn.replace('class="btn primary big"','class="btn primary big today-btn"').replace(/>(Start|Continue|Mark done) →<|>Start<|>Continue<|>Mark done</,">Start next step →<")}`:`<p class="today-eye">Today’s task</p>
       <h1 class="today-h">${esc(x.n)}</h1>
       <p class="today-time">⏱ About ${esc(x.m)}</p>
       ${btn.replace('class="btn primary big"','class="btn primary big today-btn"')}`}
