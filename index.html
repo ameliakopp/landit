@@ -1370,6 +1370,49 @@ a{color:var(--accent)}
 .takeaway{display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px;padding:16px 0;border-top:1px solid var(--line)}
 .takeaway:first-child{border-top:0;padding-top:0}
 @media (max-width:520px){.takeaway{grid-template-columns:minmax(0,1fr);gap:4px}}
+/* ===== Softer palette: warm grays + peach accent, less neon green ===== */
+:root{--paper:#F4F5F1;--card:#FFFFFF;--line2:#E6E8E2;--lime-soft:#EAF6C8;--lime-ink:#4F6B10;--peach:#FFE9DB;--peach-ink:#B4581E;--sky:#E5EEFB;--sky-ink:#2D5BA8}
+body:has(.wk),body:has(.today){background:var(--paper)}
+.app:has(.wk) .top,.app:has(.today) .top{border-color:var(--line2)}
+.wk-slide mark,.wk-h mark,.wk-p mark,.wk-hk-card mark,.wk-hacks mark,.wk-new mark,.wk-desc mark,.wk-ex-msg mark{background:var(--lime-soft)!important;color:var(--lime-ink)!important;border-radius:6px;padding:0 .15em}
+.wk-hk-card,.wk-turn,.wk-ex,.wk-li-entry,.wk-new,.wk-vs-card,.wk-msg,.wk-person,.gp-c,.wk-search,.wk-timer,.wk-car-track,.cs{background:var(--card)!important;border:1px solid var(--line2)!important;box-shadow:0 1px 2px rgba(20,24,16,.04),0 10px 24px -18px rgba(20,24,16,.25)}
+.wk-hk-card{border-radius:20px}
+.wk-hk-n,.gp-n,.wk-hacks li i,.wk-list li span.n,.wk-plan li i{background:#F0F1EC!important;color:#2B2F27!important}
+.wk-tag.before,.wk-ba .before .lbl{background:var(--peach)!important;color:var(--peach-ink)!important}
+.wk-tag.after,.wk-new .lbl,.wk-desc .lbl{background:var(--lime-soft)!important;color:var(--lime-ink)!important}
+.wk-new,.wk-turn,.wk-search,.wk-timer{border:1px solid var(--line2)!important}
+.wk-about.now,.wk-desc{background:#F7FBEA!important;border-top:1px dashed #C9E07A!important}
+.wk-nodesc{background:#FBF6F2!important}
+.fib{background:var(--card);border:1px solid var(--line2)}
+.fib-in{background:#F4F5F1;border-bottom-color:#9AA08F}
+.fib-in:focus{background:var(--lime-soft);border-bottom-color:var(--lime-ink)}
+.wk-bar{background:#E3E5DF}
+.wk-bar i{background:linear-gradient(90deg,#A9D63A,#C6F432)}
+.wk-part.on{color:#14170F}
+.wk-nav{background:rgba(244,245,241,.92);backdrop-filter:blur(8px);border-top:1px solid var(--line2)}
+.chip{background:var(--card);border-color:var(--line2)}
+.wk-poll .chip[aria-pressed="true"],.wk-chips .chip[aria-pressed="true"],.wk-opts .chip[aria-pressed="true"],.wk-pick[aria-pressed="true"]{background:#14170F!important;color:#fff!important;border-color:#14170F!important}
+.seg-k.sg-who{background:var(--lime-soft)!important;color:var(--lime-ink)!important}
+.seg-k.sg-why{background:var(--sky)!important;color:var(--sky-ink)!important}
+.seg-k.sg-what{background:var(--peach)!important;color:var(--peach-ink)!important;border-color:transparent!important}
+.nseg.sg-who{background:var(--lime-soft)}.nseg.sg-who i{background:#C9E07A;color:var(--lime-ink)}
+.nseg.sg-why{background:var(--sky)}.nseg.sg-why i{background:#BCD0F0;color:var(--sky-ink)}
+.nseg.sg-what{background:var(--peach);outline:0}.nseg.sg-what i{background:#F8C9A8;color:var(--peach-ink);border:0}
+.wk-tick[aria-pressed="true"]{background:var(--card)}
+.wk-ping,.wk-car-head .kind,.wk-person .go,.wk-mine span.k{background:var(--lime-soft)!important;color:var(--lime-ink)!important}
+.task-pill{background:var(--lime-soft);color:var(--lime-ink)}
+/* Today */
+.today{background:var(--card);border:1px solid var(--line2);border-radius:28px;padding:32px 20px 28px;box-shadow:0 1px 2px rgba(20,24,16,.04),0 18px 40px -28px rgba(20,24,16,.3)}
+.today-lan{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 50% 60%,#F2F8DD,#FAFBF6 70%);display:grid;place-items:center}
+.tstep span:not(:first-child)::before{background:#E3E5DF}
+.tstep span.done::before,.tstep span.now::before{background:#A9D63A}
+.tstep i{background:#F0F1EC;border-color:#E3E5DF}
+.tstep .done i{background:var(--lime-soft);border-color:#C9E07A;color:var(--lime-ink)}
+.dtabs{background:#E8EAE4}
+.cs.now{background:#F7FBEA;border-color:#14170F!important}
+.cs.done .cs-dot{background:var(--lime-soft);color:var(--lime-ink)}
+.cs.apply{background:var(--peach)!important;border:1px dashed #F0B48A!important}.cs.apply .cs-dot{background:#fff}
+.rest-msg{color:#2B2F27}
 </style>
 </head>
 <body>
