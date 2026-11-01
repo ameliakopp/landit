@@ -1414,6 +1414,25 @@ body:has(.wk),body:has(.today){background:var(--paper)}
 .cs.apply{background:var(--peach)!important;border:1px dashed #F0B48A!important}.cs.apply .cs-dot{background:#fff}
 .rest-msg{color:#2B2F27}
 .wk-h mark,.wk-p mark,.wk-hk-card mark,.wk-hacks mark,.today-h mark,.duo-title mark{background:none!important;color:inherit!important;padding:0!important}
+.deck{display:block!important}
+.deck>*{max-width:620px;margin:0 auto!important;width:100%}
+.deck>.deck-off{display:none!important}
+.deck>.in-r{animation:inR .35s cubic-bezier(.2,.9,.3,1)}.deck>.in-l{animation:inL .35s cubic-bezier(.2,.9,.3,1)}
+.wk-list.deck>li,.wk-pat.deck>li,.wk-hacks.deck>li{min-height:120px;justify-content:center;font-size:20px}
+.deck-ctl{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:4px}
+.deck-arrow{width:40px;height:40px;border-radius:50%;border:1px solid var(--line2,#E6E8E2);background:#fff;font-size:24px;line-height:1;cursor:pointer;display:grid;place-items:center;padding-bottom:3px;box-shadow:0 4px 12px -8px rgba(0,0,0,.4)}
+.deck-arrow:disabled{opacity:.3;cursor:default}
+.deck-arrow.pulse{animation:dpulse 1.6s ease-in-out infinite}
+@keyframes dpulse{0%,100%{box-shadow:0 0 0 0 rgba(169,214,58,.5)}50%{box-shadow:0 0 0 8px rgba(169,214,58,0)}}
+.deck-dots{display:flex;gap:6px}.deck-dots i{width:8px;height:8px;border-radius:50%;background:#DADDD5;transition:background .2s,width .2s}.deck-dots i.on{background:#14170F}
+.deck-n{font-size:12.5px;color:var(--muted);min-width:36px;text-align:center}
+@media (max-width:700px){.deck-arrow{display:none}}
+@media (prefers-reduced-motion:reduce){.deck>.in-r,.deck>.in-l,.deck-arrow.pulse{animation:none}}
+.deck-pending .deck-ctl~*{display:none!important}
+.deck-seen .deck-ctl~*{animation:inR .4s cubic-bezier(.2,.9,.3,1)}
+.deck>.wk-hk-card,.deck>li,.deck>.wk-tile{min-height:170px;justify-content:center;padding:26px 24px!important}
+.deck>.wk-hk-card>b,.deck>li b,.deck>li>span{font-size:clamp(20px,2.4vw,24px)!important;line-height:1.3}
+.deck>.wk-hk-card>p{font-size:16px}
 </style>
 </head>
 <body>
@@ -2894,7 +2913,22 @@ function vWorkshop(){
       ${last?`<button class="btn primary" data-act="wkdone">${done?"Back home →":cfg.label}</button>`:`<button class="btn primary" data-act="wkgo" data-d="1">${i===0?"Start workshop →":"Next →"}</button>`}</div>
   </div>`);
 }
-function wkGo(d){const p=P(),w=wkData(p);if(!w.t0)w.t0=Date.now();UI.wkDir=d>0?"r":"l";w.i=clamp((w.i||0)+d,0,wkSlides().length-1);if(d>0&&w.i>(w.max||0)){w.max=w.i;}save();render();window.scrollTo(0,0)}
+/* Read-only content becomes a swipeable deck: Next / arrows / swipe reveal one card at a time */
+const DECK_SEL=".wk-ba,.wk-ba2,.wk-hk,.wk-q4,.wk-shots,.wk-list,.wk-pat,.wk-hacks,.wk-inbox,.wk-people,.wk-3,.wk-g3";
+function deckify(){const sl=document.querySelector(".wk-slide");if(!sl||sl.classList.contains("wk-start"))return;
+  const box=[...sl.querySelectorAll(DECK_SEL)].find(b=>b.children.length>1&&!b.closest(".deck")&&!b.querySelector("input,textarea,.fib,[data-act]"));if(!box)return;
+  const n=box.children.length;box.classList.add("deck");
+  box.insertAdjacentHTML("afterend",`<div class="deck-ctl"><button class="deck-arrow" data-act="wkgo" data-d="-1" aria-label="Previous">‹</button><span class="deck-dots">${"<i></i>".repeat(n)}</span><span class="deck-n"></span><button class="deck-arrow" data-act="wkgo" data-d="1" aria-label="Next">›</button></div>`);
+  let x0=null;box.addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});
+  box.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40){const dd=dx<0?1:-1;try{(dd>0?sfx.next:sfx.back)()}catch(er){}wkGo(dd)}});
+  deckShow(box,UI.deckBack?n-1:0,1);UI.deckBack=false}
+function deckShow(d,i,dir){const n=d.children.length;d.dataset.i=i;
+  [...d.children].forEach((c,k)=>{c.classList.toggle("deck-off",k!==i);if(k===i){c.classList.remove("in-r","in-l");void c.offsetWidth;c.classList.add(dir>0?"in-r":"in-l")}});
+  const ctl=d.nextElementSibling;if(ctl&&ctl.classList.contains("deck-ctl")){ctl.querySelectorAll(".deck-dots i").forEach((x,k)=>x.classList.toggle("on",k<=i));ctl.querySelector(".deck-n").textContent=`${i+1} / ${n}`;
+    const a=ctl.querySelectorAll(".deck-arrow");a[0].disabled=i===0;a[1].classList.toggle("pulse",i<n-1)}
+  const sl=d.closest(".wk-slide");if(sl){if(i>=n-1)sl.classList.add("deck-seen");sl.classList.toggle("deck-pending",!sl.classList.contains("deck-seen"))}}
+function wkGo(d){const dk=document.querySelector(".wk-slide .deck");if(dk){const i=+dk.dataset.i||0,n=dk.children.length;if(d>0&&i<n-1){deckShow(dk,i+1,1);return}if(d<0&&i>0){deckShow(dk,i-1,-1);return}}
+  if(d<0)UI.deckBack=true;const p=P(),w=wkData(p);if(!w.t0)w.t0=Date.now();UI.wkDir=d>0?"r":"l";w.i=clamp((w.i||0)+d,0,wkSlides().length-1);if(d>0&&w.i>(w.max||0)){w.max=w.i;}save();render();window.scrollTo(0,0)}
 function vToday(){
   const p=P();
   if(UI.planReady&&p.id==="you")return vPlanReady(p);
@@ -3109,6 +3143,7 @@ function render(){
   if(AUTH.user){if(S.profiles.you)S.active="you";if(!S.profiles.you&&r!=="start"&&r!=="login"&&r!=="welcome"){location.hash="start";return}}
   document.getElementById("app").innerHTML=ROUTES[r]();
   UI.wkDir=null;
+  if(WKS[r])deckify();
   const bi=document.querySelector(".wk-bar i,.duo-bar i");if(bi){const to=bi.style.width,key=r;if(UI.barW&&UI.barW.k===key&&UI.barW.w!==to){bi.style.transition="none";bi.style.width=UI.barW.w;requestAnimationFrame(()=>requestAnimationFrame(()=>{bi.style.transition="";bi.style.width=to}))}UI.barW={k:key,w:to}}
   if(UI.celebrate&&r==="today"){const k=UI.celebrate;setTimeout(()=>{if(UI.celebrate===k)UI.celebrate=null},50)}
   const qw=document.querySelector(".q-wrap");
