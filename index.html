@@ -1607,6 +1607,9 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 .fc-why{display:inline-flex;align-items:center;gap:8px}
 .fc-badge{width:20px;height:20px;border-radius:50%;background:#C6F432;color:#14170F;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:900;letter-spacing:0}
 .fc-q{font-style:italic}
+.today{position:relative}
+.today-min{position:absolute;top:18px;right:20px;font-size:12.5px;font-weight:600;color:#8E949A;background:#F4F5F1;border-radius:999px;padding:4px 10px}
+.today-min::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#A9D63A;margin-right:6px;vertical-align:1px}
 </style>
 </head>
 <body>
@@ -3264,7 +3267,7 @@ function homeBody(p,mock,ftab){
       <p class="today-time">Due ${fmt(due[cur])}</p>
       ${btn.replace('class="btn primary big"','class="btn primary big today-btn"').replace(/>(Start|Continue|Mark done) →<|>Start<|>Continue<|>Mark done</,">Start next step →<")}<button class="link rest-home" data-act="go" data-r="welcome">Back to home</button>`:`<p class="today-eye">Today’s task</p>
       <h1 class="today-h">${esc(x.n)}</h1>
-      <p class="today-time">⏱ About ${esc(x.m)}</p>
+      <span class="today-min">${esc(x.m)}</span>
       ${btn.replace('class="btn primary big"','class="btn primary big today-btn"')}`}
       ${rest?"":`<div class="tstep" aria-label="Step ${cur+1} of ${N}">${CK(typeof p!=="undefined"?p:null).map((c,i)=>`<span class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"><i>${i<cur?"✓":i+1}</i></span>`).join("")}</div>
       <p class="tstep-l">${cur} of ${N} steps done</p>`}`:`<p class="today-eye">All done</p><h1 class="today-h">You’re ready. Go apply!</h1>`}
