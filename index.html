@@ -1541,6 +1541,39 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 @media (prefers-reduced-motion:reduce){.fc-in{transition:none}}
 .fc-q b{font-size:inherit!important;font-weight:inherit;color:inherit}
 .fc-front .seg-k,.fc-front .wk-hk-n{align-self:center!important}
+/* Success burst */
+.burst2{position:relative;width:240px;height:240px;display:grid;place-items:center;margin:4px auto 6px}
+.bcheck{width:112px;height:112px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#E4FB8A,#B4E43A 45%,#6FC23A);box-shadow:0 18px 40px -16px rgba(111,194,58,.7),inset 0 -6px 14px rgba(40,90,10,.18);display:grid;place-items:center;animation:bpop .55s .05s cubic-bezier(.2,1.6,.4,1) both;position:relative;z-index:2}
+.bcheck svg{width:58%;height:58%}
+.bcheck path{stroke-dasharray:40;stroke-dashoffset:40;animation:bdraw .45s .45s ease-out forwards}
+@keyframes bpop{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes bdraw{to{stroke-dashoffset:0}}
+.drop{position:absolute;left:50%;top:50%;width:calc(var(--l)*.42);height:var(--l);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;transform:translate(-50%,-50%) rotate(var(--a)) translateY(0) scale(0);opacity:0;animation:dropout .7s calc(.25s + var(--d)) cubic-bezier(.15,.9,.3,1) forwards,dropfloat 2.6s calc(1s + var(--d)) ease-in-out infinite}
+.d-a{background:linear-gradient(180deg,#D6F56A,#9BD13A)}
+.d-b{background:linear-gradient(180deg,#A8E6C3,#4FC08D)}
+.d-c{background:linear-gradient(180deg,#F2FBC9,#C6F432)}
+@keyframes dropout{0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) translateY(-20px) scale(.2)}60%{opacity:1}100%{opacity:.95;transform:translate(-50%,-50%) rotate(var(--a)) translateY(calc(var(--r)*-1)) scale(1)}}
+@keyframes dropfloat{0%,100%{transform:translate(-50%,-50%) rotate(var(--a)) translateY(calc(var(--r)*-1)) scale(1)}50%{transform:translate(-50%,-50%) rotate(var(--a)) translateY(calc(var(--r)*-1 - 6px)) scale(.92)}}
+@media (prefers-reduced-motion:reduce){.bcheck,.drop,.bcheck path{animation:none!important;opacity:1;stroke-dashoffset:0}.drop{transform:translate(-50%,-50%) rotate(var(--a)) translateY(calc(var(--r)*-1))}}
+/* Plan reveal layout: vertical timeline on phones, horizontal on desktop */
+.pl-steps{gap:14px;margin:14px 0 18px}
+.pl-steps::before{content:"";position:absolute;left:23px;top:24px;bottom:24px;width:2px;background:repeating-linear-gradient(#DADDD5 0 6px,transparent 6px 12px);z-index:0}
+.pls{position:relative;z-index:1;padding:14px 18px 14px 12px;border-radius:22px;grid-template-columns:24px 64px minmax(0,1fr);gap:14px}
+.pls-n{background:#fff;border:1px solid #E1E4DC}
+.pls-t b{font-size:16.5px;letter-spacing:-.01em}
+@media (min-width:900px){
+  .duo-center.pl-done{max-width:1180px}
+  .pl-done .pl-cta{max-width:420px}
+  .pl-steps{flex-direction:row;max-width:none;align-items:stretch;gap:12px;margin:22px 0 26px}
+  .pl-steps::before{left:20px;right:20px;top:24px;bottom:auto;width:auto;height:2px;background:repeating-linear-gradient(90deg,#DADDD5 0 6px,transparent 6px 12px)}
+  .pls{flex:1;grid-template-columns:1fr;justify-items:center;text-align:center;padding:16px 10px 18px;gap:10px;min-width:0}
+  .pls-n{order:-1}
+  .pls-lan{width:84px;height:80px}
+  .pls-lan .lan{width:80px!important;height:80px!important}
+  .pls-t b{font-size:15px}.pls-t em{display:block;margin-top:4px}
+  .pls.apply{justify-content:center}
+  @keyframes plsin{from{opacity:0;transform:translateY(24px) scale(.9)}to{opacity:1;transform:none}}
+}
 </style>
 </head>
 <body>
@@ -3030,9 +3063,13 @@ function lan(mood,size,pose){const s=size||96,po=pose||"wave",G="#7DC62B",D="#5F
     <path d="M30 40 C31 26 37 12 48 2 C46 18 44 30 40 42 Z" fill="${D}" opacity=".35"/>
     ${faces[F]}</g>${props[po]||""}</svg></span>`}
 function says(text,mood,big){return `<div class="says${big?" big":""}">${lan(mood||"wave",big?120:72)}<div class="bubble">${text}</div></div>`}
+function burstHTML(){
+  const D=[[-80,62,26,"a"],[-58,88,16,"b"],[-28,96,22,"c"],[8,92,14,"a"],[36,98,26,"b"],[62,84,16,"c"],[96,70,22,"a"],[128,92,18,"b"],[160,74,24,"c"],[192,96,14,"a"],[214,88,22,"b"],[246,98,16,"c"],[270,72,12,"a"],[300,90,20,"b"],[330,96,16,"c"]];
+  return `<div class="burst2" aria-hidden="true">${D.map(([a,r,l,c],i)=>`<i class="drop d-${c}" style="--a:${a}deg;--r:${r}px;--l:${l}px;--d:${(i%5)*.03}s"></i>`).join("")}
+    <span class="bcheck"><svg viewBox="0 0 52 52"><path d="M15 27 L23 35 L38 18" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>`}
 function vReward(p){const r=UI.reward,x=CK(typeof p!=="undefined"?p:null).find(c=>c.k===r.k),cur=checkCur(p);
   return `<div class="app bare duo-screen"><main class="duo-center">
-    <div class="stars" aria-hidden="true">${[[50,50,64,0],[18,38,26,.15],[82,34,30,.25],[30,80,20,.35],[72,78,22,.3],[8,70,14,.45],[92,64,16,.5],[40,14,16,.4],[62,12,14,.55]].map(([x,y,sz,d],i)=>`<span class="star${i?"":" big"}" style="left:${x}%;top:${y}%;--s:${sz}px;--d:${d}s"><svg viewBox="0 0 24 24" width="${sz}" height="${sz}"><path d="M12 1.5l3.1 6.6 7.1.9-5.2 5 1.3 7.1L12 17.7 5.7 21.1 7 14l-5.2-5 7.1-.9z" fill="${i%3===2?"#0A0B0C":"#C6F432"}" stroke="#0A0B0C" stroke-width="1.6" stroke-linejoin="round"/></svg></span>`).join("")}</div>
+    ${burstHTML()}
     <h1 class="duo-title">${cur===CK(typeof p!=="undefined"?p:null).length?"All steps done!":"Step complete!"}</h1>
     <button class="btn primary duo-cta" data-act="claim">Continue</button>
   </main></div>`}
@@ -3049,7 +3086,7 @@ function vPlanReady(p){const pl=plan(p);
       <div class="pl-bar"><i></i></div>
     </main></div>`}
   return `<div class="app bare duo-screen"><main class="duo-center pl-done">
-    <div class="stars pl-stars" aria-hidden="true">${[[50,46,70,0,"#C6F432"],[14,30,26,.12,"#C6F432"],[86,28,30,.2,"#0A0B0C"],[26,78,20,.3,"#FFC9A6"],[74,80,22,.26,"#C6F432"],[4,62,14,.4,"#0A0B0C"],[96,60,16,.45,"#BCD0F0"],[38,8,16,.35,"#BCD0F0"],[64,6,14,.5,"#FFC9A6"]].map(([x,y,sz,d,f],i)=>`<span class="star${i?"":" big"}" style="left:${x}%;top:${y}%;--d:${d}s">${STAR_SVG(sz,f)}</span>`).join("")}</div>
+    ${burstHTML()}
     <h1 class="duo-title pl-title">Your plan is ready!</h1>
     <p class="duo-sub pl-sub">${p.first&&p.first!=="there"?esc(p.first)+", let’s":"Let’s"} get you that internship.</p>
     ${pl?(()=>{const st=CK(p),due=checkDue(p,pl),ri=st.findIndex(c=>c.k==="resume");let k=0;const row=(img,n,name,sub,cls)=>`<li class="pls ${cls||""}" style="--i:${k++}"><span class="pls-n">${n}</span><span class="pls-lan">${img}</span><span class="pls-t"><b>${name}</b><em>${sub}</em></span></li>`;
