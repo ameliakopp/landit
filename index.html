@@ -1278,6 +1278,9 @@ a{color:var(--accent)}
 .app>.foot{margin-top:auto;padding-top:28px;border-top:0;font-size:11.5px;gap:14px;justify-content:center;opacity:.7}
 .app>.foot .link,.app>.foot .sound-t{font-size:11.5px}
 .app:has(.wk)>.foot{padding-bottom:84px}
+.rest-msg{font-size:17px;font-weight:600;margin-top:8px}
+.today-time b{color:var(--ink);font-weight:600}
+.rest-early{margin-top:10px;font-size:14px}
 .wk-credit{font-size:12.5px;color:var(--faint)}
 
 /* Landing (old) */
@@ -2866,13 +2869,19 @@ function homeBody(p,mock,ftab){
   const tabs=mock?"":`<div class="dtabs" role="tablist"><button role="tab" data-act="tab" data-v="today" aria-selected="${tab==="today"}">Today</button><button role="tab" data-act="tab" data-v="cal" aria-selected="${tab==="cal"}">My plan</button></div>`;
   const top=`${tabs}${mock?"":saveBanner()+installTip()}`;
   if(tab==="cal")return `<div class="sd${mock?" sd-mock":""}">${top}${calendarView(p,pl,due,cur,mock)}</div>`;
+  const dleft=x&&due[cur]?daysBetween(TODAY,due[cur]):0,rest=!mock&&x&&cur>0&&(p.doneOn||{})[CHECK[cur-1].k]===TODAY&&dleft>2;
   return `<div class="sd${mock?" sd-mock":""}">${top}
     <section class="today">
       <span class="today-lan">${lan(won?"cheer":"walk",mock?90:120,!x?"wave":LAN_POSE[x.k])}</span>
-      ${x?`<p class="today-eye">Today’s task</p>
+      ${x?`${rest?`<p class="today-eye">Next task</p>
+      <h1 class="today-h">${esc(x.n)}</h1>
+      <p class="today-time">Not due until <b>${fmt(due[cur])}</b> · ${dleft<14?`${dleft} days away`:`${Math.round(dleft/7)} weeks away`}</p>
+      <p class="rest-msg">🎉 That’s all for today. Nice work!</p>
+      <button class="btn primary big today-btn" data-act="go" data-r="welcome">Back to home</button>
+      ${btn.replace(/class="btn primary big"[^>]*>([^<]*)</,(m)=>m.replace('class="btn primary big"','class="link rest-early"').replace(/>[^<]*</,">Start it early<"))}`:`<p class="today-eye">Today’s task</p>
       <h1 class="today-h">${esc(x.n)}</h1>
       <p class="today-time">⏱ About ${esc(x.m)}</p>
-      ${btn.replace('class="btn primary big"','class="btn primary big today-btn"')}
+      ${btn.replace('class="btn primary big"','class="btn primary big today-btn"')}`}
       <div class="tstep" aria-label="Step ${cur+1} of ${N}">${CHECK.map((c,i)=>`<span class="${i<cur?"done":i===cur?"now":""}${!mock&&UI.celebrate===c.k?" fill":""}"><i>${i<cur?"✓":i+1}</i></span>`).join("")}</div>
       <p class="tstep-l">${cur} of ${N} steps done</p>`:`<p class="today-eye">All done</p><h1 class="today-h">You’re ready. Go apply!</h1>`}
     </section>
@@ -3097,7 +3106,7 @@ const ACT={
   ind:el=>{UI.ind=UI.ind===el.dataset.k?null:el.dataset.k;render()},
   cta:()=>{startStep();render();window.scrollTo(0,0)},
   how:()=>{UI.how=!UI.how;render()},
-  check:el=>{const p=P(),c=p.checklist||(p.checklist={}),cur=checkCur(p),i=CHECK.findIndex(x=>x.k===el.dataset.k);if(i===cur){c[CHECK[i].k]=true;celebrate(CHECK[i].k)}else if(i===cur-1){CHECK.slice(i).forEach(x=>c[x.k]=false)}else return;save();render()},
+  check:el=>{const p=P(),c=p.checklist||(p.checklist={}),cur=checkCur(p),i=CHECK.findIndex(x=>x.k===el.dataset.k);if(i===cur){c[CHECK[i].k]=true;(p.doneOn||(p.doneOn={}))[CHECK[i].k]=TODAY;celebrate(CHECK[i].k)}else if(i===cur-1){CHECK.slice(i).forEach(x=>c[x.k]=false)}else return;save();render()},
   wkgo:el=>wkGo(+el.dataset.d),
   tab:el=>{UI.tab=el.dataset.v;try{localStorage.setItem("landit.tab",UI.tab)}catch(e){}render();window.scrollTo(0,0)},
   sound:()=>{SOUND=!SOUND;try{localStorage.setItem("landit.sound.v2",SOUND?"on":"off")}catch(e){}if(SOUND)sfx.select();render()},
@@ -3121,7 +3130,7 @@ const ACT={
   wkopen:el=>{const w=wkData(P());w.open=+el.dataset.i;save();render()},
   wkcopy:el=>{const v=wkData(P())[el.dataset.k]||"";if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>toast("Copied"),()=>toast("Couldn’t copy. Select it and copy manually."));else toast("Select it and copy manually.")},
   wkexit:()=>{toast("Saved. Pick up where you left off.");go("today")},
-  wkdone:()=>{const p=P(),c=p.checklist||(p.checklist={}),k=curW().done,i=CHECK.findIndex(x=>x.k===k);if(!c[k]){c[k]=true;save();celebrate(k)}go("today")},
+  wkdone:()=>{const p=P(),c=p.checklist||(p.checklist={}),k=curW().done,i=CHECK.findIndex(x=>x.k===k);if(!c[k]){c[k]=true;(p.doneOn||(p.doneOn={}))[k]=TODAY;save();celebrate(k)}go("today")},
   editdl:()=>{UI.editDl=true;render()},
   toggleind:()=>{UI.showInd=!UI.showInd;UI.ind=null;render()},
   savedl:()=>{const v=document.getElementById("dl-input").value;if(!v){toast("Pick a date first");return}const p=P();p.deadline=v;p.planStart=p.planStart||TODAY;UI.editDl=false;save();toast("Plan rebuilt around "+fmt(v));render()},
