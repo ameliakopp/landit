@@ -1604,6 +1604,8 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 @keyframes okring{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.9);opacity:0}}
 @keyframes okglow{0%,100%{box-shadow:0 0 0 0 rgba(198,244,50,0),0 8px 22px -10px rgba(120,170,30,.45)}50%{box-shadow:0 0 0 8px rgba(198,244,50,.18),0 8px 26px -8px rgba(120,170,30,.55)}}
 @media (prefers-reduced-motion:reduce){.ok-dot,.ok-ring,.ok-dot path{animation:none!important;opacity:1;transform:none;stroke-dashoffset:0}.ok-ring{display:none}}
+.fc-why{display:inline-flex;align-items:center;gap:8px}
+.fc-badge{width:20px;height:20px;border-radius:50%;background:#C6F432;color:#14170F;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:900;letter-spacing:0}
 </style>
 </head>
 <body>
@@ -3203,7 +3205,7 @@ function flipify(card){if(!card.matches(".wk-hk-card,.wk-pat>li,.wk-list>li"))re
   const fb=front.find(e=>e.matches("b")),more=fb?fcMore(fb.textContent):"";if(!fb||(!back.length&&!more))return false;
   const inn=document.createElement("div");inn.className="fc-in";const f=document.createElement("div");f.className="fc-face fc-front";const bk=document.createElement("div");bk.className="fc-face fc-back";
   front.forEach(e=>f.appendChild(e));f.insertAdjacentHTML("beforeend",`<span class="fc-hint">${matchMedia("(hover:none)").matches?"Tap":"Click or press Next"} to flip ↻</span>`);
-  bk.insertAdjacentHTML("beforeend",`<span class="fc-why">Why it matters</span>`);const q=front.find(e=>e.matches("b"));if(q)bk.insertAdjacentHTML("beforeend",`<span class="fc-q">${q.innerHTML}</span>`);back.forEach(e=>bk.appendChild(e));if(more)bk.insertAdjacentHTML("beforeend",`<p class="fc-more">${more}</p>`);
+  bk.insertAdjacentHTML("beforeend",`<span class="fc-why"><i class="fc-badge">✓</i>Our career experts say</span>`);const q=front.find(e=>e.matches("b"));if(q)bk.insertAdjacentHTML("beforeend",`<span class="fc-q">${q.innerHTML}</span>`);back.forEach(e=>bk.appendChild(e));if(more)bk.insertAdjacentHTML("beforeend",`<p class="fc-more">${more}</p>`);
   kids.forEach(e=>{if(e.parentNode===card)e.remove()});inn.append(f,bk);card.appendChild(inn);card.classList.add("fc");card.addEventListener("click",e=>{if(e.target.closest("a,button"))return;fcFlip(card)});return true}
 function fcFlip(card){card.classList.toggle("flipped");try{sfx.select()}catch(e){}const d=card.closest(".deck");if(d){const cards=deckCards(d),i=cards.indexOf(card);if(card.classList.contains("flipped")&&i>=cards.length-1){const sl=d.closest(".wk-slide");sl.classList.add("deck-seen");sl.classList.remove("deck-pending");const m=UI.deckMem&&UI.deckMem[d.dataset.key];if(m)m.seen=true}}}
 function baFlip(sl){const ba=[...sl.querySelectorAll(".wk-ba,.wk-ba2")].find(b=>b.children.length===2&&!b.closest(".deck")&&!b.querySelector("input,textarea,.fib,[data-act]")&&/before|without/i.test(b.children[0].textContent+(b.children[0].querySelector("figcaption,.wk-tag,.lbl")||{textContent:""}).textContent));
