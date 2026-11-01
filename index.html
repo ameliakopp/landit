@@ -1593,6 +1593,17 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 .rest-home{margin-top:12px;font-size:15px;color:var(--muted)}
 .fc:not(.fc-ba) .fc-back .fc-more{font-size:clamp(16px,1.9vw,19px)!important;font-weight:400!important;color:#C4C9CE!important;line-height:1.5!important;max-width:34ch;margin-top:6px!important;padding-top:14px!important;border-top:1px solid #2C3135!important}
 .fc-face{gap:12px}
+/* Sleek check */
+.okmark{position:relative;width:120px;height:120px;display:grid;place-items:center;margin:8px auto 10px}
+.ok-dot{position:relative;z-index:2;width:64px;height:64px;border-radius:50%;background:#C6F432;display:grid;place-items:center;transform:scale(.6);opacity:0;animation:okin .5s .1s cubic-bezier(.2,1.4,.4,1) forwards,okglow 2.8s 1s ease-in-out infinite}
+.ok-dot svg{width:62%;height:62%}
+.ok-dot path{stroke-dasharray:36;stroke-dashoffset:36;animation:bdraw .4s .45s ease-out forwards}
+.ok-ring{position:absolute;inset:28px;border-radius:50%;border:1.5px solid #C6F432;opacity:0;animation:okring 1.4s .35s ease-out forwards}
+.ok-ring.r2{animation-delay:.6s}
+@keyframes okin{to{transform:scale(1);opacity:1}}
+@keyframes okring{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.9);opacity:0}}
+@keyframes okglow{0%,100%{box-shadow:0 0 0 0 rgba(198,244,50,0),0 8px 22px -10px rgba(120,170,30,.45)}50%{box-shadow:0 0 0 8px rgba(198,244,50,.18),0 8px 26px -8px rgba(120,170,30,.55)}}
+@media (prefers-reduced-motion:reduce){.ok-dot,.ok-ring,.ok-dot path{animation:none!important;opacity:1;transform:none;stroke-dashoffset:0}.ok-ring{display:none}}
 </style>
 </head>
 <body>
@@ -3083,9 +3094,7 @@ function lan(mood,size,pose){const s=size||96,po=pose||"wave",G="#7DC62B",D="#5F
     ${faces[F]}</g>${props[po]||""}</svg></span>`}
 function says(text,mood,big){return `<div class="says${big?" big":""}">${lan(mood||"wave",big?120:72)}<div class="bubble">${text}</div></div>`}
 function burstHTML(){
-  const D=[[-80,62,26,"a"],[-58,88,16,"b"],[-28,96,22,"c"],[8,92,14,"a"],[36,98,26,"b"],[62,84,16,"c"],[96,70,22,"a"],[128,92,18,"b"],[160,74,24,"c"],[192,96,14,"a"],[214,88,22,"b"],[246,98,16,"c"],[270,72,12,"a"],[300,90,20,"b"],[330,96,16,"c"]];
-  return `<div class="burst2" aria-hidden="true">${D.map(([a,r,l,c],i)=>`<i class="drop d-${c}" style="--a:${a}deg;--r:${r}px;--l:${l}px;--d:${(i%5)*.03}s"></i>`).join("")}
-    <span class="bcheck"><svg viewBox="0 0 52 52"><path d="M15 27 L23 35 L38 18" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>`}
+  return `<div class="okmark" aria-hidden="true"><i class="ok-ring"></i><i class="ok-ring r2"></i><span class="ok-dot"><svg viewBox="0 0 52 52"><path d="M16 27 L23 34 L37 19" fill="none" stroke="#14170F" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>`}
 function vReward(p){const r=UI.reward,x=CK(typeof p!=="undefined"?p:null).find(c=>c.k===r.k),cur=checkCur(p);
   return `<div class="app bare duo-screen"><main class="duo-center">
     ${burstHTML()}
