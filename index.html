@@ -1469,6 +1469,22 @@ body:has(.wk),body:has(.today){background:var(--paper)}
 .qpair .chip{width:100%;text-align:center;padding:14px}
 .qmatch em{font-style:normal;font-weight:600;color:var(--ink)}
 .qwhy{color:#5B6152!important}
+.pl-load{position:relative;width:180px;height:180px;display:grid;place-items:center}
+.pl-ring{position:absolute;inset:0;border-radius:50%;border:5px solid #E3E5DF}
+.pl-ring i{position:absolute;inset:-5px;border-radius:50%;border:5px solid transparent;border-top-color:#A9D63A;border-right-color:#A9D63A;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pl-msg{font-size:18px;font-weight:600;min-height:26px}
+.pl-msg.swap{animation:msgin .35s ease}
+@keyframes msgin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pl-bar{width:220px;height:8px;border-radius:999px;background:#E3E5DF;overflow:hidden}
+.pl-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#A9D63A,#C6F432);border-radius:999px;animation:plfill 2.6s cubic-bezier(.3,.6,.4,1) forwards}
+@keyframes plfill{to{width:100%}}
+.pl-stars{width:280px;height:170px}
+.pl-done .pl-title{animation:pop .5s .25s cubic-bezier(.2,1.5,.4,1) both;color:#14170F}
+.pl-done .pl-sub{animation:msgin .4s .45s both}
+.pl-done .stat:nth-child(1){animation-delay:.6s}.pl-done .stat:nth-child(2){animation-delay:.72s}.pl-done .stat:nth-child(3){animation-delay:.84s}
+.pl-done .pl-cta{animation:msgin .4s 1s both}
+@media (prefers-reduced-motion:reduce){.pl-ring i,.pl-bar i,.pl-done *{animation:none!important}.pl-bar i{width:100%}}
 </style>
 </head>
 <body>
@@ -2446,7 +2462,7 @@ function vStart(){
       <p class="muted">These are first reads from one conversation. They’ll get sharper every time you log something and reflect.</p>
       <div class="row"><button class="btn primary" data-act="go" data-r="today">Open my dashboard</button><button class="btn ghost" data-act="go" data-r="next">See the full next step</button></div></div></div></main></div>`}
   if(UI.justFinished){UI.justFinished=false;return `<div class="app bare"></div>`}
-  if(!diagFlow||diagFlow.done){diagFlow=makeFlow(DIAG_FAST,f=>{const a=Object.assign({},f.a,{name:(f.a.me&&f.a.me.name||"").trim()||undefined,linkedin:(f.a.me&&f.a.me.linkedin||"").trim(),goal:f.a.goal||f.a.goalPreset,flow:f.a.flowTagsText||"",drainText:f.a.drainTagsText||""});S.profiles.you=profileFromDiag(a);S.active="you";save();UI.planReady=true;if(sb&&!AUTH.user){UI.authModal=true;AUTH.mode="signup";AUTH.msg=""}UI.diagSummary=false;diagFlow=null;UI.justFinished=true;location.hash="today"});if(UI.presetWhen){diagFlow.a.whenPreset=UI.presetWhen;diagFlow.a.when=UI.presetWhen;diagFlow.idx=nextIdx(diagFlow,-1);diagFlow.note=DIAG_FAST[0].coach(diagFlow.a)}}
+  if(!diagFlow||diagFlow.done){diagFlow=makeFlow(DIAG_FAST,f=>{const a=Object.assign({},f.a,{name:(f.a.me&&f.a.me.name||"").trim()||undefined,linkedin:(f.a.me&&f.a.me.linkedin||"").trim(),goal:f.a.goal||f.a.goalPreset,flow:f.a.flowTagsText||"",drainText:f.a.drainTagsText||""});S.profiles.you=profileFromDiag(a);S.active="you";UI.planShown=false;save();UI.planReady=true;if(sb&&!AUTH.user){UI.authModal=true;AUTH.mode="signup";AUTH.msg=""}UI.diagSummary=false;diagFlow=null;UI.justFinished=true;location.hash="today"});if(UI.presetWhen){diagFlow.a.whenPreset=UI.presetWhen;diagFlow.a.when=UI.presetWhen;diagFlow.idx=nextIdx(diagFlow,-1);diagFlow.note=DIAG_FAST[0].coach(diagFlow.a)}}
   F=diagFlow;
   return `<div class="app bare"><main>${renderFlow(diagFlow)}</main></div>`;
 }
@@ -2945,15 +2961,28 @@ function vReward(p){const r=UI.reward,x=CK(typeof p!=="undefined"?p:null).find(c
     <h1 class="duo-title">${cur===CK(typeof p!=="undefined"?p:null).length?"All steps done!":"Step complete!"}</h1>
     <button class="btn primary duo-cta" data-act="claim">Continue</button>
   </main></div>`}
+const STAR_SVG=(sz,fill)=>`<svg viewBox="0 0 24 24" width="${sz}" height="${sz}"><path d="M12 1.5l3.1 6.6 7.1.9-5.2 5 1.3 7.1L12 17.7 5.7 21.1 7 14l-5.2-5 7.1-.9z" fill="${fill}" stroke="#0A0B0C" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+function fanfare(){const c=SOUND&&actx();if(!c)return;const t=c.currentTime;
+  [[523.25,0],[659.25,.11],[783.99,.22],[1046.5,.33]].forEach(([f,d])=>tone(c,f,t+d,.28,.09,"triangle"));
+  [1046.5,1318.5,1568].forEach((f,i)=>tone(c,f,t+.5+i*.012,1.1,.06,"sine"));tone(c,2093,t+.62,.9,.035,"sine")}
 function vPlanReady(p){const pl=plan(p);
-  return `<div class="app bare duo-screen"><main class="duo-center">
-    ${says(`${p.first&&p.first!=="there"?esc(p.first)+", your":"Your"} plan is ready! Let’s get you that internship.`,"cheer",true)}
+  if(!UI.planShown){if(!UI.planTimer){let k=0;UI.planTimer=setInterval(()=>{const el=document.getElementById("pl-msg");if(el){k++;el.classList.remove("swap");void el.offsetWidth;el.classList.add("swap");el.textContent=["Checking your timeline…","Lining up your steps…","Picking today’s task…"][Math.min(k,2)]}},850);
+      setTimeout(()=>{clearInterval(UI.planTimer);UI.planTimer=null;UI.planShown=true;if(UI.planReady){render();fanfare()}},2600)}
+    return `<div class="app bare duo-screen"><main class="duo-center">
+      <div class="pl-load">${lan("idle",110,"laptop")}<div class="pl-ring"><i></i></div></div>
+      <p class="pl-msg" id="pl-msg">Building your plan…</p>
+      <div class="pl-bar"><i></i></div>
+    </main></div>`}
+  return `<div class="app bare duo-screen"><main class="duo-center pl-done">
+    <div class="stars pl-stars" aria-hidden="true">${[[50,46,70,0,"#C6F432"],[14,30,26,.12,"#C6F432"],[86,28,30,.2,"#0A0B0C"],[26,78,20,.3,"#FFC9A6"],[74,80,22,.26,"#C6F432"],[4,62,14,.4,"#0A0B0C"],[96,60,16,.45,"#BCD0F0"],[38,8,16,.35,"#BCD0F0"],[64,6,14,.5,"#FFC9A6"]].map(([x,y,sz,d,f],i)=>`<span class="star${i?"":" big"}" style="left:${x}%;top:${y}%;--d:${d}s">${STAR_SVG(sz,f)}</span>`).join("")}</div>
+    <h1 class="duo-title pl-title">Your plan is ready!</h1>
+    <p class="duo-sub pl-sub">${p.first&&p.first!=="there"?esc(p.first)+", let’s":"Let’s"} get you that internship.</p>
     ${pl?`<div class="stat3">
       <div class="stat y"><span>Weeks to go</span><b>${pl.weeks}</b></div>
-      <div class="stat g"><span>Steps</span><b>${CK(typeof p!=="undefined"?p:null).length}</b></div>
+      <div class="stat g"><span>Steps</span><b>${CK(p).length}</b></div>
       <div class="stat b"><span>Apply by</span><b>${fmt(pl.deadline)}</b></div>
     </div>`:""}
-    <button class="btn primary duo-cta" data-act="planok">Let’s go</button>
+    <button class="btn primary duo-cta pl-cta" data-act="planok">Let’s go</button>
   </main></div>`}
 function hasAns(v){if(v==null)return false;if(Array.isArray(v))return v.length>0;if(typeof v==="object")return Object.values(v).some(x=>String(x||"").trim());return String(v).trim()!==""}
 function renderDuo(f){
@@ -3286,7 +3315,7 @@ const ACT={
   wkmulti:el=>{const w=wkData(P()),k=el.dataset.k,a=w[k]||(w[k]=[]),v=el.dataset.v,j=a.indexOf(v),mx=+el.dataset.max||99;if(j>=0)a.splice(j,1);else{a.push(v);if(a.length>mx)a.shift()}save();render()},
   tab:el=>{UI.tab=el.dataset.v;try{localStorage.setItem("landit.tab",UI.tab)}catch(e){}render();window.scrollTo(0,0)},
   sound:()=>{SOUND=!SOUND;try{localStorage.setItem("landit.sound.v2",SOUND?"on":"off")}catch(e){}if(SOUND)sfx.select();render()},
-  planok:()=>{UI.planReady=false;render();window.scrollTo(0,0)},
+  planok:()=>{UI.planReady=false;UI.planShown=false;render();window.scrollTo(0,0)},
   claim:()=>{const r=UI.reward;UI.reward=null;UI.celebrate=r&&r.k;render();window.scrollTo(0,0)},
   install:async()=>{if(!installEvt)return;installEvt.prompt();await installEvt.userChoice.catch(()=>{});installEvt=null;render()},
   hideinstall:()=>{try{localStorage.setItem("landit.installHint","off")}catch(e){}render()},
