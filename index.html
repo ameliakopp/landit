@@ -1516,6 +1516,12 @@ body:has(.wk),body:has(.today){background:var(--paper)}
 .deck>.wk-new span:not(.lbl){font-size:clamp(20px,2.4vw,26px);font-weight:600;line-height:1.3}
 .today-h{font-size:clamp(32px,6vw,46px)!important}
 .today{gap:8px}
+.help-fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:20;width:44px;height:44px;border-radius:50%;border:1px solid #E1E4DC;background:#fff;color:#14170F;font-weight:800;font-size:18px;cursor:pointer;box-shadow:0 8px 20px -10px rgba(20,24,16,.45);display:grid;place-items:center}
+.help-fab:hover{background:#F7FBEA}
+body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env(safe-area-inset-bottom))}
+.help-m{gap:12px}.help-m .wk-h{font-size:28px}
+.help-m .chip{font-size:14px;padding:9px 14px}
+.modal-bg{z-index:30}
 </style>
 </head>
 <body>
@@ -3305,6 +3311,26 @@ if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostnam
 function installTip(){let off=false;try{off=localStorage.getItem("landit.installHint")==="off"}catch(e){}
   if(STANDALONE||off||window.innerWidth>820||!(installEvt||IOS))return"";
   return `<div class="install-tip"><img src="icons/icon-192.png" alt=""><span><b>Get the Landit app</b>${installEvt?"Add it to your home screen.":`Tap <b>Share</b> <span aria-hidden="true">⬆︎</span>, then <b>Add to Home Screen</b>.`}</span>${installEvt?`<button class="btn primary sm" data-act="install">Install</button>`:""}<button class="link" data-act="hideinstall" aria-label="Dismiss">✕</button></div>`}
+const HELP_EMAIL="ameliamkopp@gmail.com",HELP_TYPES=[["bug","Something’s broken"],["idea","I have an idea"],["help","I need help"],["other","Other"]];
+function helpUI(){if(UI.help==null)return `<button class="help-fab" data-act="helpopen" aria-label="Help and feedback">?</button>`;
+  const h=UI.help;if(h.sent)return `<div class="modal-bg" data-act="helpclose"><div class="modal help-m" role="dialog" aria-modal="true"><span class="wk-eye">Thank you</span><h2 class="wk-h">Got it!</h2><p class="wk-p">Your message was sent. We read every one.</p><button class="btn primary" data-act="helpclose">Done</button></div></div>`;
+  return `<div class="modal-bg" data-act="helpclose"><div class="modal help-m" role="dialog" aria-modal="true" aria-labelledby="hm-h">
+    <div class="row" style="justify-content:space-between"><span class="wk-eye">Help & feedback</span><button class="link" data-act="helpclose" aria-label="Close">✕</button></div>
+    <h2 class="wk-h" id="hm-h">How can we help?</h2>
+    <div class="wk-chips">${HELP_TYPES.map(([v,l])=>`<button class="chip" data-act="helptype" data-v="${v}" aria-pressed="${h.type===v}">${l}</button>`).join("")}</div>
+    <textarea class="ta input" id="help-msg" placeholder="${h.type==="bug"?"What happened, and what were you trying to do?":h.type==="idea"?"Tell us your idea…":"Write your message…"}" style="min-height:120px">${esc(h.msg||"")}</textarea>
+    <input class="input" id="help-email" type="email" value="${esc(h.email||(AUTH.user&&AUTH.user.email)||"")}" placeholder="Your email (so we can reply)">
+    ${h.err?`<p class="auth-msg">${esc(h.err)}</p>`:""}
+    <button class="btn primary" data-act="helpsend" ${h.busy?"disabled":""}>${h.busy?"Sending…":"Send"}</button>
+  </div></div>`}
+async function helpSend(){const h=UI.help,msg=(document.getElementById("help-msg").value||"").trim(),email=(document.getElementById("help-email").value||"").trim();h.msg=msg;h.email=email;
+  if(!msg){h.err="Write a quick message first.";render();return}
+  h.busy=true;h.err="";render();
+  const row={kind:h.type||"other",message:msg,email:email||null,page:route(),user_id:AUTH.user?AUTH.user.id:null,agent:navigator.userAgent.slice(0,200)};
+  let ok=false;if(sb){try{const {error}=await sb.from("feedback").insert(row);ok=!error}catch(e){}}
+  h.busy=false;
+  if(ok){h.sent=true;render();return}
+  location.href=`mailto:${HELP_EMAIL}?subject=${encodeURIComponent("Landit: "+(HELP_TYPES.find(t=>t[0]===row.kind)||["","Feedback"])[1])}&body=${encodeURIComponent(msg+"\n\n(page: "+row.page+")")}`;h.sent=true;render()}
 function saveBanner(){return (sb&&!AUTH.user&&S.active==="you")?`<div class="save-banner"><span><b>Your plan is only saved on this device.</b> Create a free account to keep it.</span><button class="btn primary sm" data-act="go" data-r="login">Save my plan</button></div>`:""}
 const ROUTES={login:vLogin,welcome:vWelcome,how:vHow,start:vStart,today:vToday,workshop:vWorkshop,careerquiz:vWorkshop,contacts:vWorkshop,outreach:vWorkshop,pitch:vWorkshop,resume:vWorkshop,interview:vWorkshop,insights:vInsights,timeline:vTimeline,opportunities:vOpps};
 const ALIAS={next:1,log:1,reflect:1,checkin:1};
@@ -3312,7 +3338,7 @@ const route=()=>{const r=(location.hash||"").slice(1);return ALIAS[r]?"today":RO
 function render(){
   F=null;let r=route();
   if(AUTH.user){if(S.profiles.you)S.active="you";if(!S.profiles.you&&r!=="start"&&r!=="login"&&r!=="welcome"){location.hash="start";return}}
-  document.getElementById("app").innerHTML=ROUTES[r]();
+  document.getElementById("app").innerHTML=ROUTES[r]()+(r==="start"?"":`<div id="help-root">${helpUI()}</div>`);
   UI.wkDir=null;
   if(WKS[r])deckify();
   const bi=document.querySelector(".wk-bar i,.duo-bar i");if(bi){const to=bi.style.width,key=r;if(UI.barW&&UI.barW.k===key&&UI.barW.w!==to){bi.style.transition="none";bi.style.width=UI.barW.w;requestAnimationFrame(()=>requestAnimationFrame(()=>{bi.style.transition="";bi.style.width=to}))}UI.barW={k:key,w:to}}
@@ -3341,7 +3367,7 @@ function onRoute(){
     try{history.replaceState(null,"","#today")}catch(e){}
   }else if(route()!=="today")clearHome();
   if(route()!=="start"&&(!diagFlow||diagFlow.done))UI.diagSummary=null;
-  UI.passing=null;
+  UI.passing=null;UI.help=null;
   render();window.scrollTo(0,0);
 }
 window.addEventListener("hashchange",onRoute);
@@ -3358,6 +3384,10 @@ const ACT={
   how:()=>{UI.how=!UI.how;render()},
   check:el=>{const p=P(),c=p.checklist||(p.checklist={}),cur=checkCur(p),i=CK(typeof p!=="undefined"?p:null).findIndex(x=>x.k===el.dataset.k);if(i===cur){c[CK(typeof p!=="undefined"?p:null)[i].k]=true;(p.doneOn||(p.doneOn={}))[CK(typeof p!=="undefined"?p:null)[i].k]=TODAY;celebrate(CK(typeof p!=="undefined"?p:null)[i].k)}else if(i===cur-1){CK(typeof p!=="undefined"?p:null).slice(i).forEach(x=>c[x.k]=false)}else return;save();render()},
   wkgo:el=>wkGo(+el.dataset.d),
+  helpopen:()=>{UI.help={type:"help"};render();setTimeout(()=>{const t=document.getElementById("help-msg");if(t)t.focus()},50)},
+  helpclose:(el,e)=>{if(el.classList.contains("modal-bg")&&e.target!==el)return;UI.help=null;render()},
+  helptype:el=>{const m=document.getElementById("help-msg");if(m)UI.help.msg=m.value;UI.help.type=el.dataset.v;render()},
+  helpsend:()=>helpSend(),
   wkmulti:el=>{const w=wkData(P()),k=el.dataset.k,a=w[k]||(w[k]=[]),v=el.dataset.v,j=a.indexOf(v),mx=+el.dataset.max||99;if(j>=0)a.splice(j,1);else{a.push(v);if(a.length>mx)a.shift()}save();render()},
   tab:el=>{UI.tab=el.dataset.v;try{localStorage.setItem("landit.tab",UI.tab)}catch(e){}render();window.scrollTo(0,0)},
   sound:()=>{SOUND=!SOUND;try{localStorage.setItem("landit.sound.v2",SOUND?"on":"off")}catch(e){}if(SOUND)sfx.select();render()},

@@ -44,3 +44,19 @@ alter table public.students add column if not exists done_outreach    boolean no
 alter table public.students add column if not exists done_chat_prep   boolean not null default false;
 alter table public.students add column if not exists done_resume      boolean not null default false;
 alter table public.students add column if not exists done_interview   boolean not null default false;
+
+-- Help & feedback messages from the ? button. Anyone can send; nobody can read them through the app.
+create table if not exists public.feedback (
+  id         bigint generated always as identity primary key,
+  created_at timestamptz not null default now(),
+  kind       text,
+  message    text not null,
+  email      text,
+  page       text,
+  user_id    uuid,
+  agent      text
+);
+alter table public.feedback enable row level security;
+grant insert on public.feedback to anon, authenticated;
+drop policy if exists "Anyone can send feedback" on public.feedback;
+create policy "Anyone can send feedback" on public.feedback for insert to anon, authenticated with check (true);
