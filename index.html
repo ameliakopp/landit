@@ -3334,6 +3334,8 @@ const STANDALONE=matchMedia("(display-mode: standalone)").matches||navigator.sta
 const IOS=/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;
 let installEvt=null;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e;if(route()==="today"&&!F)render()});
 window.addEventListener("appinstalled",()=>{installEvt=null;try{localStorage.setItem("landit.installHint","off")}catch(e){}render()});
+(function(){const links=[...document.querySelectorAll('link[rel="icon"]')];if(!links.length)return;const base=links.map(l=>l.href);
+  setInterval(()=>{if(document.hidden)return;links.forEach(l=>l.href=l.href.replace(/favicon(-32)?\.png/,m=>m.replace(".png","-blink.png")));setTimeout(()=>links.forEach((l,i)=>l.href=base[i]),180)},4200)})();
 if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 function installTip(){let off=false;try{off=localStorage.getItem("landit.installHint")==="off"}catch(e){}
   if(STANDALONE||off||window.innerWidth>820||!(installEvt||IOS))return"";
