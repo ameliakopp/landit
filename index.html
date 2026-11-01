@@ -1591,6 +1591,8 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 .fc-ba .wk-new span:not(.lbl){font-size:clamp(22px,3vw,30px)!important;font-weight:600;color:var(--ink)}
 .fc-ba .wk-new{align-items:center;text-align:center}
 .rest-home{margin-top:12px;font-size:15px;color:var(--muted)}
+.fc:not(.fc-ba) .fc-back .fc-more{font-size:clamp(16px,1.9vw,19px)!important;font-weight:400!important;color:#C4C9CE!important;line-height:1.5!important;max-width:34ch;margin-top:6px!important;padding-top:14px!important;border-top:1px solid #2C3135!important}
+.fc-face{gap:12px}
 </style>
 </head>
 <body>
@@ -3160,13 +3162,39 @@ function vWorkshop(){
 }
 /* Read-only content becomes a swipeable deck: Next / arrows / swipe reveal one card at a time */
 const DECK_SEL=".wk-ba,.wk-ba2,.wk-hk,.wk-q4,.wk-shots,.wk-list,.wk-pat,.wk-hacks,.wk-inbox,.wk-people,.wk-3,.wk-g3";
+const FC_MORE=[
+  ["your profile","It’s the first thing a recruiter checks after they see your name. Fix it once and it works for you every single day."],
+  ["networking","Posting puts you in front of people before you ever message them, so your outreach lands warm instead of cold."],
+  ["hacks","Small daily habits that get you noticed without spending hours on the app."],
+  ["show up","Ten minutes a day beats an hour once a month. People start recognizing your name, and LinkedIn shows your posts to more of them."],
+  ["more reachable","Senior people get far fewer thoughtful messages than you’d think. One specific comment or note can stand out."],
+  ["add a note","Requests with a note get accepted far more often. Two sentences: how you know them and why you’re reaching out."],
+  ["who you are","It tells them in one line why a stranger is writing, and whether you share a school, major or interest."],
+  ["why you chose them","It shows you did your homework. One specific detail is what makes someone actually want to reply."],
+  ["what you want","Small, clear asks are easy to say yes to. “15 minutes next week” beats “pick your brain” every time."],
+  ["walk me through your career","People love telling their story. It warms up the chat and shows you the real path into the role."],
+  ["typical day","Job posts all sound the same. This tells you what the work actually is, so you can decide if you’d enjoy it."],
+  ["skills","Their answer becomes your checklist: the exact skills to highlight on your resume and in interviews."],
+  ["motivates","It shows you what the team values, so you can tell whether the culture is a fit for you."],
+  ["appreciation","A specific thank-you shows you listened, and leaves them feeling good about helping you."],
+  ["assess","Read the room. A great chat can handle a bigger ask; a short one needs a lighter touch."],
+  ["ask for","If it went well, most people are happy to refer you or make an intro. But they rarely offer unless you ask."],
+  ["stay connected","Not every chat leads somewhere right away. Keep in touch and they’ll think of you when a role opens."],
+  ["who you are and","Interviewers remember stories, not lists. Start with what you care about and why it led you here."],
+  ["connect your experiences","Don’t make them guess. Say out loud how what you’ve done maps to what this job needs."],
+  ["growth","Show what changed because of you, what you learned, and what you’d do differently now."],
+  ["humor","Funny posts get shared, and being memorable is half of networking."],
+  ["helpfulness","Useful posts get saved and sent around, so they keep reaching new people for weeks."],
+  ["vulnerability","Honest posts build trust fast. People reach out because they relate to you."],
+];
+function fcMore(t){t=t.toLowerCase();const hit=FC_MORE.filter(([k])=>t.includes(k)).sort((a,b)=>b[0].length-a[0].length)[0];return hit?hit[1]:""}
 function flipify(card){if(!card.matches(".wk-hk-card,.wk-pat>li,.wk-list>li"))return false;
   [...card.children].forEach(c=>{if(c.tagName==="SPAN"&&c.querySelector(":scope>b")){c.replaceWith(...c.childNodes)}});[...card.childNodes].forEach(n=>{if(n.nodeType===3&&!n.textContent.trim())n.remove()});
   const kids=[...card.children],isFront=e=>e.matches("b,.wk-hk-n,.seg-k,.n"),front=kids.filter(isFront),back=kids.filter(e=>!isFront(e)&&e.textContent.trim());
-  if(!front.some(e=>e.matches("b"))||!back.length)return false;
+  const fb=front.find(e=>e.matches("b")),more=fb?fcMore(fb.textContent):"";if(!fb||(!back.length&&!more))return false;
   const inn=document.createElement("div");inn.className="fc-in";const f=document.createElement("div");f.className="fc-face fc-front";const bk=document.createElement("div");bk.className="fc-face fc-back";
   front.forEach(e=>f.appendChild(e));f.insertAdjacentHTML("beforeend",`<span class="fc-hint">${matchMedia("(hover:none)").matches?"Tap":"Click or press Next"} to flip ↻</span>`);
-  bk.insertAdjacentHTML("beforeend",`<span class="fc-why">Why it matters</span>`);const q=front.find(e=>e.matches("b"));if(q)bk.insertAdjacentHTML("beforeend",`<span class="fc-q">${q.innerHTML}</span>`);back.forEach(e=>bk.appendChild(e));
+  bk.insertAdjacentHTML("beforeend",`<span class="fc-why">Why it matters</span>`);const q=front.find(e=>e.matches("b"));if(q)bk.insertAdjacentHTML("beforeend",`<span class="fc-q">${q.innerHTML}</span>`);back.forEach(e=>bk.appendChild(e));if(more)bk.insertAdjacentHTML("beforeend",`<p class="fc-more">${more}</p>`);
   kids.forEach(e=>{if(e.parentNode===card)e.remove()});inn.append(f,bk);card.appendChild(inn);card.classList.add("fc");card.addEventListener("click",e=>{if(e.target.closest("a,button"))return;fcFlip(card)});return true}
 function fcFlip(card){card.classList.toggle("flipped");try{sfx.select()}catch(e){}const d=card.closest(".deck");if(d){const cards=deckCards(d),i=cards.indexOf(card);if(card.classList.contains("flipped")&&i>=cards.length-1){const sl=d.closest(".wk-slide");sl.classList.add("deck-seen");sl.classList.remove("deck-pending");const m=UI.deckMem&&UI.deckMem[d.dataset.key];if(m)m.seen=true}}}
 function baFlip(sl){const ba=[...sl.querySelectorAll(".wk-ba,.wk-ba2")].find(b=>b.children.length===2&&!b.closest(".deck")&&!b.querySelector("input,textarea,.fib,[data-act]")&&/before|without/i.test(b.children[0].textContent+(b.children[0].querySelector("figcaption,.wk-tag,.lbl")||{textContent:""}).textContent));
