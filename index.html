@@ -1620,6 +1620,10 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 .fc-deck~.deck-ctl,.deck-solo+.deck-ctl{margin-top:14px}
 .fc-hint{position:absolute;bottom:20px;left:50%!important;right:auto!important;transform:translateX(-50%);white-space:nowrap;font-size:12.5px!important;font-weight:600;color:#6B7163!important;background:#F0F1EC;padding:6px 14px;border-radius:999px}
 .fc-hint{display:none!important}
+.fc-ex{display:block;quotes:none;max-width:40ch;margin-top:4px;padding:14px 18px;border-radius:16px;background:#22261C;color:#fff;font-size:clamp(16px,1.9vw,19px);line-height:1.45;font-weight:500;text-align:left}
+.fc-ex::before,.fc-ex::after{content:none}
+.fc-back:has(.fc-ex) .wk-try,.fc-back:has(.fc-ex) .fc-more{display:none!important}
+.fc-ex i{display:block;font-style:normal;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C6F432;margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -2833,9 +2837,9 @@ const WKO=[
   {sec:"formula",r:()=>`<span class="wk-eye">The formula</span>
     <h2 class="wk-h">Every note has <mark>three parts</mark>.</h2>
     <div class="wk-hk">
-      <div class="wk-hk-card"><span class="seg-k sg-who">Who</span><b>Who you are</b><p>Your school and major.</p><div class="wk-try"><b>Always</b>The same in every note.</div></div>
-      <div class="wk-hk-card"><span class="seg-k sg-why">Why</span><b>Why you chose them</b><p>Something about them specifically.</p><div class="wk-try"><b>Changes</b>Different for every person.</div></div>
-      <div class="wk-hk-card"><span class="seg-k sg-what">What</span><b>What you want</b><p>One small, clear ask.</p><div class="wk-try"><b>Changes</b>Different for every person.</div></div>
+      <div class="wk-hk-card"><span class="seg-k sg-who">Who</span><b>Who you are</b><p>Your school and major.</p><div class="wk-try"><b>Always</b>The same in every note.</div><q class="fc-ex"><i>Example</i>“I’m a junior at NYU studying marketing.”</q></div>
+      <div class="wk-hk-card"><span class="seg-k sg-why">Why</span><b>Why you chose them</b><p>Something about them specifically.</p><div class="wk-try"><b>Changes</b>Different for every person.</div><q class="fc-ex"><i>Example</i>“I saw you moved from Warner Bros. to growth marketing at Spotify.”</q></div>
+      <div class="wk-hk-card"><span class="seg-k sg-what">What</span><b>What you want</b><p>One small, clear ask.</p><div class="wk-try"><b>Changes</b>Different for every person.</div><q class="fc-ex"><i>Example</i>“Would you be open to a 15-minute chat about how you made the switch?”</q></div>
     </div>`},
   {sec:"examples",r:(p,w)=>{const i=Math.max(0,WKO_EX.findIndex(x=>x.k===w.ex)),x=WKO_EX[i];return `<span class="wk-eye">Real examples</span>
     <h2 class="wk-h">Tailor it to the <mark>situation</mark>.</h2>
