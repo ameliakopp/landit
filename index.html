@@ -1624,6 +1624,44 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 .fc-ex::before,.fc-ex::after{content:none}
 .fc-back:has(.fc-ex) .wk-try,.fc-back:has(.fc-ex) .fc-more{display:none!important}
 .fc-ex i{display:block;font-style:normal;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C6F432;margin-bottom:4px}
+/* Archetype reveal */
+.arch{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:4px 0 10px}
+.arch-eye{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.arch-badge{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#F4FFD6,#C6F432 70%);box-shadow:0 0 0 10px rgba(198,244,50,.18),0 20px 40px -20px rgba(79,107,16,.6);animation:archpop .7s cubic-bezier(.2,1.5,.4,1) both,archglow 3s 1s ease-in-out infinite}
+.arch-badge span{font-size:54px;line-height:1;animation:archspin .9s .15s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes archpop{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+@keyframes archspin{from{transform:rotate(-200deg) scale(.4)}to{transform:none}}
+@keyframes archglow{0%,100%{box-shadow:0 0 0 10px rgba(198,244,50,.18),0 20px 40px -20px rgba(79,107,16,.6)}50%{box-shadow:0 0 0 18px rgba(198,244,50,.08),0 20px 40px -20px rgba(79,107,16,.6)}}
+.arch-name{font-family:"Figtree",var(--f-display);font-weight:800;font-size:clamp(30px,6.4vw,42px);letter-spacing:-.03em;line-height:1.05;margin:0;animation:archup .5s .35s both}
+.arch-name small{display:block;font-size:16px;font-weight:600;color:var(--muted);letter-spacing:0;margin-bottom:6px}
+.arch-tag{font-size:18px;color:#3E4437;max-width:30ch;margin:0;animation:archup .5s .45s both}
+@keyframes archup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.arch-meter{width:100%;background:#fff;border-radius:20px;padding:16px 18px;box-shadow:0 10px 30px -22px rgba(20,24,16,.4);animation:archup .5s .55s both}
+.arch-meter-top{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--muted)}
+.arch-meter-top b{color:var(--ink);font-weight:700}.arch-meter-top em{font-style:normal;font-size:24px;font-weight:800;color:var(--ink)}
+.arch-track{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0 6px}
+.arch-track i{height:12px;border-radius:999px;background:#E9EBE5;position:relative;overflow:hidden}
+.arch-track i.on::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#A9D63A,#C6F432);transform-origin:left;animation:archfill .35s calc(.7s + var(--d)*.18s) ease-out both}
+.arch-track i.me{box-shadow:0 0 0 3px rgba(198,244,50,.35)}
+@keyframes archfill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.arch-ends{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.arch-desc{font-size:16.5px;line-height:1.55;color:#3E4437;text-align:left;margin:4px 0 0}
+.arch-two{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.arch-two>div,.arch-why,.arch-plan{background:#fff;border-radius:18px;padding:14px 16px;text-align:left;display:flex;flex-direction:column;gap:4px}
+.arch-two span,.arch-why>span,.arch-plan>span{font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.arch-two>div:first-child span{color:var(--lime-ink)}.arch-two>div:last-child span{color:#B4541A}
+.arch-two b{font-size:16px;font-weight:600;line-height:1.35}
+.arch-why{width:100%}.arch-why ul{margin:2px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:15px;color:#3E4437}
+.arch-plan{width:100%;background:#14170F;color:#fff}.arch-plan>span{color:#C6F432}.arch-plan p{margin:0;font-size:15.5px;line-height:1.5;color:#E3E6DE}
+.arch-all{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:6px}
+.arch-all span{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:22px;padding:8px 6px;border-radius:14px;width:88px;opacity:.45}
+.arch-all span.me{opacity:1;background:#fff;box-shadow:0 6px 18px -12px rgba(20,24,16,.5)}
+.arch-all em{font-style:normal;font-size:10.5px;line-height:1.2;color:var(--muted);font-weight:600}
+@media (max-width:480px){.arch-two{grid-template-columns:1fr}.arch-all span{width:60px}.arch-all em{display:none}}
+.duo-note{display:flex;gap:10px;align-items:flex-start;margin:0;padding:10px 14px;border-radius:14px;background:#EAF6C8;color:#3D5410;font-size:14.5px;line-height:1.4;animation:archup .35s both}
+.duo-note i{font-style:normal;flex:none;width:20px;height:20px;border-radius:50%;background:#C6F432;color:#14170F;display:grid;place-items:center;font-size:12px;font-weight:800}
+.pl-arch{margin:-6px 0 4px;font-size:15px;color:var(--muted)}.pl-arch b{color:var(--ink)}
+.pls-x{font-style:normal;font-size:11px;font-weight:700;color:#B4541A;background:#FDEBDD;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:2px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -1878,6 +1916,7 @@ function plan(p){
   let phases;
   let dl=deadline;
   if(D<28){dl=deadline>addDays(TODAY,6)?deadline:addDays(start,-21);phases=[{k:"apply",name:"Apply with referrals",from:ps,to:dl},{k:"interview",name:"Interview",from:dl,to:start}]}
+  else if(p.arch&&p.arch.lvl>=4){const a=ps,b=addDays(a,clamp(Math.round(D*.4),7,60));phases=[{k:"people",name:"Sharpen and reach out",from:a,to:b},{k:"apply",name:"Apply",from:b,to:deadline},{k:"interview",name:"Interview",from:deadline,to:addDays(start,-7)}]}
   else if(p.goal==="interviews"){const a=ps,b=addDays(a,clamp(Math.round(D*.45),7,60));const h1=(p.help&&HELP.find(h=>h.v===p.help[0]))||HELP[0];phases=[{k:"people",name:h1.phase,from:a,to:b},{k:"apply",name:"Apply",from:b,to:deadline},{k:"interview",name:"Interview",from:deadline,to:addDays(start,-7)}]}
   else{const d1=clamp(Math.round(D*.22),7,35),d2=Math.round(D*.3),d3=Math.round(D*.2);
     const a=ps,b=addDays(a,d1),c=addDays(b,d2),d=addDays(c,d3);
@@ -2310,25 +2349,89 @@ function realityFrom(a){const k=(a.help||[])[0];if(!k||!RC[k])return null;let sc
   RC[k].forEach((r,i)=>{const v=a[`rc_${k}_${i}`];if(v==null)return;const o=r.o[+v];n++;sc+=o[1];if(o[2])flags.push(o[2])});
   if(!n)return null;const pct=sc/(n*2);return{area:k,level:pct>=.75?"ready":pct>=.4?"push":"coach",flags}}
 const LEVEL={ready:"Ready to go",push:"Needs a push",coach:"Needs coaching first"};
+/* ---------- Clarity archetypes (part 1 of the intake, same for everyone) ---------- */
+const ARCH=[
+  {lvl:1,k:"wanderer",e:"🌫️",name:"The Wide-Open Wanderer",tag:"Everything sounds kind of interesting. Nothing has pulled you in yet.",
+    desc:"You’re open to a lot, which is a real strength, but right now you couldn’t tell a recruiter what you want. That makes every application a guess. The fix isn’t more applications. It’s a few honest conversations that show you what jobs actually look like.",
+    power:"You’re genuinely open-minded",blind:"Applying before you know what you’re applying for",
+    plan:"Your plan starts with clarity, not applications: a career quiz, then real conversations with people in a few fields. Resume and interviews come once you have a target."},
+  {lvl:2,k:"spray",e:"📮",name:"The Spray-and-Pray Applier",tag:"Lots of effort, aimed at everything at once.",
+    desc:"You’re putting in the work, and that matters. But a wide net with no clear target gets you silence, not interviews. Recruiters can tell when a resume could be for any job. Narrowing down will feel slower and get you further.",
+    power:"You’re willing to put in the hours",blind:"Treating applications as a numbers game",
+    plan:"Your plan pauses the mass-applying. First you’ll narrow to one or two directions and talk to people in them, then apply to fewer roles with someone vouching for you."},
+  {lvl:3,k:"narrower",e:"🔍",name:"The Curious Narrower",tag:"You know the neighbourhood, not the exact address.",
+    desc:"You’ve got a field in mind, but not a specific role you could name and defend. That’s a great place to be: you’re one or two conversations away from a real target. The risk is staying vague and applying to everything in the field.",
+    power:"You already know where to look",blind:"Staying at “something in marketing” for too long",
+    plan:"Your plan starts by turning your field into one specific role, through a short quiz and a few chats with insiders. Then LinkedIn, resume and interview prep all point at that role."},
+  {lvl:4,k:"builder",e:"🧩",name:"The Focused Builder",tag:"You know the role. Now you need the proof and the people.",
+    desc:"You can say what you want, and that already puts you ahead of most students. What’s missing is the stuff that gets you picked: a profile and resume that match the role, and people inside who know your name.",
+    power:"A clear target",blind:"Thinking clarity alone gets you the interview",
+    plan:"Your plan skips the soul-searching and goes straight to the gaps you told us about, plus anything we spotted in your answers."},
+  {lvl:5,k:"closer",e:"🚀",name:"The Ready Closer",tag:"Clear target, real plan. You just need polish.",
+    desc:"You know exactly what you want and why, you’ve talked to people, and you’re not just firing off applications. Your plan is short on purpose: tighten the few things that still need work and go.",
+    power:"You can say what you want, and why",blind:"Over-preparing instead of applying",
+    plan:"Your plan is short: only the areas you want to brush up on, plus anything we spotted. Then apply."},
+];
+const ROLE_WORDS=/market|analy|product|design|ux|engineer|software|develop|financ|bank|consult|sales|operation|\bhr\b|people ops|recruit|research|data|content|social media|brand|\bpr\b|communicat|journalis|editor|writ|strateg|partner|event|policy|teach|nonprofit|venture|invest|account|law|legal|health|nurs|med|science|sustainab|climate|game|film|music|fashion|media|advertis|growth|community|program/i;
+function lineScore(t){t=String(t||"").trim().toLowerCase();if(!t||/^(idk|i don.?t know|not sure|no idea|anything|whatever|unsure|nothing)/.test(t))return 0;
+  const w=t.split(/\s+/).length;let n=w>=3?1:0;if(ROLE_WORDS.test(t))n++;if(w>=7&&/because|since|so that|\bi (love|like|enjoy)|\bat (a|an)\b|compan|startup|brand|agency|team|industry|\bin (tech|media|fashion|finance|health|sports)/.test(t))n++;
+  if(/something in|maybe|kind of|sort of|anything|\bor\b|not sure/.test(t))n--;return clamp(n,0,3)}
+const CL_PTS={c_say:{none:0,vague:1,field:2,role:3},c_next:{apply:0,resume:1,figure:1,people:3,polish:2},c_peers:{spray:0,unsure:1,mix:2,knew:3},c_month:{all:0,tweak:1,narrow:2,people:3},c_people:{"0":0,"1":1,"3":2,"6":3},c_cos:{none:0,one:1,three:2,teams:3},c_sure:{"0":0,"1":1,"2":2,"3":3}};
+function clarityFrom(a){let sc=0,mx=0;Object.keys(CL_PTS).forEach(k=>{mx+=3;sc+=CL_PTS[k][a[k]]||0});mx+=3;sc+=lineScore(a.c_line);
+  const score=clamp(Math.round(sc/mx*100),6,98),mass=a.c_month==="all"||(a.c_month==="tweak"&&(a.c_apps==="50"||a.c_apps==="11"));
+  let lvl=score<25?1:score<45?2:score<65?3:score<82?4:5;if(mass&&lvl>2)lvl=Math.max(2,lvl-1);if(lineScore(a.c_line)<2&&lvl>3)lvl=3;
+  return{score,lvl,mass,arch:ARCH[lvl-1]}}
+function clarityWhy(a){const out=[];
+  const say={none:"you’d tell a friend you have no idea yet",vague:"your answer to “what job?” is still pretty fuzzy",field:"you can name a field, but not a specific role",role:"you can name a specific role"}[a.c_say];if(say)out.push(say);
+  const m={all:"your plan for next month is to keep applying to everything",tweak:"you plan to keep applying broadly with a tweaked resume",narrow:"you want to narrow down before applying",people:"you plan to talk to people first and apply with referrals"}[a.c_month];if(m)out.push(m);
+  const pe={"0":"you haven’t talked to anyone in a field you’re curious about yet","1":"you’ve talked to one or two people in your field","3":"you’ve talked to a handful of people in your field","6":"you’ve already talked to six or more people in your field"}[a.c_people];if(pe)out.push(pe);
+  if(a.c_peers==="knew")out.push("you’ve noticed your friends mostly got in through people they knew");else if(a.c_peers==="spray")out.push("you think applying everywhere is what worked for your friends");
+  return out.slice(0,3)}
+const NEEDS=[{v:"quiz",label:"Figuring out what I want"},{v:"linkedin",label:"My LinkedIn profile"},{v:"who",label:"Finding people to reach out to"},{v:"email",label:"Writing outreach messages"},{v:"pitch",label:"Coffee chats with people in the field"},{v:"resume",label:"My resume"},{v:"interview",label:"Interviewing"}];
+const NEED_LABEL=Object.fromEntries(NEEDS.map(n=>[n.v,n.label.replace(/^My /,"your ")]));
+const ASSESS={a_li:{lim:2,adds:["linkedin"]},a_res:{lim:2,adds:["resume"]},a_net:{lim:1,adds:a=>a.a_net==="2"?["who","email","pitch"]:["email","pitch"]},a_int:{lim:1,adds:["interview"]}};
+function needsFrom(a){const picked=new Set(a.needs||[]),found=new Set();
+  Object.entries(ASSESS).forEach(([k,r])=>{const v=a[k];if(v==null||+v<r.lim)return;(typeof r.adds==="function"?r.adds(a):r.adds).forEach(x=>found.add(x))});
+  const extra=[...found].filter(x=>!picked.has(x));return{all:[...new Set([...picked,...found])],extra}}
+function spotted(a,k){const r=ASSESS[k],v=a[k];if(v==null||+v<r.lim)return null;const adds=(typeof r.adds==="function"?r.adds(a):r.adds).filter(x=>!(a.needs||[]).includes(x));
+  return adds.length?`Good to know. I’ll add ${listJoin(adds.map(x=>NEED_LABEL[x].toLowerCase()))} to your plan.`:"That matches what you checked. It’s already in your plan."}
 const DIAG_FAST=[
   {id:"hi",kind:"say",prompt:"Hi! I’m Lan, your internship buddy."},
-  {id:"hi2",kind:"say",prompt:"Answer a few quick questions and I’ll build your week-by-week plan."},
+  {id:"hi2",kind:"say",prompt:"First, a quick quiz to find your internship archetype. Then we’ll build your plan around it."},
   {id:"me",kind:"fields",optional:true,prompt:"First, who are you?",sub:"Add your LinkedIn and your plan can build on what you’ve already done.",
     fields:[{k:"name",label:"First name",ph:"e.g. Maya",ac:"given-name"},{k:"linkedin",label:"LinkedIn profile (optional)",ph:"linkedin.com/in/your-name",type:"url",ac:"url"}],
     note:"Prototype: we save your link to your plan. Importing your work history from it is coming soon.",
     validate:v=>{const u=String(v.linkedin||"").trim();return u&&!/linkedin\.com\/in\/[^\s/]+/i.test(u)?"That doesn’t look like a LinkedIn profile link. It should contain linkedin.com/in/…":null},
-    coach:a=>{const n=a.me&&a.me.name&&a.me.name.trim(),l=a.me&&a.me.linkedin&&a.me.linkedin.trim();return n||l?`${n?`Nice to meet you, ${esc(n)}. `:""}${l?"LinkedIn saved. ":""}Now the important part: your timeline.`:null}},
+    coach:a=>{const n=a.me&&a.me.name&&a.me.name.trim(),l=a.me&&a.me.linkedin&&a.me.linkedin.trim();return n||l?`${n?`Nice to meet you, ${esc(n)}. `:""}${l?"LinkedIn saved. ":""}First, a quick personality quiz. No wrong answers.`:null}},
+  {id:"c_stage",kind:"choice",optional:true,prompt:"Where are you in school?",options:STAGES.map(s=>({v:s.v,label:s.label}))},
+  {id:"c_say",kind:"choice",prompt:"A friend asks what kind of job you’re looking for. What do you honestly say?",options:[{v:"none",label:"“Honestly, no idea yet.”"},{v:"vague",label:"“Something in business… or maybe not?”"},{v:"field",label:"“A field, like marketing, but not a specific role.”"},{v:"role",label:"“A specific role, like brand marketing at a beauty company.”"}],
+    coach:a=>a.c_say==="role"?"Love that. Let’s see if you can say it in one line.":a.c_say==="none"?"Totally normal. Most students start here.":null},
+  {id:"c_line",kind:"text",prompt:"Now say it in one sentence: the job you want, and why.",sub:"Type it like you’d say it to a recruiter. “I don’t know” is an allowed answer.",placeholder:"e.g. Brand marketing at a beauty company, because I love figuring out why people buy things",
+    coach:a=>{const n=lineScore(a.c_line);return n>=3?"That’s clear and specific. Recruiters love that.":n===2?"Pretty clear. A specific reason would make it even stronger.":"Noted. Being able to say this clearly is the #1 thing we’ll work on."}},
+  {id:"c_next",kind:"choice",prompt:"What do you think you need to do next to land an internship?",options:[{v:"apply",label:"Apply to as many jobs as I can"},{v:"resume",label:"Fix my resume first"},{v:"figure",label:"Figure out what I actually want"},{v:"people",label:"Talk to people in the field I want"},{v:"polish",label:"Prep for specific roles I’m targeting"}]},
+  {id:"c_apps",kind:"choice",prompt:"How many internship applications have you sent so far?",cols:2,options:[{v:"0",label:"None yet"},{v:"1",label:"1 to 10"},{v:"11",label:"11 to 50"},{v:"50",label:"More than 50"}]},
+  {id:"c_reply",kind:"choice",when:a=>a.c_apps&&a.c_apps!=="0",prompt:"And how many got you an interview?",cols:2,options:[{v:"0",label:"None"},{v:"1",label:"One or two"},{v:"3",label:"Three or more"},{v:"wait",label:"Still waiting to hear"}],
+    coach:a=>(a.c_apps==="50"||a.c_apps==="11")&&a.c_reply==="0"?"That’s a lot of effort for silence. That usually points to the method, not to you.":null},
+  {id:"c_peers",kind:"choice",prompt:"Think of friends who landed internships. How did most of them get in?",options:[{v:"spray",label:"They applied to everything they could"},{v:"knew",label:"Mostly through someone they knew"},{v:"mix",label:"A mix of both"},{v:"unsure",label:"Not sure, or none have landed one"}]},
+  {id:"c_month",kind:"choice",prompt:"Be honest: what’s your plan for the next month?",options:[{v:"all",label:"Keep applying to everything I can find"},{v:"tweak",label:"Keep applying a lot, with a better resume"},{v:"narrow",label:"Narrow down, then apply to fewer roles"},{v:"people",label:"Talk to people first, then apply with referrals"}],
+    coach:a=>a.c_month==="all"?"Thanks for being honest. Mass-applying is the most common plan, and the least likely to work.":a.c_month==="people"?"That’s exactly how most internships actually get filled.":null},
+  {id:"c_block",kind:"multi",text:false,max:2,grid:true,prompt:"What’s really holding you back?",sub:"Pick up to two.",options:[{v:"what",label:"I don’t know what I want"},{v:"know",label:"I don’t know anyone in the field"},{v:"silence",label:"Applications go nowhere"},{v:"exp",label:"Not enough experience"},{v:"interview",label:"I freeze in interviews"},{v:"time",label:"Time or motivation"}]},
+  {id:"c_people",kind:"choice",prompt:"In the last 3 months, how many people working in a field you’re curious about have you talked to?",cols:2,options:[{v:"0",label:"None"},{v:"1",label:"One or two"},{v:"3",label:"Three to five"},{v:"6",label:"Six or more"}]},
+  {id:"c_cos",kind:"choice",prompt:"Could you name three companies you’d love to intern at?",options:[{v:"none",label:"Not one, honestly"},{v:"one",label:"Maybe one"},{v:"three",label:"Yes, three"},{v:"teams",label:"Yes, and I know which teams"}]},
+  {id:"c_sure",kind:"choice",prompt:"Last one. How sure are you about the direction you’re heading?",cols:2,options:[{v:"0",label:"Not at all"},{v:"1",label:"A little"},{v:"2",label:"Pretty sure"},{v:"3",label:"Very sure"}]},
+  {id:"arch",kind:"arch",optional:true,prompt:"Your archetype"},
+  // Part 2: build your plan
+  {id:"needs",kind:"multi",text:false,grid:true,min:1,prompt:"What do you think you need to work on?",sub:"Part 2: building your plan. Check everything that applies.",options:NEEDS},
+  {id:"a_li",kind:"choice",prompt:"When did you last update your LinkedIn?",cols:2,options:[{v:"0",label:"This month"},{v:"1",label:"This year"},{v:"2",label:"Over a year ago"},{v:"3",label:"I barely have one"}],coach:a=>spotted(a,"a_li")},
+  {id:"a_res",kind:"choice",prompt:"If a recruiter skimmed your resume for 10 seconds, would they know what role you want?",cols:2,options:[{v:"0",label:"Yes, instantly"},{v:"1",label:"Probably"},{v:"2",label:"Probably not"},{v:"3",label:"I don’t have a resume yet"}],coach:a=>spotted(a,"a_res")},
+  {id:"a_net",kind:"choice",prompt:"Is there someone at a company you want who’d put in a good word for you?",options:[{v:"0",label:"Yes, already"},{v:"1",label:"Someone I could ask"},{v:"2",label:"Not yet"}],coach:a=>spotted(a,"a_net")},
+  {id:"a_int",kind:"choice",prompt:"Picture a 30-minute interview tomorrow. How does it go?",cols:2,options:[{v:"0",label:"I’d nail it"},{v:"1",label:"Okay, but rambly"},{v:"2",label:"Rough. I’d freeze"},{v:"3",label:"I’ve never done one"}],coach:a=>spotted(a,"a_int")},
+  {id:"job",kind:"fields",optional:true,when:a=>clarityFrom(a).lvl>=4,prompt:"Got a specific company in mind?",sub:"Your plan will point at it.",fields:[{k:"company",label:"Company name (optional)",ph:"e.g. Spotify"}]},
   {id:"when",kind:"choice",optional:true,when:a=>!a.whenPreset,prompt:"When do you want your internship?",sub:"I’ll build your plan backward from this date.",options:()=>[...targets().filter(t=>t.v!=="later").map(t=>({v:t.v,label:t.label,sub:`${Math.round(daysBetween(TODAY,t.start)/7)} weeks to land it`})),{v:"unsure",label:"Not sure yet",sub:"I’ll plan for next summer"}],
     coach:a=>{const t=targetFor(a.when),w=Math.round(daysBetween(TODAY,t.start)/7);return `${esc(t.label)} starts in about ${w} weeks. Now let’s pin down when applications close, because that’s the date that really matters.`}},
   {id:"dlmode",kind:"choice",optional:true,prompt:"When do applications close for the roles you want?",sub:"Check one posting you like. Deadlines vary a lot by industry.",cols:2,options:a=>{const t=targetFor(a.when);return[{v:"date",label:"Specific date",sub:"Pick it on the next screen"},{v:"typical",label:"Typical timeline",sub:`Apply by ${fmt(addDays(t.start,-84))}, 12 weeks before you start`}]},
     coach:a=>a.dlmode==="date"?null:deadlineNote(a)},
   {id:"dldate",kind:"date",optional:true,when:a=>a.dlmode==="date",prompt:"When do applications close?",sub:"Use the earliest deadline among the roles you care about.",min:()=>TODAY,max:a=>addDays(targetFor(a.when).start,-1),coach:a=>deadlineNote(a)},
-  {id:"goal",kind:"choice",optional:true,cols:2,prompt:"What’s in the way right now?",options:[{v:"what",label:"I don’t know what to apply for"},{v:"interviews",label:"I have a company and need to get an interview"}]},
-  {id:"job",kind:"fields",optional:true,when:a=>a.goal==="interviews",prompt:"Paste the link to the job.",sub:"Your plan will be built around getting an interview for it.",
-    fields:[{k:"url",label:"Job posting link",ph:"e.g. jobs.lever.co/company/123",type:"url",ac:"url"},{k:"company",label:"Company name (optional)",ph:"e.g. Spotify"}],
-    validate:v=>{const u=String(v.url||"").trim();return u&&!/^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(u)?"That doesn’t look like a link. Copy it from your browser’s address bar.":null}},
-  {id:"help",kind:"multi",optional:true,when:a=>a.goal==="interviews",max:3,grid:true,text:false,prompt:a=>{const c=companyFrom(a.job);return `What do you need help with${c?" to get into "+esc(c):""}?`},options:HELP.map(h=>({v:h.v,label:h.label}))},
-  ...RCQ,
   {id:"flowTags",kind:"tags",set:"like",optional:true,when:()=>false,max:3,grid:true,text:false,keys:["people","problems","creative","data","building","presenting","helping","writing"],prompt:"What kind of work makes you lose track of time?"},
   {id:"careers",kind:"multi",optional:true,when:()=>false,max:3,grid:true,options:["Consulting","Product management","Product marketing","UX research","Data analytics","Finance","Software engineering","Startups / venture"],prompt:"Which directions are you curious about?",textLabel:"Something else? (optional)",textPh:"e.g. Sports media"},
 ];
@@ -2348,10 +2451,13 @@ function profileFromDiag(a){
   if(a.drainText||dk.length)p.activities.push({id:uid(),type:"tried",date:TODAY,title:"Drained by: "+trim(a.drainText||"something that wore me out",70),like:[],drain:dk,notes:[["What drained you?",a.drainText||"—"]],fromDiag:true});
   if(Array.isArray(a.help)&&a.help.length)p.help=a.help.slice();
   const rq=realityFrom(a);if(rq)p.reality=rq;
+  if(a.c_say){const c=clarityFrom(a),n=needsFrom(a);p.arch={lvl:c.lvl,k:c.arch.k,score:c.score,mass:c.mass};p.needs=n.all;p.needsExtra=n.extra;p.goal=c.lvl>=4?"how":"what";p.insights.push({date:TODAY,text:`Archetype: ${c.arch.name} (clarity ${c.score}/100).`})}
   p.target=targetFor(a.when);p.planStart=TODAY;p.deadline=deadlineFrom(a);if(a.job&&String(a.job.url||"").trim()){const u=a.job.url.trim();p.job={url:/^https?:/i.test(u)?u:"https://"+u,company:companyFrom(a.job)}}else if(a.job&&a.job.company&&a.job.company.trim())p.job={url:"",company:a.job.company.trim()}
   if(a.linkedin)p.linkedin=/^https?:/i.test(a.linkedin)?a.linkedin:"https://"+a.linkedin;
   const goalLabel=(GOALS.find(g=>g.v===goal)||{}).label||"";
-  p.insights.push({date:TODAY,text:`Started here: “${goalLabel}”.`});
+  if(!a.c_say)p.insights.push({date:TODAY,text:`Started here: “${goalLabel}”.`});
+  if(a.c_line&&lineScore(a.c_line)>=2)p.beliefs.push({date:TODAY,text:a.c_line,short:trim(a.c_line,40).toLowerCase()});
+  const st2=STAGES.find(x=>x.v===a.c_stage);if(st2){p.meta=st2.label;p.stageWord=st2.w}
   if(a.bet)p.beliefs.push({date:TODAY,text:a.bet,short:trim(a.bet,40).toLowerCase()});
   else if(target)p.beliefs.push({date:TODAY,text:`I want to work in ${target}.`,short:low(target)});
   if(a.unsure)p.questions.push({id:uid(),date:TODAY,text:a.unsure,open:true});
@@ -2601,7 +2707,7 @@ function vStart(){
       <p class="muted">These are first reads from one conversation. They’ll get sharper every time you log something and reflect.</p>
       <div class="row"><button class="btn primary" data-act="go" data-r="today">Open my dashboard</button><button class="btn ghost" data-act="go" data-r="next">See the full next step</button></div></div></div></main></div>`}
   if(UI.justFinished){UI.justFinished=false;return `<div class="app bare"></div>`}
-  if(!diagFlow||diagFlow.done){diagFlow=makeFlow(DIAG_FAST,f=>{const a=Object.assign({},f.a,{name:(f.a.me&&f.a.me.name||"").trim()||undefined,linkedin:(f.a.me&&f.a.me.linkedin||"").trim(),goal:f.a.goal||f.a.goalPreset,flow:f.a.flowTagsText||"",drainText:f.a.drainTagsText||""});S.profiles.you=profileFromDiag(a);S.active="you";UI.planShown=false;save();UI.planReady=true;if(sb&&!AUTH.user){UI.authModal=true;AUTH.mode="signup";AUTH.msg=""}UI.diagSummary=false;diagFlow=null;UI.justFinished=true;location.hash="today"});if(UI.presetWhen){diagFlow.a.whenPreset=UI.presetWhen;diagFlow.a.when=UI.presetWhen;diagFlow.idx=nextIdx(diagFlow,-1);diagFlow.note=DIAG_FAST[0].coach(diagFlow.a)}}
+  if(!diagFlow||diagFlow.done){diagFlow=makeFlow(DIAG_FAST,f=>{const a=Object.assign({},f.a,{name:(f.a.me&&f.a.me.name||"").trim()||undefined,linkedin:(f.a.me&&f.a.me.linkedin||"").trim(),goal:f.a.goal||f.a.goalPreset,flow:f.a.flowTagsText||"",drainText:f.a.drainTagsText||""});S.profiles.you=profileFromDiag(a);S.active="you";UI.planShown=false;save();UI.planReady=true;if(sb&&!AUTH.user){UI.authModal=true;AUTH.mode="signup";AUTH.msg=""}UI.diagSummary=false;diagFlow=null;UI.justFinished=true;location.hash="today"});if(UI.presetWhen){diagFlow.a.whenPreset=UI.presetWhen;diagFlow.a.when=UI.presetWhen;diagFlow.idx=nextIdx(diagFlow,-1);diagFlow.note=null}}
   F=diagFlow;
   return `<div class="app bare"><main>${renderFlow(diagFlow)}</main></div>`;
 }
@@ -2634,10 +2740,14 @@ const CHECK_BASE=[
   {k:"interview",n:"Prep for your interview",m:"15 min",w:0,est:"3 hrs",s:"Interview",t:"Prep for your interview{at}",h:"Interview crash course: storytell, understand the business, ask questions, prep strategically."},
 ];
 const QUIZ_STEP={k:"quiz",n:"Take the career quiz",m:"5 min",w:1,est:"5 min",s:"Career quiz",t:"Take the career quiz",h:"7 quick questions to find 3 directions worth testing."};
-function CK(p){p=p||P();return p&&p.id==="you"&&p.goal==="what"?[QUIZ_STEP,...CHECK_BASE]:CHECK_BASE}
+function CK(p){p=p||P();if(!p||p.id!=="you")return CHECK_BASE;
+  if(p.arch){const by=k=>CHECK_BASE.find(x=>x.k===k);
+    if(p.arch.lvl<=3)return [QUIZ_STEP,...["who","email","pitch","linkedin","resume","interview"].map(by)];
+    const n=new Set(p.needs||[]),out=CHECK_BASE.filter(x=>n.has(x.k));if(n.has("quiz"))out.unshift(QUIZ_STEP);return out.length?out:[by("interview")]}
+  return p.goal==="what"?[QUIZ_STEP,...CHECK_BASE]:CHECK_BASE}
 function ckT(x,p){const co=p&&p.job&&p.job.company;return x.t.replace("{at}",co?" at "+co:"").replace("{co}",co?co+" ":"")}
 function checkCur(p){const c=p.checklist||{};let i=0;while(i<CK(typeof p!=="undefined"?p:null).length&&c[CK(typeof p!=="undefined"?p:null)[i].k])i++;return i}
-function checkDue(p,pl){const a=p.planStart||TODAY,pre=CK(typeof p!=="undefined"?p:null).filter(x=>x.k!=="interview"),W=pre.reduce((n,x)=>n+x.w,0),span=Math.max(pre.length,daysBetween(a,pl.deadline));let acc=0;
+function checkDue(p,pl){const a=p.planStart||TODAY,pre=CK(typeof p!=="undefined"?p:null).filter(x=>x.k!=="interview"),W=pre.reduce((n,x)=>n+x.w,0)||1,span=Math.max(pre.length,daysBetween(a,pl.deadline));let acc=0;
   return CK(typeof p!=="undefined"?p:null).map(x=>{if(x.k==="interview")return addDays(pl.deadline,21)<pl.start?addDays(pl.deadline,21):addDays(pl.start,-7);acc+=x.w;return addDays(a,Math.round(span*acc/W))})}
 function checkStart(p,pl,due){return CK(typeof p!=="undefined"?p:null).map((x,i)=>i?due[i-1]:(p.planStart||TODAY))}
 function checklistCard(p){
@@ -3136,20 +3246,43 @@ function vPlanReady(p){const pl=plan(p);
   return `<div class="app bare duo-screen"><main class="duo-center pl-done">
     ${burstHTML()}
     <h1 class="duo-title pl-title">Your plan is ready!</h1>
+    ${p.arch?`<p class="pl-arch">${ARCH[p.arch.lvl-1].e} Built for <b>${esc(ARCH[p.arch.lvl-1].name)}</b></p>`:""}
     <p class="duo-sub pl-sub">${p.first&&p.first!=="there"?esc(p.first)+", let’s":"Let’s"} get you that internship.</p>
     ${pl?(()=>{const st=CK(p),due=checkDue(p,pl),ri=st.findIndex(c=>c.k==="resume");let k=0;const row=(img,n,name,sub,cls)=>`<li class="pls ${cls||""}" style="--i:${k++}"><span class="pls-n">${n}</span><span class="pls-lan">${img}</span><span class="pls-t"><b>${name}</b><em>${sub}</em></span></li>`;
-      const rows=st.map((c,i)=>row(lan("idle",56,LAN_POSE[c.k]),i+1,esc(c.n),`~${esc(c.m)} · by ${fmt(due[i])}`,i===0?"first":"")+(i===ri?row(`<span class="pls-flag">🎯</span>`,"",`Apply`,`by ${fmt(pl.deadline)}`,"apply"):"")).join("");
+      const ex=new Set(p.arch&&p.arch.lvl>=4?p.needsExtra||[]:[]),rows=st.map((c,i)=>row(lan("idle",56,LAN_POSE[c.k]),i+1,esc(c.n)+(ex.has(c.k)?` <i class="pls-x">We spotted this</i>`:""),`~${esc(c.m)} · by ${fmt(due[i])}`,i===0?"first":"")+(i===ri?row(`<span class="pls-flag">🎯</span>`,"",`Apply`,`by ${fmt(pl.deadline)}`,"apply"):"")).join("");
       UI.plCount=k;return `<ol class="pl-steps">${rows}</ol>`})():""}
     <button class="btn primary duo-cta pl-cta" style="--i:${UI.plCount||7}" data-act="planok">Let’s go</button>
   </main></div>`}
 function hasAns(v){if(v==null)return false;if(Array.isArray(v))return v.length>0;if(typeof v==="object")return Object.values(v).some(x=>String(x||"").trim());return String(v).trim()!==""}
+function archHTML(f,top){const a=f.a,c=clarityFrom(a),A=c.arch,why=clarityWhy(a);
+  return `<div class="duo arch-screen" data-q="arch">${top}
+    <div class="arch">
+      <span class="arch-eye">Your internship archetype</span>
+      <div class="arch-badge"><span>${A.e}</span></div>
+      <h1 class="arch-name"><small>You’re</small>${esc(A.name)}</h1>
+      <p class="arch-tag">${esc(A.tag)}</p>
+      <div class="arch-meter" role="img" aria-label="Clarity score ${c.score} out of 100">
+        <div class="arch-meter-top"><b>Clarity score</b><span><em data-count="${c.score}">${c.score}</em>/100</span></div>
+        <div class="arch-track">${ARCH.map(x=>`<i class="${x.lvl<=c.lvl?"on":""}${x.lvl===c.lvl?" me":""}" style="--d:${x.lvl}"></i>`).join("")}</div>
+        <div class="arch-ends"><span>Lost</span><span>Ready to apply</span></div>
+      </div>
+      <p class="arch-desc">${esc(A.desc)}</p>
+      <div class="arch-two"><div><span>Your superpower</span><b>${esc(A.power)}</b></div><div><span>Your blind spot</span><b>${esc(A.blind)}</b></div></div>
+      ${why.length?`<div class="arch-why"><span>Why we think so</span><ul>${why.map(w=>`<li>You said ${esc(w)}.</li>`).join("")}</ul></div>`:""}
+      <div class="arch-plan"><span>What this means for your plan</span><p>${esc(A.plan)}</p></div>
+      <div class="arch-all">${ARCH.map(x=>`<span class="${x.lvl===c.lvl?"me":""}" title="${esc(x.name)}">${x.e}<em>${esc(x.name.replace(/^The /,""))}</em></span>`).join("")}</div>
+    </div>
+    <div class="duo-foot"><button class="btn primary duo-cta" data-act="next">Next: build my plan →</button></div>
+  </div>`}
 function renderDuo(f){
   const q=f.qs[f.idx],a=f.a,done=f.stack.length,remain=f.qs.slice(f.idx).filter(x=>!x.when||x.when(a,f.ctx)).length,total=done+remain,pct=Math.round(done/total*100);
   const top=`<div class="duo-top">${done?`<button class="duo-back" data-act="back" aria-label="Back">←</button>`:`<a class="duo-back" href="#welcome" aria-label="Exit">✕</a>`}<div class="duo-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.max(3,pct)}%"></i></div></div>`;
+  if(q.kind==="arch")return archHTML(f,top);
   if(q.kind==="say")return `<div class="duo" data-q="${q.id}">${top}<div class="duo-say">${says(esc(V(f,q.prompt)),"walk",true)}</div><div class="duo-foot"><button class="btn primary duo-cta" data-act="next">Continue</button></div></div>`;
   const inner=renderFlow({...f,qs:[q],idx:0,stack:[]}),m=inner.match(/<div class="q-body">([\s\S]*?)<\/div>\s*<p class="q-err"/),body=m?m[1]:"";
   const ok=hasAns(a[q.id]),last=done+1===total;
   return `<div class="duo" data-q="${q.id}">${top}
+    ${f.note?`<p class="duo-note"><i>✓</i>${f.note}</p>`:""}
     ${says(`<b>${V(f,q.prompt)}</b>${q.sub?`<span>${V(f,q.sub)}</span>`:""}`,"wave")}
     <div class="q-wrap duo-body" data-q="${q.id}"><div class="q-body">${body}</div><p class="q-err" id="q-err" hidden></p></div>
     <div class="duo-foot">${ok||!q.optional?`<button class="btn primary duo-cta" data-act="next">${last?"Build my plan":"Continue"}</button>`:`<button class="btn duo-cta duo-skip" data-act="skip">${last?"Skip and build my plan":"Skip for now"}</button>`}</div>
