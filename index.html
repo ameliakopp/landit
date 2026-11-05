@@ -1763,6 +1763,38 @@ body:has(.qz){background:#F6F4F0}
 .qz .ar-store li{background:none;padding:0;color:var(--qz-ink);font-size:16.5px;font-weight:500}
 .qz .ar-store li i{background:var(--qz-ink);color:#fff;width:24px;height:24px;font-size:12px;font-weight:600}
 @media (min-width:700px){.qz.arch-screen .ar-card{padding:20px 22px 26px}}
+.qrate{display:flex;flex-direction:column;gap:10px}
+.qrate-row{display:flex;flex-direction:column;gap:10px;padding:14px 16px;background:#fff;border:1px solid #E4E0D9;border-radius:14px}
+.qrate-row>span{font-size:16px;font-weight:500;line-height:1.35}
+.qrate-b{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.qrate-b .chip{text-align:center;padding:9px 6px;font-size:14px;border-radius:999px}
+@media (min-width:700px){.qrate-row{flex-direction:row;align-items:center;justify-content:space-between}.qrate-b{flex:none;width:270px}}
+.qm-list{display:flex;flex-direction:column;gap:10px}
+.qm{background:#fff;border:1px solid #E4E0D9;border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.qm-top{display:flex;align-items:center;gap:10px}.qm-top b{font-size:18px;font-weight:600;flex:1}
+.qm-n{width:24px;height:24px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:600;flex:none}
+.qm-pct{font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;background:#F1EEE8;white-space:nowrap}
+.qm-why{margin:0;font-size:15px;color:#3A3732;line-height:1.45}.qm-role{margin:0;font-size:13.5px;color:#8A867F}.qm-role em{font-style:normal;color:#111;font-weight:500}
+.qm-more{align-self:flex-start;font-size:15px}
+/* career quiz: same sleek skin as the intake */
+.wk-cq .chip{background:#fff;border:1px solid #E4E0D9!important;box-shadow:none!important;color:#111;font-weight:500}
+.wk-cq .chip[aria-pressed="true"]{background:#111!important;color:#fff!important;border-color:#111!important}
+.pls-flag,.cs.apply .cs-dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:#111;box-shadow:0 0 0 4px #E4E0D9}
+/* career quiz workshop shell: sleek */
+body:has(.wk-cq){background:#F6F4F0}
+.wk-cq{font-family:"Inter Tight","Figtree",sans-serif}
+.wk-cq .wk-bar{height:2px;background:#E4E0D9;border-radius:0}.wk-cq .wk-bar i{background:#111;border-radius:0}
+.wk-cq .wk-part{color:#8A867F}.wk-cq .wk-part.on{color:#111}
+.wk-cq .wk-h{font-family:"Inter Tight",sans-serif;font-weight:500;letter-spacing:-.03em}
+.wk-cq .wk-h mark{background:none;color:inherit;font-family:"Instrument Serif",serif;font-style:italic;font-weight:400}
+.wk-cq .wk-eye{letter-spacing:.14em;font-weight:500;color:#8A867F}
+.wk-cq .wk-nav{background:linear-gradient(to top,#F6F4F0 75%,rgba(246,244,240,0));border-top:0;backdrop-filter:none}
+.wk-cq .wk-nav .btn.primary{background:#111!important;color:#fff!important;box-shadow:none!important;border:0!important;border-radius:999px;text-transform:none;letter-spacing:-.01em;font-family:"Inter Tight",sans-serif;font-weight:500}
+.wk-cq .wk-nav .btn:not(.primary){background:transparent;border:1px solid #CFCAC1;border-radius:999px;text-transform:none;letter-spacing:0;font-family:"Inter Tight",sans-serif;font-weight:500;box-shadow:none}
+.wk-cq .wk-chips .chip,.wk-cq .qpair .chip{border-radius:999px;padding:11px 18px;font-size:15.5px}
+.wk-cq .qrate-b .chip{padding:9px 6px}
+.wk-cq .input{background:transparent;border:0;border-bottom:1px solid #CFCAC1;border-radius:0;padding:12px 2px;font-size:17px}
+.wk-cq .input:focus{outline:none;border-color:#111}
 </style>
 </head>
 <body>
@@ -2452,23 +2484,23 @@ function realityFrom(a){const k=(a.help||[])[0];if(!k||!RC[k])return null;let sc
 const LEVEL={ready:"Ready to go",push:"Needs a push",coach:"Needs coaching first"};
 /* ---------- Clarity archetypes (part 1 of the intake, same for everyone) ---------- */
 const ARCH=[
-  {lvl:1,k:"explorer",img:"img/arch/explorer.jpg",gz:"You’re open to literally everything, which is honestly a vibe. But if a recruiter asked what you want right now, you’d say “umm… something fun?” No shame. Rachel didn’t have a plan either, and she ended up at Ralph Lauren.",traits:["Curious about everything", "Hasn’t committed (yet)", "Great in a conversation", "Low-key overwhelmed by the options"],store:["Take a 5-minute career quiz", "Talk to 2 people in fields you like", "Then fix your LinkedIn and resume"],e:"🧭",name:"The Explorer",tag:"Everything’s interesting, nothing’s clicked yet.",who:"Rachel Green",whoSub:"season 1",whoWhy:"Walked out of the plan, open to everything, figuring it out as she goes.",next:"Talk to 2 people in fields you’re curious about to become The Detective.",
+  {lvl:1,k:"explorer",img:"img/arch/explorer.jpg",gz:"You’re open to literally everything, which is honestly a vibe. But if a recruiter asked what you want right now, you’d say “umm… something fun?” No shame. Rachel didn’t have a plan either, and she ended up at Ralph Lauren.",traits:["Curious about everything", "Hasn’t committed (yet)", "Great in a conversation", "Low-key overwhelmed by the options"],store:["Take a 5-minute career quiz", "Talk to 2 people in fields you like", "Then fix your LinkedIn and resume"],e:"",name:"The Explorer",tag:"Everything’s interesting, nothing’s clicked yet.",who:"Rachel Green",whoSub:"season 1",whoWhy:"Walked out of the plan, open to everything, figuring it out as she goes.",next:"Talk to 2 people in fields you’re curious about to become The Detective.",
     desc:"You’re open to a lot, which is a real strength, but right now you couldn’t tell a recruiter what you want. That makes every application a guess. The fix isn’t more applications. It’s a few honest conversations that show you what jobs actually look like.",
     power:"You’re genuinely open-minded",blind:"Applying before you know what you’re applying for",
     plan:"Your plan starts with clarity, not applications: a career quiz, then real conversations with people in a few fields. Resume and interviews come once you have a target."},
-  {lvl:2,k:"shotgun",img:"img/arch/shotgun.jpg",gz:"You’ve sent so many applications you couldn’t name half of them. The effort is real. The aim is… not. Joey auditioned for everything too, and mostly heard “next.” Time to swap volume for aim.",traits:["Hard worker, no question", "Applies first, thinks later", "Mostly unbothered by rejection", "Allergic to tailoring a resume"],store:["Stop mass-applying", "Pick 1–2 directions", "Get a referral, then apply"],e:"🎯",name:"The Shotgun",tag:"Lots of applications, aimed at everything.",who:"Joey Tribbiani",whoWhy:"Auditions for literally everything and hopes something sticks.",next:"Pause the mass-applying and pick one field to become The Detective.",
+  {lvl:2,k:"shotgun",img:"img/arch/shotgun.jpg",gz:"You’ve sent so many applications you couldn’t name half of them. The effort is real. The aim is… not. Joey auditioned for everything too, and mostly heard “next.” Time to swap volume for aim.",traits:["Hard worker, no question", "Applies first, thinks later", "Mostly unbothered by rejection", "Allergic to tailoring a resume"],store:["Stop mass-applying", "Pick 1–2 directions", "Get a referral, then apply"],e:"",name:"The Shotgun",tag:"Lots of applications, aimed at everything.",who:"Joey Tribbiani",whoWhy:"Auditions for literally everything and hopes something sticks.",next:"Pause the mass-applying and pick one field to become The Detective.",
     desc:"You’re putting in the work, and that matters. But a wide net with no clear target gets you silence, not interviews. Recruiters can tell when a resume could be for any job. Narrowing down will feel slower and get you further.",
     power:"You’re willing to put in the hours",blind:"Treating applications as a numbers game",
     plan:"Your plan pauses the mass-applying. First you’ll narrow to one or two directions and talk to people in them, then apply to fewer roles with someone vouching for you."},
-  {lvl:3,k:"detective",img:"img/arch/detective.jpg",gz:"You know the world you want to be in, you just haven’t found your exact seat at the table. You’re one or two good conversations away from cracking it. Andy wanted journalism, landed at Runway, and figured it out from the inside.",traits:["Knows the field", "Asks good questions", "Still says “something in…”", "Almost ready to commit"],store:["Pick one specific role", "Coffee chat with someone doing it", "Aim your LinkedIn and resume at it"],e:"🔍",name:"The Detective",tag:"You’ve got a lead. Now you need to crack it.",who:"Andy Sachs",whoSub:"The Devil Wears Prada",whoWhy:"Knows the world she wants, not yet the exact seat.",next:"Name one specific role and have one coffee chat about it to become The Builder.",
+  {lvl:3,k:"detective",img:"img/arch/detective.jpg",gz:"You know the world you want to be in, you just haven’t found your exact seat at the table. You’re one or two good conversations away from cracking it. Andy wanted journalism, landed at Runway, and figured it out from the inside.",traits:["Knows the field", "Asks good questions", "Still says “something in…”", "Almost ready to commit"],store:["Pick one specific role", "Coffee chat with someone doing it", "Aim your LinkedIn and resume at it"],e:"",name:"The Detective",tag:"You’ve got a lead. Now you need to crack it.",who:"Andy Sachs",whoSub:"The Devil Wears Prada",whoWhy:"Knows the world she wants, not yet the exact seat.",next:"Name one specific role and have one coffee chat about it to become The Builder.",
     desc:"You’ve got a field in mind, but not a specific role you could name and defend. That’s a great place to be: you’re one or two conversations away from a real target. The risk is staying vague and applying to everything in the field.",
     power:"You already know where to look",blind:"Staying at “something in marketing” for too long",
     plan:"Your plan starts by turning your field into one specific role, through a short quiz and a few chats with insiders. Then LinkedIn, resume and interview prep all point at that role."},
-  {lvl:4,k:"builder",img:"img/arch/builder.jpg",gz:"What, like it’s hard? You know exactly what you want. Now you need the receipts: a resume that matches, a LinkedIn that backs it up, and people inside who know your name.",traits:["Knows the goal", "Underestimated (their loss)", "Actually does the prep", "Needs the right people in their corner"],store:["Pick what to brush up on", "Fix the gaps we spot", "Apply"],e:"🛠️",name:"The Builder",tag:"You know the role. Time to build the case for you.",who:"Elle Woods",whoWhy:"Knows exactly where she’s going and is building the case to get in.",next:"Get one person inside to vouch for you to become The Closer.",
+  {lvl:4,k:"builder",img:"img/arch/builder.jpg",gz:"What, like it’s hard? You know exactly what you want. Now you need the receipts: a resume that matches, a LinkedIn that backs it up, and people inside who know your name.",traits:["Knows the goal", "Underestimated (their loss)", "Actually does the prep", "Needs the right people in their corner"],store:["Pick what to brush up on", "Fix the gaps we spot", "Apply"],e:"",name:"The Builder",tag:"You know the role. Time to build the case for you.",who:"Elle Woods",whoWhy:"Knows exactly where she’s going and is building the case to get in.",next:"Get one person inside to vouch for you to become The Closer.",
     desc:"You can say what you want, and that already puts you ahead of most students. What’s missing is the stuff that gets you picked: a profile and resume that match the role, and people inside who know your name.",
     power:"A clear target",blind:"Thinking clarity alone gets you the interview",
     plan:"Your plan skips the soul-searching and goes straight to the gaps you told us about, plus anything we spotted in your answers."},
-  {lvl:5,k:"closer",img:"img/arch/closer.jpg",gz:"You don’t get lucky, you make your own luck. Clear target, real connections, and you’re not spamming applications. You don’t need a makeover. You need a final polish and a send button.",traits:["Crystal-clear target", "Knows the right people", "Plays the long game", "Might over-prepare"],store:["Polish 1–2 things", "Quick blind-spot check", "Apply. Seriously, go."],e:"🚀",name:"The Closer",tag:"Clear target, real plan. Go get it.",who:"Harvey Specter",whoSub:"Suits",whoWhy:"Clear target, knows the right people, closes.",next:"",
+  {lvl:5,k:"closer",img:"img/arch/closer.jpg",gz:"You don’t get lucky, you make your own luck. Clear target, real connections, and you’re not spamming applications. You don’t need a makeover. You need a final polish and a send button.",traits:["Crystal-clear target", "Knows the right people", "Plays the long game", "Might over-prepare"],store:["Polish 1–2 things", "Quick blind-spot check", "Apply. Seriously, go."],e:"",name:"The Closer",tag:"Clear target, real plan. Go get it.",who:"Harvey Specter",whoSub:"Suits",whoWhy:"Clear target, knows the right people, closes.",next:"",
     desc:"You know exactly what you want and why, you’ve talked to people, and you’re not just firing off applications. Your plan is short on purpose: tighten the few things that still need work and go.",
     power:"You can say what you want, and why",blind:"Over-preparing instead of applying",
     plan:"Your plan is short: only the areas you want to brush up on, plus anything we spotted. Then apply."},
@@ -2694,7 +2726,7 @@ function vHow(){
     {field:"Finance",before:"60 applications to banks, 0 interviews.",shift:"Realised I liked the analysis but not the deal hours. Switched to corporate finance and got two alumni referrals.",after:"12 applications, 5 interviews, 2 offers."},
     {field:"Design",before:"45 applications, 1 reply.",shift:"Stopped applying everywhere and rebuilt my portfolio around one case study for one kind of team.",after:"8 applications, 3 interviews, 1 offer."},
   ];
-  const COACH=[["🤝","Find the right people to talk to","Alumni and professionals in the roles you want, so you can learn from someone who’s done it."],["📋","Spot your gaps","A quick quiz shows what’s missing between you and your target role."],["🎯","Test if you’re a strong candidate","See how you stack up before you hit apply."],["🧭","Find opportunities that fit","Roles, programs, and events matched to your goals, not just everything out there."]];
+  const COACH=[["","Find the right people to talk to","Alumni and professionals in the roles you want, so you can learn from someone who’s done it."],["","Spot your gaps","A quick quiz shows what’s missing between you and your target role."],["","Test if you’re a strong candidate","See how you stack up before you hit apply."],["","Find opportunities that fit","Roles, programs, and events matched to your goals, not just everything out there."]];
   const ROWS=[["Apply everywhere","Pick a direction"],["Send the same CV","Close the gaps that matter"],["Hear nothing back","Apply with a story recruiters believe"]];
   return `<div class="land">
   <header class="band lnav"><div class="wrap"><a class="brand" href="#welcome">${mark}<span class="wordmark">Landit</span></a>
@@ -3228,54 +3260,103 @@ const wkDrop=(arr,keys)=>{for(let i=arr.length-1;i>=0;i--){const t=arr[i].r.toSt
 wkDrop(WK,['<span class="wk-eye">Next up</span>','Your game plan','What’s holding you back','But what should you post?','What makes these posts good?']);
 wkDrop(WKC,['How it works','Your game plan']);wkDrop(WKO,['Your game plan']);wkDrop(WKP,['Your game plan']);wkDrop(WKR,['Your checklist']);wkDrop(WKI,['Your game plan']);
 /* ---------- Career personality quiz (step 1 for "I don't know what I want") ---------- */
-const QSAT=[["make","🎨 Making something"],["org","📋 Organizing people or an event"],["fig","🧩 Figuring something out"],["help","🤝 Helping a friend"]];
+/* ---------- Career quiz (plan step for students without a clear target) ---------- */
+const QSAT=[["make","Making something"],["org","Organizing people or an event"],["fig","Figuring something out"],["help","Helping a friend"],["out","Out meeting new people"],["solo","Reading or doing my own thing"]];
 const QAREA=[["biz","Business"],["arts","Arts & design"],["stem","Science & tech"],["soc","Social science"],["hum","Writing & humanities"],["comm","Media & comms"]];
-const QPAIRS=[["t1","people","Talking to people","alone","Working solo"],["t2","numbers","Numbers","words","Words"],["t3","plan","Planning ahead","improv","Figuring it out live"],["t4","big","Big company","small","Small team"]];
-const QFOR=[["advice","Advice"],["tech","Fixing tech"],["design","Making things look good"],["organize","Organizing"],["explain","Explaining things"],["hype","Hyping people up"]];
-const QVAL=[["money","💰 Money"],["learn","📈 Learning fast"],["creative","✨ Creativity"],["impact","💛 Helping people"],["prestige","🏆 Prestige"],["flex","🌴 Flexibility"]];
-const QIND=[["tech","Tech"],["fashion","Fashion & beauty"],["media","Media & entertainment"],["finance","Finance"],["health","Health"],["climate","Climate"],["sports","Sports"],["nonprofit","Nonprofit"],["consumer","Food & consumer"]];
-const QNOT=[["sales","Sales"],["code","Coding"],["camera","Being on camera"],["travel","Lots of travel"],["numbers","Heavy math"]];
-const QLAB=Object.fromEntries([...QSAT,...QAREA,...QFOR,...QVAL,...QIND,...QPAIRS.flatMap(p=>[[p[1],p[2]],[p[3],p[4]]])].map(([k,l])=>[k,l.replace(/^\S+\s(?=[A-Z])/u,"").toLowerCase()]));
-const DIRS=[
-  {t:"Brand marketing",role:"brand marketing intern",ind:["fashion","consumer"],tags:["make","creative","design","words","people","comm","arts"],not:[]},
-  {t:"Social media & content",role:"social media intern",ind:["media","fashion","consumer"],tags:["make","creative","words","hype","comm","improv"],not:["camera"]},
-  {t:"Partnerships",role:"partnerships intern",ind:["tech","sports","media"],tags:["people","org","hype","advice","biz","small"],not:["sales"]},
-  {t:"Product management",role:"product management intern",ind:["tech"],tags:["fig","org","plan","explain","stem","learn","people"],not:[]},
-  {t:"UX & product design",role:"UX design intern",ind:["tech"],tags:["make","design","creative","arts","fig","alone"],not:[]},
-  {t:"Data analytics",role:"data analyst intern",ind:["tech","finance","sports","health"],tags:["fig","numbers","alone","stem","plan","learn"],not:["numbers"]},
-  {t:"Consulting",role:"consulting intern",ind:["finance","health","climate"],tags:["fig","explain","advice","plan","prestige","money","biz","people","big"],not:["travel"]},
-  {t:"Investment banking & finance",role:"finance intern",ind:["finance"],tags:["numbers","money","prestige","plan","big","biz"],not:["numbers"]},
-  {t:"Software engineering",role:"software engineering intern",ind:["tech"],tags:["fig","make","tech","stem","alone","money","learn"],not:["code"]},
-  {t:"Event & experiential marketing",role:"events intern",ind:["fashion","sports","media","consumer"],tags:["org","people","hype","plan","improv","creative"],not:["travel"]},
-  {t:"Communications & PR",role:"communications intern",ind:["media","fashion","nonprofit"],tags:["words","explain","people","comm","hum","hype"],not:[]},
-  {t:"Editorial & journalism",role:"editorial intern",ind:["media"],tags:["words","hum","comm","alone","creative","explain"],not:[]},
-  {t:"People & HR",role:"people operations intern",ind:["tech","nonprofit","health"],tags:["help","people","advice","organize","soc","impact"],not:[]},
-  {t:"Operations",role:"operations intern",ind:["consumer","tech","health"],tags:["org","organize","plan","numbers","small","fig"],not:[]},
-  {t:"Sales & business development",role:"business development intern",ind:["tech","sports","consumer"],tags:["people","hype","money","improv","biz"],not:["sales"]},
-  {t:"Program & community work",role:"program intern",ind:["nonprofit","health","climate"],tags:["help","impact","people","org","soc"],not:[]},
-  {t:"Sustainability",role:"sustainability intern",ind:["climate","consumer"],tags:["impact","fig","plan","stem","soc"],not:[]},
-  {t:"Research & strategy",role:"strategy intern",ind:["media","tech","consumer","health"],tags:["fig","explain","words","alone","soc","hum","learn"],not:[]},
+const QPAIRS=[["t1","people","Talking to people","alone","Working solo"],["t2","numbers","Numbers","words","Words"],["t3","plan","Planning ahead","improv","Figuring it out live"],["t4","big","Big company","small","Small team"],["t5","steady","Steady, predictable weeks","fast","Fast, every day different"],["t6","front","Front of the room","back","Behind the scenes"],["t7","depth","Going deep on one thing","breadth","Juggling lots of things"],["t8","clear","Clear instructions","blank","A blank page"]];
+const QFOR=[["advice","Advice"],["tech","Fixing tech"],["design","Making things look good"],["organize","Organizing"],["explain","Explaining things"],["hype","Hyping people up"],["edit","Editing their writing"],["deals","Finding the best deal"]];
+const QSKILL=[["writing","Writing"],["numbers","Numbers and spreadsheets"],["visual","Visual design"],["talking","Talking to anyone"],["organize","Keeping things on track"],["research","Researching things deeply"],["code","Coding or tech"],["persuade","Convincing people"]];
+const QKNOWN=[["creative","The ideas person"],["smart","The one who figures it out"],["doer","The one who gets it done"],["trusted","The one everyone trusts"],["closer","The one who makes it happen"],["voice","The one with taste"]];
+const QVAL=[["money","Money"],["learn","Learning fast"],["creative","Creativity"],["impact","Helping people"],["prestige","Prestige"],["flex","Flexibility"],["stable","Stability"],["fun","Fun people"]];
+const QIND=[["tech","Tech"],["fashion","Fashion & beauty"],["media","Media & entertainment"],["finance","Finance"],["health","Health"],["climate","Climate"],["sports","Sports"],["nonprofit","Nonprofit"],["consumer","Food & consumer"],["gov","Government & policy"],["edu","Education"],["startups","Startups"]];
+const QNOT=[["sales","Sales targets"],["code","Coding"],["camera","Being on camera"],["travel","Lots of travel"],["numbers","Heavy math"],["writing","Lots of writing"],["hours","Long hours"],["public","Public speaking"]];
+/* Concrete tasks, rated love / maybe / no. Each maps straight to the directions where it's a big part of the job. */
+const QTASKS=[
+  ["caption","Write a caption that makes people stop scrolling",["social","brand","comms","creator"]],
+  ["sheet","Build a spreadsheet that answers a tricky question",["data","finance","consult","ops","vc"]],
+  ["pitch","Pitch an idea to a room of people",["consult","sales","partner","pm","vc"]],
+  ["screen","Design how an app screen looks and feels",["ux","pm","visual"]],
+  ["event","Plan every detail of a big event",["events","ops","program"]],
+  ["interview","Interview people to find out what they really think",["research","ux","journal","people"]],
+  ["code","Write code that actually works",["swe","data"]],
+  ["deal","Negotiate a deal with another company",["partner","sales","finance","vc"]],
+  ["edit","Edit someone’s writing until it’s sharp",["journal","comms","creator"]],
+  ["coach","Support someone through a tough moment at work",["people","program","recruit"]],
+  ["why","Figure out why sales dropped last month",["data","strategy","ops","consult"]],
+  ["cause","Research a big problem like climate or health care",["sustain","research","policy","program"]],
+  ["roadmap","Decide what a product should build next",["pm","strategy","ux"]],
+  ["vibe","Make a brand feel cool",["brand","social","events","visual"]],
+  ["poster","Make a poster, deck or graphic look great",["visual","brand","ux"]],
+  ["hire","Find the perfect person for a job",["recruit","people"]],
+  ["startup","Size up whether a startup will make it",["vc","strategy","finance"]],
+  ["policy","Write a proposal to change a rule or law",["policy","comms","sustain"]],
 ];
-function qWant(w){const v=[w.sat,w.area,w.t1,w.t2,w.t3,w.t4,...(w.qfor||[]),...(w.qval||[])].filter(Boolean);return v}
-function qMatches(w){const want=qWant(w),ind=w.qind||[],no=w.qnot||[];
-  return DIRS.map(d=>{const hit=d.tags.filter(t=>want.includes(t)),ih=d.ind.filter(i=>ind.includes(i));
-    return {d,score:hit.length+ih.length*1.5-(d.not.some(n=>no.includes(n))?4:0),why:[...hit.slice(0,2).map(t=>QLAB[t]),...ih.slice(0,1).map(i=>QLAB[i])].filter(Boolean)}}).sort((a,b)=>b.score-a.score).slice(0,3)}
+const QT=Object.fromEntries(QTASKS.map(t=>[t[0],t]));
+const DIRS=[
+  {id:"brand",t:"Brand marketing",role:"brand marketing intern",ind:["fashion","consumer"],tags:["make","creative","design","words","people","comm","arts","voice","visual"],not:[]},
+  {id:"social",t:"Social media & content",role:"social media intern",ind:["media","fashion","consumer"],tags:["make","creative","words","hype","comm","improv","fast","writing","voice"],not:["camera"]},
+  {id:"partner",t:"Partnerships",role:"partnerships intern",ind:["tech","sports","media"],tags:["people","org","hype","advice","biz","small","talking","persuade","closer","out","deals"],not:["sales"]},
+  {id:"pm",t:"Product management",role:"product management intern",ind:["tech","startups"],tags:["fig","org","plan","explain","stem","learn","people","breadth","doer","blank"],not:[]},
+  {id:"ux",t:"UX & product design",role:"UX design intern",ind:["tech","startups"],tags:["make","design","creative","arts","fig","alone","visual","voice","back"],not:[]},
+  {id:"data",t:"Data analytics",role:"data analyst intern",ind:["tech","finance","sports","health"],tags:["fig","numbers","alone","stem","plan","learn","depth","smart","back","research"],not:["numbers"]},
+  {id:"consult",t:"Consulting",role:"consulting intern",ind:["finance","health","climate"],tags:["fig","explain","advice","plan","prestige","money","biz","people","big","front","smart","fast"],not:["travel","hours"]},
+  {id:"finance",t:"Investment banking & finance",role:"finance intern",ind:["finance"],tags:["numbers","money","prestige","plan","big","biz","deals","depth"],not:["numbers","hours"]},
+  {id:"swe",t:"Software engineering",role:"software engineering intern",ind:["tech","startups"],tags:["fig","make","tech","stem","alone","money","learn","code","depth","back"],not:["code"]},
+  {id:"events",t:"Event & experiential marketing",role:"events intern",ind:["fashion","sports","media","consumer"],tags:["org","people","hype","plan","improv","creative","fast","organize","out","fun"],not:["travel"]},
+  {id:"comms",t:"Communications & PR",role:"communications intern",ind:["media","fashion","nonprofit"],tags:["words","explain","people","comm","hum","hype","writing","front","voice"],not:["writing","public"]},
+  {id:"journal",t:"Editorial & journalism",role:"editorial intern",ind:["media"],tags:["words","hum","comm","alone","creative","explain","writing","research","edit","depth"],not:["writing"]},
+  {id:"people",t:"People & HR",role:"people operations intern",ind:["tech","nonprofit","health"],tags:["help","people","advice","organize","soc","impact","trusted","stable"],not:[]},
+  {id:"ops",t:"Operations",role:"operations intern",ind:["consumer","tech","health","startups"],tags:["org","organize","plan","numbers","small","fig","doer","breadth","clear"],not:[]},
+  {id:"sales",t:"Sales & business development",role:"business development intern",ind:["tech","sports","consumer"],tags:["people","hype","money","improv","biz","talking","persuade","closer","front","out"],not:["sales","public"]},
+  {id:"program",t:"Program & community work",role:"program intern",ind:["nonprofit","health","climate","edu"],tags:["help","impact","people","org","soc","trusted","organize"],not:[]},
+  {id:"sustain",t:"Sustainability",role:"sustainability intern",ind:["climate","consumer","gov"],tags:["impact","fig","plan","stem","soc","research","depth"],not:[]},
+  {id:"research",t:"Research & strategy",role:"strategy intern",ind:["media","tech","consumer","health"],tags:["fig","explain","words","alone","soc","hum","learn","research","smart","depth"],not:[]},
+  {id:"strategy",t:"Business strategy",role:"strategy and operations intern",ind:["tech","consumer","startups"],tags:["fig","plan","biz","smart","breadth","numbers","explain"],not:[]},
+  {id:"vc",t:"Venture capital & startups",role:"venture capital intern",ind:["startups","tech","finance"],tags:["fig","people","learn","money","small","talking","smart","deals","blank"],not:[]},
+  {id:"policy",t:"Policy & government",role:"policy intern",ind:["gov","climate","health","edu"],tags:["impact","words","research","soc","hum","explain","stable","writing"],not:["writing"]},
+  {id:"visual",t:"Graphic & visual design",role:"graphic design intern",ind:["fashion","media","consumer"],tags:["make","design","creative","arts","visual","alone","voice","back"],not:[]},
+  {id:"recruit",t:"Recruiting & talent",role:"recruiting intern",ind:["tech","finance","startups"],tags:["people","talking","help","trusted","fast","out","advice"],not:["sales"]},
+  {id:"creator",t:"Creator & influencer marketing",role:"influencer marketing intern",ind:["fashion","media","consumer"],tags:["creative","hype","comm","fast","fun","voice","writing","improv"],not:[]},
+];
+const QLAB=Object.fromEntries([...QSAT,...QAREA,...QFOR,...QSKILL,...QKNOWN,...QVAL,...QIND,...QPAIRS.flatMap(p=>[[p[1],p[2]],[p[3],p[4]]])].map(([k,l])=>[k,l.toLowerCase()]));
+function qWant(w){return [w.sat,w.area,...QPAIRS.map(x=>w[x[0]]),w.known,...(w.qfor||[]),...(w.qval||[]),...(w.qskill||[])].filter(Boolean)}
+function qScore(w,d){const want=qWant(w),ind=w.qind||[],no=w.qnot||[];let sc=0;const love=[];
+  d.tags.forEach(t=>{if(want.includes(t))sc+=(w.qskill||[]).includes(t)?1.5:1});
+  sc+=d.ind.filter(i=>ind.includes(i)).length*1.5;
+  QTASKS.forEach(([k,label,ds])=>{if(!ds.includes(d.id))return;const r=w["r_"+k];if(r==="love"){sc+=3;love.push(label)}else if(r==="maybe")sc+=1;else if(r==="no")sc-=2.5});
+  if(d.not.some(n=>no.includes(n)))sc-=5;
+  const dr=String(w.dream||"").toLowerCase();if(dr&&(dr.includes(d.t.toLowerCase().split(/[ &]/)[0])||d.role.split(" ").some(x=>x.length>4&&x!=="intern"&&dr.includes(x))))sc+=3;
+  return{sc,love}}
+function qMatches(w,n){const all=DIRS.map(d=>{const r=qScore(w,d),hit=d.tags.filter(t=>qWant(w).includes(t));
+    return{d,score:r.sc,loves:r.love.slice(0,2).map(l=>l.charAt(0).toLowerCase()+l.slice(1)),likes:hit.slice(0,2).map(t=>QLAB[t]).filter(Boolean),love:r.love.length}}).sort((a,b)=>b.score-a.score);
+  const top=Math.max(1,all[0].score);all.forEach((x,i)=>x.pct=Math.max(40,Math.min(97,Math.round(96*x.score/top-(i?3:0)))));return all.slice(0,n||3)}
 const qChips=(w,k,opts,multi,max)=>`<div class="wk-chips">${opts.map(([v,l])=>`<button class="chip" data-act="${multi?"wkmulti":"wkset"}" data-k="${k}" data-v="${v}"${max?` data-max="${max}"`:""} aria-pressed="${multi?(w[k]||[]).includes(v):w[k]===v}">${esc(l)}</button>`).join("")}</div>`;
+const qRate=(w,keys)=>`<div class="qrate">${keys.map(k=>{const t=QT[k],v=w["r_"+k];return `<div class="qrate-row"><span>${esc(t[1])}</span><div class="qrate-b">${[["love","Love it"],["maybe","Maybe"],["no","No"]].map(([x,l])=>`<button class="chip" data-act="wkset" data-k="r_${k}" data-v="${x}" aria-pressed="${v===x}">${l}</button>`).join("")}</div></div>`}).join("")}</div>`;
+const qPairs=(w,ps)=>`<div class="qpairs">${ps.map(([k,a,al,b,bl])=>`<div class="qpair"><button class="chip" data-act="wkset" data-k="${k}" data-v="${a}" aria-pressed="${w[k]===a}">${al}</button><span>or</span><button class="chip" data-act="wkset" data-k="${k}" data-v="${b}" aria-pressed="${w[k]===b}">${bl}</button></div>`).join("")}</div>`;
+const QN=15,qe=(n,x)=>`<span class="wk-eye">${n} of ${QN}${x?" · "+x:""}</span>`;
 const WKQ=[
   {sec:"intro",start:1,r:()=>""},
-  {sec:"you",r:(p,w)=>`<span class="wk-eye">1 of 7</span><h2 class="wk-h">Pick the one that sounds most like you on a free Saturday.</h2>${qChips(w,"sat",QSAT)}`},
-  {sec:"you",r:(p,w)=>`<span class="wk-eye">2 of 7</span><h2 class="wk-h">Which class or project made you lose track of time?</h2>${qChips(w,"area",QAREA)}
+  {sec:"you",r:(p,w)=>`${qe(1)}<h2 class="wk-h">A free Saturday. What are you most likely doing?</h2>${qChips(w,"sat",QSAT)}`},
+  {sec:"you",r:(p,w)=>`${qe(2)}<h2 class="wk-h">Which class or project made you lose track of time?</h2>${qChips(w,"area",QAREA)}
     <div class="wk-you" style="border:0;padding:0"><input class="input" data-wk="proj" value="${esc(w.proj||"")}" placeholder="Optional: the project was…"></div>`},
-  {sec:"you",r:(p,w)=>`<span class="wk-eye">3 of 7 · This or that</span><h2 class="wk-h">Which would you rather do for a whole afternoon?</h2>
-    <div class="qpairs">${QPAIRS.map(([k,a,al,b,bl])=>`<div class="qpair"><button class="chip" data-act="wkset" data-k="${k}" data-v="${a}" aria-pressed="${w[k]===a}">${al}</button><span>or</span><button class="chip" data-act="wkset" data-k="${k}" data-v="${b}" aria-pressed="${w[k]===b}">${bl}</button></div>`).join("")}</div>`},
-  {sec:"you",r:(p,w)=>`<span class="wk-eye">4 of 7</span><h2 class="wk-h">What do people come to you for?</h2><p class="wk-hint">Pick up to 2.</p>${qChips(w,"qfor",QFOR,1,2)}`},
-  {sec:"want",r:(p,w)=>`<span class="wk-eye">5 of 7</span><h2 class="wk-h">What matters most in your first job?</h2><p class="wk-hint">Pick 2.</p>${qChips(w,"qval",QVAL,1,2)}`},
-  {sec:"want",r:(p,w)=>`<span class="wk-eye">6 of 7</span><h2 class="wk-h">Any industries you’re curious about?</h2><p class="wk-hint">Tap all that sound interesting.</p>${qChips(w,"qind",QIND,1)}`},
-  {sec:"want",r:(p,w)=>`<span class="wk-eye">7 of 7 · Optional</span><h2 class="wk-h">Anything you already know you don’t want?</h2>${qChips(w,"qnot",QNOT,1)}`},
-  {sec:"match",r:(p,w)=>{const m=qMatches(w);w.matches=m.map(x=>x.d.t);
-    return `<span class="wk-eye">Your matches</span><h2 class="wk-h">Here are 3 directions worth testing.</h2>
-    <div class="wk-hk">${m.map((x,i)=>`<div class="wk-hk-card qmatch"><span class="wk-hk-n">${i+1}</span><b>${esc(x.d.t)}</b><p>Search for: <em>${esc(x.d.role)}</em></p><p class="qwhy">${x.why.length?"Because you like "+esc(x.why.join(", ")):"A good one to test early."}</p></div>`).join("")}</div>
-    <div class="wk-you" style="border:0;padding:0"><label>Pick one to explore first</label>${qChips(w,"pick",m.map(x=>[x.d.t,x.d.t]))}<p class="wk-hint">You can change it later.</p></div>`}},
+  {sec:"you",r:(p,w)=>`${qe(3,"This or that")}<h2 class="wk-h">How do you like to work?</h2>${qPairs(w,QPAIRS.slice(0,4))}`},
+  {sec:"you",r:(p,w)=>`${qe(4,"This or that")}<h2 class="wk-h">And what kind of days?</h2>${qPairs(w,QPAIRS.slice(4))}`},
+  {sec:"you",r:(p,w)=>`${qe(5)}<h2 class="wk-h">What do friends come to you for?</h2><p class="wk-hint">Pick up to 2.</p>${qChips(w,"qfor",QFOR,1,2)}`},
+  {sec:"you",r:(p,w)=>`${qe(6)}<h2 class="wk-h">What are you genuinely good at?</h2><p class="wk-hint">Not what sounds good. Pick up to 3.</p>${qChips(w,"qskill",QSKILL,1,3)}`},
+  {sec:"you",r:(p,w)=>`${qe(7)}<h2 class="wk-h">In a group project, you’re…</h2>${qChips(w,"known",QKNOWN)}`},
+  {sec:"day",r:(p,w)=>`${qe(8,"Real tasks")}<h2 class="wk-h">Would you enjoy doing this at work?</h2><p class="wk-hint">Go with your gut. This matters most for your matches.</p>${qRate(w,QTASKS.slice(0,6).map(t=>t[0]))}`},
+  {sec:"day",r:(p,w)=>`${qe(9,"Real tasks")}<h2 class="wk-h">How about these?</h2>${qRate(w,QTASKS.slice(6,12).map(t=>t[0]))}`},
+  {sec:"day",r:(p,w)=>`${qe(10,"Real tasks")}<h2 class="wk-h">Last few.</h2>${qRate(w,QTASKS.slice(12).map(t=>t[0]))}`},
+  {sec:"want",r:(p,w)=>`${qe(11)}<h2 class="wk-h">What matters most in your first job?</h2><p class="wk-hint">Pick 2.</p>${qChips(w,"qval",QVAL,1,2)}`},
+  {sec:"want",r:(p,w)=>`${qe(12)}<h2 class="wk-h">Which industries sound interesting?</h2><p class="wk-hint">Pick all that apply.</p>${qChips(w,"qind",QIND,1)}`},
+  {sec:"want",r:(p,w)=>`${qe(13,"Optional")}<h2 class="wk-h">Anything you already know you don’t want?</h2>${qChips(w,"qnot",QNOT,1)}`},
+  {sec:"want",r:(p,w)=>`${qe(14,"Optional")}<h2 class="wk-h">Any job you’ve always been curious about?</h2><p class="wk-hint">Even if it feels random. We’ll factor it in.</p><div class="wk-you" style="border:0;padding:0"><input class="input" data-wk="dream" value="${esc(w.dream||"")}" placeholder="e.g. Working for a music label"></div>`},
+  {sec:"want",r:(p,w)=>`${qe(15)}<h2 class="wk-h">How open are you to something you haven’t considered?</h2>${qChips(w,"open",[["low","Stick close to what I know"],["mid","Somewhat open"],["high","Surprise me"]])}`},
+  {sec:"match",r:(p,w)=>{const all=qMatches(w,6),m=w.more?all:all.slice(0,3);w.matches=m.map(x=>x.d.t);
+    return `<span class="wk-eye">Your matches</span><h2 class="wk-h">${w.more?"Your top 6 directions.":"3 directions worth testing."}</h2>
+    <div class="qm-list">${m.map((x,i)=>`<div class="qm"><div class="qm-top"><span class="qm-n">${i+1}</span><b>${esc(x.d.t)}</b><span class="qm-pct">${x.pct}% match</span></div><p class="qm-why">${x.loves.length?"You’d love to "+esc(listJoin(x.loves))+". ":""}${x.likes.length?"You’re into "+esc(listJoin(x.likes))+".":""}${!x.loves.length&&!x.likes.length?"Worth a test run.":""}</p><p class="qm-role">Search for <em>${esc(x.d.role)}</em></p></div>`).join("")}</div>
+    ${w.more?"":`<button class="link qm-more" data-act="wkset" data-k="more" data-v="1">Not quite you? See 3 more</button>`}
+    <div class="wk-you" style="border:0;padding:0"><label>Pick one to explore first</label>${qChips(w,"pick",m.map(x=>[x.d.t,x.d.t]))}<p class="wk-hint">You’ll test it with real conversations next. You can change it any time.</p></div>`}},
 ];
 const WKS={
   workshop:{slides:()=>WK,store:"wk",done:"linkedin",parts:["profile","net","hacks"],names:WK_SEC,label:"Mark LinkedIn done →"},
@@ -3283,7 +3364,7 @@ const WKS={
   outreach:{slides:()=>WKO,store:"wko",done:"email",parts:["formula","examples","write"],names:{formula:"Formula",examples:"Examples",write:"Write"},label:"Mark note done →"},
   pitch:{slides:()=>WKP,store:"wkp",done:"pitch",parts:["you","qs","door","follow"],names:{you:"Intro",qs:"Questions",door:"Door open",follow:"Follow up"},label:"Mark prep done →"},
   resume:{slides:()=>WKR,store:"wkr",done:"resume",parts:["bullets","content","format"],names:{bullets:"Bullets",content:"Content",format:"Format"},label:"Mark resume done →"},
-  careerquiz:{slides:()=>WKQ,store:"wkq",done:"quiz",parts:["you","want","match"],names:{you:"You",want:"What you want",match:"Your matches"},label:"Save my match →"},
+  careerquiz:{slides:()=>WKQ,store:"wkq",done:"quiz",parts:["you","day","want","match"],names:{you:"You",day:"Real tasks",want:"What you want",match:"Your matches"},label:"Save my match →"},
   interview:{slides:()=>WKI,store:"wki",done:"interview",parts:["story","biz","ask","prep"],names:{story:"Storytell",biz:"Business",ask:"Questions",prep:"Prep"},label:"Mark interview prep done →"},
 };
 const curW=()=>WKS[route()]||WKS.workshop;
@@ -3347,10 +3428,10 @@ function vPlanReady(p){const pl=plan(p);
   return `<div class="app bare duo-screen"><main class="duo-center pl-done">
     ${burstHTML()}
     <h1 class="duo-title pl-title">Your plan is ready!</h1>
-    ${p.arch?`<p class="pl-arch">${ARCH[p.arch.lvl-1].e} Built for <b>${esc(ARCH[p.arch.lvl-1].name)}</b></p>`:""}
+    ${p.arch?`<p class="pl-arch">Built for <b>${esc(ARCH[p.arch.lvl-1].name)}</b></p>`:""}
     <p class="duo-sub pl-sub">${p.first&&p.first!=="there"?esc(p.first)+", let’s":"Let’s"} get you that internship.</p>
     ${pl?(()=>{const st=CK(p),due=checkDue(p,pl),ri=st.findIndex(c=>c.k==="resume");let k=0;const row=(img,n,name,sub,cls)=>`<li class="pls ${cls||""}" style="--i:${k++}"><span class="pls-n">${n}</span><span class="pls-lan">${img}</span><span class="pls-t"><b>${name}</b><em>${sub}</em></span></li>`;
-      const ex=new Set(p.arch&&p.arch.lvl>=4?p.needsExtra||[]:[]),rows=st.map((c,i)=>row(lan("idle",56,LAN_POSE[c.k]),i+1,esc(c.n)+(ex.has(c.k)?` <i class="pls-x">We spotted this</i>`:""),`~${esc(c.m)} · by ${fmt(due[i])}`,i===0?"first":"")+(i===ri?row(`<span class="pls-flag">🎯</span>`,"",`Apply`,`by ${fmt(pl.deadline)}`,"apply"):"")).join("");
+      const ex=new Set(p.arch&&p.arch.lvl>=4?p.needsExtra||[]:[]),rows=st.map((c,i)=>row(lan("idle",56,LAN_POSE[c.k]),i+1,esc(c.n)+(ex.has(c.k)?` <i class="pls-x">We spotted this</i>`:""),`~${esc(c.m)} · by ${fmt(due[i])}`,i===0?"first":"")+(i===ri?row(`<span class="pls-flag"></span>`,"",`Apply`,`by ${fmt(pl.deadline)}`,"apply"):"")).join("");
       UI.plCount=k;return `<ol class="pl-steps">${rows}</ol>`})():""}
     <button class="btn primary duo-cta pl-cta" style="--i:${UI.plCount||7}" data-act="planok">Let’s go</button>
   </main></div>`}
@@ -3408,10 +3489,10 @@ function fib(k,tpl,w,defs){const f=w[k+"_f"]||(w[k+"_f"]={});if(defs)Object.entr
 function vWorkshop(){
   const cfg=curW(),S_=cfg.slides(),p=P(),w=wkData(p),i=Math.min(w.i||0,S_.length-1),sl=S_[i],last=i===S_.length-1,done=(p.checklist||{})[cfg.done];
   const order=cfg.parts,k=order.indexOf(sl.sec);
-  return shell("today",`<div class="wk">
+  return shell("today",`<div class="wk${route()==="careerquiz"?" wk-cq":""}">
     <div class="wk-top"><div class="wk-parts">${order.map((x,j)=>`<span class="wk-part${j===k?" on":""}${(k>j||sl.sec==="end")?" done":""}">${cfg.names[x]}</span>`).join("")}</div><button class="link" data-act="wkexit">Save &amp; exit</button></div>
     <div class="wk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${S_.length}" aria-valuenow="${i+1}"><i style="width:${((i+1)/S_.length*100).toFixed(1)}%"></i></div>
-    <section class="wk-slide${sl.start?" wk-start":""}${UI.wkDir?" in-"+UI.wkDir:""}" aria-live="polite">${sl.start?(c=>`<span class="wk-eye">Step ${CK(typeof p!=="undefined"?p:null).indexOf(c)+1}</span><h1 class="wk-h">${esc(c.n)}</h1><p class="wk-p">⏱ About ${esc(c.m)}</p>`)(CK(typeof p!=="undefined"?p:null).find(c=>c.k===cfg.done)):sl.r(p,w)}</section>
+    <section class="wk-slide${sl.start?" wk-start":""}${UI.wkDir?" in-"+UI.wkDir:""}" aria-live="polite">${sl.start?(c=>`<span class="wk-eye">${(n=>n>=0?"Step "+(n+1):"Extra step")(CK(typeof p!=="undefined"?p:null).indexOf(c))}</span><h1 class="wk-h">${esc(c.n)}</h1><p class="wk-p">About ${esc(c.m)}</p>`)((CK(typeof p!=="undefined"?p:null).find(c=>c.k===cfg.done)||(cfg.done==="quiz"?QUIZ_STEP:CHECK_BASE.find(c=>c.k===cfg.done)))):sl.r(p,w)}</section>
     <div class="wk-nav">${i===0?"<span></span>":`<button class="btn ghost sm" data-act="wkgo" data-d="-1">← Back</button>`}
       ${last?`<button class="btn primary" data-act="wkdone">${done?"Back home →":cfg.label}</button>`:`<button class="btn primary" data-act="wkgo" data-d="1">${i===0?"Start workshop →":"Next →"}</button>`}</div>
   </div>`);
@@ -3525,7 +3606,7 @@ function calendarView(p,pl,due,cur,mock){
   const ri=CK(typeof p!=="undefined"?p:null).findIndex(c=>c.k==="resume");
   const row=(c,i)=>{const done=i<cur,now=i===cur,late=now&&TODAY>due[i];
     return `<li class="cs ${done?"done":now?"now":""}${late?" late":""}"><span class="cs-dot">${done?"✓":i+1}</span><span class="cs-name">${esc(c.n)}</span><span class="cs-date">${done?"Done":(late?"Late · ":"by ")+fmt(due[i])}</span></li>`};
-  return `<ol class="csteps">${CK(typeof p!=="undefined"?p:null).map((c,i)=>row(c,i)+(i===ri?`<li class="cs apply"><span class="cs-dot">🎯</span><span class="cs-name">Apply</span><span class="cs-date">by ${fmt(pl.deadline)}</span></li>`:"")).join("")}</ol>
+  return `<ol class="csteps">${CK(typeof p!=="undefined"?p:null).map((c,i)=>row(c,i)+(i===ri?`<li class="cs apply"><span class="cs-dot"></span><span class="cs-name">Apply</span><span class="cs-date">by ${fmt(pl.deadline)}</span></li>`:"")).join("")}</ol>
     ${mock?"":`<div class="sd-foot">${UI.editDl?`<span class="row" style="gap:8px"><input class="input mono" type="date" id="dl-input" value="${pl.deadline}" min="${TODAY}" max="${addDays(pl.start,-1)}" style="width:auto;padding:6px 10px"><button class="btn primary sm" data-act="savedl">Save</button><button class="link" data-act="resetdl">Use typical</button></span>`:`<button class="link" data-act="editdl">Change apply-by date</button>`}</div>`}`;
 }
 function countdownStrip(pl,mock,pp){
@@ -3754,7 +3835,7 @@ window.addEventListener("hashchange",onRoute);
 function ensureArr(o,k){if(!Array.isArray(o[k]))o[k]=[];return o[k]}
 const ACT={
   go:el=>{if(el.dataset.r==="login")AUTH.mode=el.dataset.mode||(S.profiles.you?"signup":"login"),AUTH.msg="";go(el.dataset.r)},
-  archshare:()=>{const c=clarityFrom(F?F.a:{}),A=c.arch,t=`I’m ${A.name} ${A.e} (${A.who} energy). Clarity score ${c.score}/100. What’s your internship archetype?`,u=location.href.split("#")[0];
+  archshare:()=>{const c=clarityFrom(F?F.a:{}),A=c.arch,t=`I’m ${A.name} (${A.who} energy). Clarity score ${c.score}/100. What’s your internship archetype?`,u=location.href.split("#")[0];
     if(navigator.share){navigator.share({title:"My internship archetype",text:t,url:u}).catch(()=>{});return}
     try{navigator.clipboard.writeText(t+" "+u).then(()=>toast("Copied. Paste it anywhere!"),()=>toast(t))}catch(e){toast(t)}},
   startgoal:el=>{UI.presetGoal=el.dataset.v;diagFlow=null;UI.diagSummary=null;go("start")},
