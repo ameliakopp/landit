@@ -1662,6 +1662,13 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 .duo-note i{font-style:normal;flex:none;width:20px;height:20px;border-radius:50%;background:#C6F432;color:#14170F;display:grid;place-items:center;font-size:12px;font-weight:800}
 .pl-arch{margin:-6px 0 4px;font-size:15px;color:var(--muted)}.pl-arch b{color:var(--ink)}
 .pls-x{font-style:normal;font-size:11px;font-weight:700;color:#B4541A;background:#FDEBDD;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:2px;white-space:nowrap}
+.arch-who{margin:-4px 0 0;font-size:17px;color:var(--ink);animation:archup .5s .4s both}.arch-who b{font-weight:700;background:#EAF6C8;padding:3px 10px;border-radius:999px}.arch-who em{color:var(--muted);font-size:14px}
+.arch-badge.has-img{width:150px;height:150px;overflow:hidden;position:relative;padding:0}
+.arch-badge.has-img img{width:100%;height:100%;object-fit:cover;border-radius:50%;border:5px solid #C6F432}
+.arch-badge.has-img span{position:absolute;right:2px;bottom:2px;width:46px;height:46px;font-size:26px;display:grid;place-items:center;background:#fff;border-radius:50%;box-shadow:0 4px 12px -4px rgba(0,0,0,.3)}
+.arch-next{display:flex;gap:10px;align-items:flex-start;width:100%;margin:0;padding:12px 16px;border-radius:16px;border:1.5px dashed #C9D6A5;text-align:left;font-size:15px;line-height:1.45;color:#3E4437}
+.arch-next i{font-style:normal;flex:none;width:22px;height:22px;border-radius:50%;background:#C6F432;display:grid;place-items:center;font-size:13px;font-weight:800;color:#14170F}
+.arch-share{margin-top:2px}
 </style>
 </head>
 <body>
@@ -2351,23 +2358,23 @@ function realityFrom(a){const k=(a.help||[])[0];if(!k||!RC[k])return null;let sc
 const LEVEL={ready:"Ready to go",push:"Needs a push",coach:"Needs coaching first"};
 /* ---------- Clarity archetypes (part 1 of the intake, same for everyone) ---------- */
 const ARCH=[
-  {lvl:1,k:"wanderer",e:"🌫️",name:"The Wide-Open Wanderer",tag:"Everything sounds kind of interesting. Nothing has pulled you in yet.",
+  {lvl:1,k:"explorer",e:"🧭",name:"The Explorer",tag:"Everything’s interesting, nothing’s clicked yet.",who:"Rachel Green",whoSub:"season 1",whoWhy:"Walked out of the plan, open to everything, figuring it out as she goes.",next:"Talk to 2 people in fields you’re curious about to become The Detective.",
     desc:"You’re open to a lot, which is a real strength, but right now you couldn’t tell a recruiter what you want. That makes every application a guess. The fix isn’t more applications. It’s a few honest conversations that show you what jobs actually look like.",
     power:"You’re genuinely open-minded",blind:"Applying before you know what you’re applying for",
     plan:"Your plan starts with clarity, not applications: a career quiz, then real conversations with people in a few fields. Resume and interviews come once you have a target."},
-  {lvl:2,k:"spray",e:"📮",name:"The Spray-and-Pray Applier",tag:"Lots of effort, aimed at everything at once.",
+  {lvl:2,k:"shotgun",e:"🎯",name:"The Shotgun",tag:"Lots of applications, aimed at everything.",who:"Joey Tribbiani",whoWhy:"Auditions for literally everything and hopes something sticks.",next:"Pause the mass-applying and pick one field to become The Detective.",
     desc:"You’re putting in the work, and that matters. But a wide net with no clear target gets you silence, not interviews. Recruiters can tell when a resume could be for any job. Narrowing down will feel slower and get you further.",
     power:"You’re willing to put in the hours",blind:"Treating applications as a numbers game",
     plan:"Your plan pauses the mass-applying. First you’ll narrow to one or two directions and talk to people in them, then apply to fewer roles with someone vouching for you."},
-  {lvl:3,k:"narrower",e:"🔍",name:"The Curious Narrower",tag:"You know the neighbourhood, not the exact address.",
+  {lvl:3,k:"detective",e:"🔍",name:"The Detective",tag:"You’ve got a lead. Now you need to crack it.",who:"Andy Sachs",whoSub:"The Devil Wears Prada",whoWhy:"Knows the world she wants, not yet the exact seat.",next:"Name one specific role and have one coffee chat about it to become The Builder.",
     desc:"You’ve got a field in mind, but not a specific role you could name and defend. That’s a great place to be: you’re one or two conversations away from a real target. The risk is staying vague and applying to everything in the field.",
     power:"You already know where to look",blind:"Staying at “something in marketing” for too long",
     plan:"Your plan starts by turning your field into one specific role, through a short quiz and a few chats with insiders. Then LinkedIn, resume and interview prep all point at that role."},
-  {lvl:4,k:"builder",e:"🧩",name:"The Focused Builder",tag:"You know the role. Now you need the proof and the people.",
+  {lvl:4,k:"builder",e:"🛠️",name:"The Builder",tag:"You know the role. Time to build the case for you.",who:"Elle Woods",whoWhy:"Knows exactly where she’s going and is building the case to get in.",next:"Get one person inside to vouch for you to become The Closer.",
     desc:"You can say what you want, and that already puts you ahead of most students. What’s missing is the stuff that gets you picked: a profile and resume that match the role, and people inside who know your name.",
     power:"A clear target",blind:"Thinking clarity alone gets you the interview",
     plan:"Your plan skips the soul-searching and goes straight to the gaps you told us about, plus anything we spotted in your answers."},
-  {lvl:5,k:"closer",e:"🚀",name:"The Ready Closer",tag:"Clear target, real plan. You just need polish.",
+  {lvl:5,k:"closer",e:"🚀",name:"The Closer",tag:"Clear target, real plan. Go get it.",who:"Harvey Specter",whoSub:"Suits",whoWhy:"Clear target, knows the right people, closes.",next:"",
     desc:"You know exactly what you want and why, you’ve talked to people, and you’re not just firing off applications. Your plan is short on purpose: tighten the few things that still need work and go.",
     power:"You can say what you want, and why",blind:"Over-preparing instead of applying",
     plan:"Your plan is short: only the areas you want to brush up on, plus anything we spotted. Then apply."},
@@ -3258,9 +3265,10 @@ function archHTML(f,top){const a=f.a,c=clarityFrom(a),A=c.arch,why=clarityWhy(a)
   return `<div class="duo arch-screen" data-q="arch">${top}
     <div class="arch">
       <span class="arch-eye">Your internship archetype</span>
-      <div class="arch-badge"><span>${A.e}</span></div>
+      <div class="arch-badge${A.img?" has-img":""}">${A.img?`<img src="${A.img}" alt="${esc(A.who)}">`:""}<span>${A.e}</span></div>
       <h1 class="arch-name"><small>You’re</small>${esc(A.name)}</h1>
-      <p class="arch-tag">${esc(A.tag)}</p>
+      <p class="arch-who"><b>${esc(A.who)} energy</b>${A.whoSub?` <em>(${esc(A.whoSub)})</em>`:""}</p>
+      <p class="arch-tag">${esc(A.whoWhy)}</p>
       <div class="arch-meter" role="img" aria-label="Clarity score ${c.score} out of 100">
         <div class="arch-meter-top"><b>Clarity score</b><span><em data-count="${c.score}">${c.score}</em>/100</span></div>
         <div class="arch-track">${ARCH.map(x=>`<i class="${x.lvl<=c.lvl?"on":""}${x.lvl===c.lvl?" me":""}" style="--d:${x.lvl}"></i>`).join("")}</div>
@@ -3270,7 +3278,9 @@ function archHTML(f,top){const a=f.a,c=clarityFrom(a),A=c.arch,why=clarityWhy(a)
       <div class="arch-two"><div><span>Your superpower</span><b>${esc(A.power)}</b></div><div><span>Your blind spot</span><b>${esc(A.blind)}</b></div></div>
       ${why.length?`<div class="arch-why"><span>Why we think so</span><ul>${why.map(w=>`<li>You said ${esc(w)}.</li>`).join("")}</ul></div>`:""}
       <div class="arch-plan"><span>What this means for your plan</span><p>${esc(A.plan)}</p></div>
-      <div class="arch-all">${ARCH.map(x=>`<span class="${x.lvl===c.lvl?"me":""}" title="${esc(x.name)}">${x.e}<em>${esc(x.name.replace(/^The /,""))}</em></span>`).join("")}</div>
+      ${A.next?`<p class="arch-next"><i>↑</i><span><b>Level up:</b> ${esc(A.next)}</span></p>`:`<p class="arch-next"><i>★</i><span><b>Top level.</b> Now go apply.</span></p>`}
+      <button class="btn ghost arch-share" data-act="archshare">Share my archetype</button>
+      <div class="arch-all">${ARCH.map(x=>`<span class="${x.lvl===c.lvl?"me":""}" title="${esc(x.name)}: ${esc(x.who)} energy">${x.e}<em>${esc(x.name.replace(/^The /,""))}</em></span>`).join("")}</div>
     </div>
     <div class="duo-foot"><button class="btn primary duo-cta" data-act="next">Next: build my plan →</button></div>
   </div>`}
@@ -3660,6 +3670,9 @@ window.addEventListener("hashchange",onRoute);
 function ensureArr(o,k){if(!Array.isArray(o[k]))o[k]=[];return o[k]}
 const ACT={
   go:el=>{if(el.dataset.r==="login")AUTH.mode=el.dataset.mode||(S.profiles.you?"signup":"login"),AUTH.msg="";go(el.dataset.r)},
+  archshare:()=>{const c=clarityFrom(F?F.a:{}),A=c.arch,t=`I’m ${A.name} ${A.e} (${A.who} energy). Clarity score ${c.score}/100. What’s your internship archetype?`,u=location.href.split("#")[0];
+    if(navigator.share){navigator.share({title:"My internship archetype",text:t,url:u}).catch(()=>{});return}
+    try{navigator.clipboard.writeText(t+" "+u).then(()=>toast("Copied. Paste it anywhere!"),()=>toast(t))}catch(e){toast(t)}},
   startgoal:el=>{UI.presetGoal=el.dataset.v;diagFlow=null;UI.diagSummary=null;go("start")},
   startwhen:el=>{UI.presetWhen=el.dataset.v||null;diagFlow=null;UI.diagSummary=null;go("start")},
   switch:el=>{S.active=el.dataset.k;save();clearHome();render()},
