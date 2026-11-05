@@ -16,7 +16,7 @@
 <meta name="description" content="A week-by-week plan to land your internship, one clear step at a time.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&family=Inter+Tight:wght@400;500;600;700;800;900&family=Archivo:wght@800&family=DM+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@300;400;500;600;700;800&family=Inter+Tight:wght@400;500;600;700;800;900&family=Archivo:wght@800&family=DM+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: quiet left rail + one dominant "next step" card; six indicators as soft rings with an uncertainty band; everything else is calm cards on a cool mineral ground */
 /* Layout: black ground, huge geometric type, one glowing "signal orb" as the signature; white bands on the landing page only */
@@ -1670,6 +1670,38 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 .arch-next i{font-style:normal;flex:none;width:22px;height:22px;border-radius:50%;background:#C6F432;display:grid;place-items:center;font-size:13px;font-weight:800;color:#14170F}
 .arch-share{margin-top:2px}
 .arch-all img{width:40px;height:40px;border-radius:50%;object-fit:cover}.arch-all span:not(.me) img{filter:grayscale(1)}
+/* Gen Z result card */
+.arch-screen{position:relative;gap:18px}
+.ar-rays{position:fixed;inset:0;z-index:-1;background:repeating-conic-gradient(from 0deg at 50% 38%,#DDF39A 0 9deg,#EEF8CC 9deg 18deg);opacity:.75;animation:arspin 60s linear infinite}
+@keyframes arspin{to{transform:rotate(360deg) scale(1.6)}}
+.ar-rays{transform:scale(1.6)}
+.ar-card{background:#fff;border-radius:28px;padding:18px 18px 22px;box-shadow:0 30px 60px -30px rgba(20,24,16,.45),0 2px 6px rgba(20,24,16,.06);display:flex;flex-direction:column;gap:12px;animation:arin .6s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes arin{from{transform:translateY(30px) scale(.94) rotate(-1.5deg);opacity:0}to{transform:none;opacity:1}}
+.ar-res{margin:0;font-size:14px;font-weight:600;color:var(--muted);padding-bottom:10px;border-bottom:1px solid #EEF0EA}
+.ar-photo{position:relative;border-radius:20px;overflow:visible}
+.ar-photo img{display:block;width:100%;aspect-ratio:5/4;object-fit:cover;object-position:50% 25%;border-radius:20px}
+.ar-match{position:absolute;top:-10px;right:-8px;width:86px;height:86px;border-radius:50%;background:#14170F;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid #fff;box-shadow:0 10px 24px -10px rgba(0,0,0,.5);transform:rotate(8deg);animation:arpop .6s .45s cubic-bezier(.2,1.6,.4,1) both}
+.ar-match b{font-family:"Bricolage Grotesque",var(--f-display);font-size:30px;line-height:1;color:#C6F432}
+.ar-match em{font-style:normal;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#D9DDD3}
+@keyframes arpop{from{transform:scale(0) rotate(-30deg)}to{transform:rotate(8deg)}}
+.ar-name{font-family:"Bricolage Grotesque",var(--f-display);font-weight:800;font-size:clamp(38px,9vw,54px);line-height:.95;letter-spacing:-.035em;margin:6px 0 0;text-align:center}
+.ar-name small{display:block;font-family:"Figtree",sans-serif;font-size:17px;font-weight:600;letter-spacing:0;color:var(--muted);margin-bottom:6px}
+.ar-name span{font-size:.75em}
+.ar-who{margin:0;text-align:center;font-size:16px;font-weight:700}.ar-who em{font-weight:500;color:var(--muted)}
+.ar-who{align-self:center;background:#EAF6C8;color:#2F420A;padding:5px 14px;border-radius:999px}
+.ar-desc{margin:4px 0 0;font-size:17px;line-height:1.55;color:#2B3025}
+.ar-traits{list-style:none;margin:0;padding:12px 0 0;border-top:1px solid #EEF0EA;display:flex;flex-direction:column;gap:8px}
+.ar-traits li{display:flex;gap:10px;align-items:center;font-size:16.5px;font-weight:500}
+.ar-traits li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;background:#C6F432;color:#14170F;display:grid;place-items:center;font-size:13px;font-weight:800}
+.ar-receipts{margin:2px 0 0;font-size:14.5px;line-height:1.45;color:var(--muted)}.ar-receipts b{color:var(--ink)}
+.ar-store{margin-top:4px;background:#14170F;color:#fff;border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.ar-store>span{font-family:"Bricolage Grotesque",var(--f-display);font-size:22px;font-weight:800;letter-spacing:-.02em;color:#C6F432}
+.ar-store ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;counter-reset:st}
+.ar-store li{font-size:16px;line-height:1.4;color:#EEF1E9;padding:10px 12px;background:rgba(255,255,255,.07);border-radius:12px}
+.ar-next{margin:2px 0 0;font-size:13.5px;color:#AEB4A6}
+.ar-share{align-self:center;border:0;background:none;font:inherit;font-size:15px;font-weight:600;color:#3D5410;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px 8px}
+@media (min-width:700px){.ar-card{padding:22px 26px 26px;max-width:500px;width:100%;margin:0 auto}}
+@media (prefers-reduced-motion:reduce){.ar-rays,.ar-card,.ar-match{animation:none}}
 </style>
 </head>
 <body>
@@ -2359,23 +2391,23 @@ function realityFrom(a){const k=(a.help||[])[0];if(!k||!RC[k])return null;let sc
 const LEVEL={ready:"Ready to go",push:"Needs a push",coach:"Needs coaching first"};
 /* ---------- Clarity archetypes (part 1 of the intake, same for everyone) ---------- */
 const ARCH=[
-  {lvl:1,k:"explorer",img:"img/arch/explorer.jpg",e:"🧭",name:"The Explorer",tag:"Everything’s interesting, nothing’s clicked yet.",who:"Rachel Green",whoSub:"season 1",whoWhy:"Walked out of the plan, open to everything, figuring it out as she goes.",next:"Talk to 2 people in fields you’re curious about to become The Detective.",
+  {lvl:1,k:"explorer",img:"img/arch/explorer.jpg",gz:"You’re open to literally everything, which is honestly a vibe. But if a recruiter asked what you want right now, you’d say “umm… something fun?” No shame. Rachel didn’t have a plan either, and she ended up at Ralph Lauren.",traits:["Curious about everything", "Hasn’t committed (yet)", "Great in a conversation", "Low-key overwhelmed by the options"],store:["🧭 A 5-minute quiz to find 3 directions worth testing", "☕ Real conversations with people in those fields", "📄 LinkedIn, resume and interviews, once you have a target"],e:"🧭",name:"The Explorer",tag:"Everything’s interesting, nothing’s clicked yet.",who:"Rachel Green",whoSub:"season 1",whoWhy:"Walked out of the plan, open to everything, figuring it out as she goes.",next:"Talk to 2 people in fields you’re curious about to become The Detective.",
     desc:"You’re open to a lot, which is a real strength, but right now you couldn’t tell a recruiter what you want. That makes every application a guess. The fix isn’t more applications. It’s a few honest conversations that show you what jobs actually look like.",
     power:"You’re genuinely open-minded",blind:"Applying before you know what you’re applying for",
     plan:"Your plan starts with clarity, not applications: a career quiz, then real conversations with people in a few fields. Resume and interviews come once you have a target."},
-  {lvl:2,k:"shotgun",img:"img/arch/shotgun.jpg",e:"🎯",name:"The Shotgun",tag:"Lots of applications, aimed at everything.",who:"Joey Tribbiani",whoWhy:"Auditions for literally everything and hopes something sticks.",next:"Pause the mass-applying and pick one field to become The Detective.",
+  {lvl:2,k:"shotgun",img:"img/arch/shotgun.jpg",gz:"You’ve sent so many applications you couldn’t name half of them. The effort is real. The aim is… not. Joey auditioned for everything too, and mostly heard “next.” Time to swap volume for aim.",traits:["Hard worker, no question", "Applies first, thinks later", "Mostly unbothered by rejection", "Allergic to tailoring a resume"],store:["✋ Pause the mass-applying (yes, really)", "🧭 Narrow down to 1–2 directions with a quick quiz", "🤝 Get someone inside to vouch for you before you apply again"],e:"🎯",name:"The Shotgun",tag:"Lots of applications, aimed at everything.",who:"Joey Tribbiani",whoWhy:"Auditions for literally everything and hopes something sticks.",next:"Pause the mass-applying and pick one field to become The Detective.",
     desc:"You’re putting in the work, and that matters. But a wide net with no clear target gets you silence, not interviews. Recruiters can tell when a resume could be for any job. Narrowing down will feel slower and get you further.",
     power:"You’re willing to put in the hours",blind:"Treating applications as a numbers game",
     plan:"Your plan pauses the mass-applying. First you’ll narrow to one or two directions and talk to people in them, then apply to fewer roles with someone vouching for you."},
-  {lvl:3,k:"detective",img:"img/arch/detective.jpg",e:"🔍",name:"The Detective",tag:"You’ve got a lead. Now you need to crack it.",who:"Andy Sachs",whoSub:"The Devil Wears Prada",whoWhy:"Knows the world she wants, not yet the exact seat.",next:"Name one specific role and have one coffee chat about it to become The Builder.",
+  {lvl:3,k:"detective",img:"img/arch/detective.jpg",gz:"You know the world you want to be in, you just haven’t found your exact seat at the table. You’re one or two good conversations away from cracking it. Andy wanted journalism, landed at Runway, and figured it out from the inside.",traits:["Knows the field", "Asks good questions", "Still says “something in…”", "Almost ready to commit"],store:["🎯 Turn your field into one specific role", "☕ Coffee chats with people already doing it", "📄 Point your LinkedIn and resume at that role"],e:"🔍",name:"The Detective",tag:"You’ve got a lead. Now you need to crack it.",who:"Andy Sachs",whoSub:"The Devil Wears Prada",whoWhy:"Knows the world she wants, not yet the exact seat.",next:"Name one specific role and have one coffee chat about it to become The Builder.",
     desc:"You’ve got a field in mind, but not a specific role you could name and defend. That’s a great place to be: you’re one or two conversations away from a real target. The risk is staying vague and applying to everything in the field.",
     power:"You already know where to look",blind:"Staying at “something in marketing” for too long",
     plan:"Your plan starts by turning your field into one specific role, through a short quiz and a few chats with insiders. Then LinkedIn, resume and interview prep all point at that role."},
-  {lvl:4,k:"builder",img:"img/arch/builder.jpg",e:"🛠️",name:"The Builder",tag:"You know the role. Time to build the case for you.",who:"Elle Woods",whoWhy:"Knows exactly where she’s going and is building the case to get in.",next:"Get one person inside to vouch for you to become The Closer.",
+  {lvl:4,k:"builder",img:"img/arch/builder.jpg",gz:"What, like it’s hard? You know exactly what you want. Now you need the receipts: a resume that matches, a LinkedIn that backs it up, and people inside who know your name.",traits:["Knows the goal", "Underestimated (their loss)", "Actually does the prep", "Needs the right people in their corner"],store:["✅ You pick what to brush up on", "🔎 We check for anything you missed", "🚀 A short plan, straight to applying"],e:"🛠️",name:"The Builder",tag:"You know the role. Time to build the case for you.",who:"Elle Woods",whoWhy:"Knows exactly where she’s going and is building the case to get in.",next:"Get one person inside to vouch for you to become The Closer.",
     desc:"You can say what you want, and that already puts you ahead of most students. What’s missing is the stuff that gets you picked: a profile and resume that match the role, and people inside who know your name.",
     power:"A clear target",blind:"Thinking clarity alone gets you the interview",
     plan:"Your plan skips the soul-searching and goes straight to the gaps you told us about, plus anything we spotted in your answers."},
-  {lvl:5,k:"closer",img:"img/arch/closer.jpg",e:"🚀",name:"The Closer",tag:"Clear target, real plan. Go get it.",who:"Harvey Specter",whoSub:"Suits",whoWhy:"Clear target, knows the right people, closes.",next:"",
+  {lvl:5,k:"closer",img:"img/arch/closer.jpg",gz:"You don’t get lucky, you make your own luck. Clear target, real connections, and you’re not spamming applications. You don’t need a makeover. You need a final polish and a send button.",traits:["Crystal-clear target", "Knows the right people", "Plays the long game", "Might over-prepare"],store:["✅ Pick the 1–2 things to polish", "🔎 A quick check for blind spots", "🚀 Then apply. Seriously, go."],e:"🚀",name:"The Closer",tag:"Clear target, real plan. Go get it.",who:"Harvey Specter",whoSub:"Suits",whoWhy:"Clear target, knows the right people, closes.",next:"",
     desc:"You know exactly what you want and why, you’ve talked to people, and you’re not just firing off applications. Your plan is short on purpose: tighten the few things that still need work and go.",
     power:"You can say what you want, and why",blind:"Over-preparing instead of applying",
     plan:"Your plan is short: only the areas you want to brush up on, plus anything we spotted. Then apply."},
@@ -3264,26 +3296,19 @@ function vPlanReady(p){const pl=plan(p);
 function hasAns(v){if(v==null)return false;if(Array.isArray(v))return v.length>0;if(typeof v==="object")return Object.values(v).some(x=>String(x||"").trim());return String(v).trim()!==""}
 function archHTML(f,top){const a=f.a,c=clarityFrom(a),A=c.arch,why=clarityWhy(a);
   return `<div class="duo arch-screen" data-q="arch">${top}
-    <div class="arch">
-      <span class="arch-eye">Your internship archetype</span>
-      <div class="arch-badge${A.img?" has-img":""}">${A.img?`<img src="${A.img}" alt="${esc(A.who)}">`:""}<span>${A.e}</span></div>
-      <h1 class="arch-name"><small>You’re</small>${esc(A.name)}</h1>
-      <p class="arch-who"><b>${esc(A.who)} energy</b>${A.whoSub?` <em>(${esc(A.whoSub)})</em>`:""}</p>
-      <p class="arch-tag">${esc(A.whoWhy)}</p>
-      <div class="arch-meter" role="img" aria-label="Clarity score ${c.score} out of 100">
-        <div class="arch-meter-top"><b>Clarity score</b><span><em data-count="${c.score}">${c.score}</em>/100</span></div>
-        <div class="arch-track">${ARCH.map(x=>`<i class="${x.lvl<=c.lvl?"on":""}${x.lvl===c.lvl?" me":""}" style="--d:${x.lvl}"></i>`).join("")}</div>
-        <div class="arch-ends"><span>Lost</span><span>Ready to apply</span></div>
-      </div>
-      <p class="arch-desc">${esc(A.desc)}</p>
-      <div class="arch-two"><div><span>Your superpower</span><b>${esc(A.power)}</b></div><div><span>Your blind spot</span><b>${esc(A.blind)}</b></div></div>
-      ${why.length?`<div class="arch-why"><span>Why we think so</span><ul>${why.map(w=>`<li>You said ${esc(w)}.</li>`).join("")}</ul></div>`:""}
-      <div class="arch-plan"><span>What this means for your plan</span><p>${esc(A.plan)}</p></div>
-      ${A.next?`<p class="arch-next"><i>↑</i><span><b>Level up:</b> ${esc(A.next)}</span></p>`:`<p class="arch-next"><i>★</i><span><b>Top level.</b> Now go apply.</span></p>`}
-      <button class="btn ghost arch-share" data-act="archshare">Share my archetype</button>
-      <div class="arch-all">${ARCH.map(x=>`<span class="${x.lvl===c.lvl?"me":""}" title="${esc(x.name)}: ${esc(x.who)} energy"><img src="${x.img}" alt="" loading="lazy"><em>${esc(x.name.replace(/^The /,""))}</em></span>`).join("")}</div>
-    </div>
-    <div class="duo-foot"><button class="btn primary duo-cta" data-act="next">Next: build my plan →</button></div>
+    <div class="ar-rays" aria-hidden="true"></div>
+    <article class="ar-card">
+      <p class="ar-res">Your result:</p>
+      <div class="ar-photo"><img src="${A.img}" alt="${esc(A.who)}"><span class="ar-match"><b>${c.score}</b><em>clarity</em></span></div>
+      <h1 class="ar-name"><small>You’re</small>${esc(A.name)} <span>${A.e}</span></h1>
+      <p class="ar-who">${esc(A.who)} energy${A.whoSub?` · <em>${esc(A.whoSub)}</em>`:""}</p>
+      <p class="ar-desc">${esc(A.gz)}</p>
+      <ul class="ar-traits">${A.traits.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>
+      ${why.length?`<p class="ar-receipts"><b>The receipts:</b> you said ${esc(why.slice(0,2).join(", and "))}.</p>`:""}
+      <div class="ar-store"><span>What’s in store for you</span><ol>${A.store.map(t=>`<li>${esc(t)}</li>`).join("")}</ol>${A.next?`<p class="ar-next">↑ Level up: ${esc(A.next)}</p>`:""}</div>
+    </article>
+    <button class="ar-share" data-act="archshare">Share my result ↗</button>
+    <div class="duo-foot"><button class="btn primary duo-cta" data-act="next">Build my plan →</button></div>
   </div>`}
 function renderDuo(f){
   const q=f.qs[f.idx],a=f.a,done=f.stack.length,remain=f.qs.slice(f.idx).filter(x=>!x.when||x.when(a,f.ctx)).length,total=done+remain,pct=Math.round(done/total*100);
