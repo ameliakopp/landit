@@ -16,7 +16,7 @@
 <meta name="description" content="A week-by-week plan to land your internship, one clear step at a time.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@300;400;500;600;700;800&family=Inter+Tight:wght@400;500;600;700;800;900&family=Archivo:wght@800&family=DM+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Figtree:wght@300;400;500;600;700;800&family=Inter+Tight:wght@400;500;600;700;800;900&family=Archivo:wght@800&family=DM+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: quiet left rail + one dominant "next step" card; six indicators as soft rings with an uncertainty band; everything else is calm cards on a cool mineral ground */
 /* Layout: black ground, huge geometric type, one glowing "signal orb" as the signature; white bands on the landing page only */
@@ -1703,6 +1703,66 @@ body:has(.wk-nav) .help-fab,body:has(.duo-foot) .help-fab{bottom:calc(96px + env
 @media (min-width:700px){.ar-card{padding:22px 26px 26px;max-width:500px;width:100%;margin:0 auto}}
 @media (prefers-reduced-motion:reduce){.ar-rays,.ar-card,.ar-match{animation:none}}
 .ar-store li{display:flex;align-items:center;gap:12px;font-weight:600}.ar-store li i{font-style:normal;flex:none;width:26px;height:26px;border-radius:50%;background:#C6F432;color:#14170F;display:grid;place-items:center;font-size:13px;font-weight:800}
+/* ===== Sleek quiz skin (intake + plan quiz) ===== */
+body:has(.qz){background:#F6F4F0}
+.qz{--qz-ink:#111;--qz-mute:#8A867F;--qz-line:#E4E0D9;font-family:"Inter Tight","Figtree",sans-serif;color:var(--qz-ink);gap:28px;max-width:560px}
+.qz .duo-top{gap:16px}
+.qz .duo-back{font-size:18px;color:var(--qz-ink);width:28px}
+.qz .duo-bar{height:2px;background:var(--qz-line);border-radius:0}
+.qz .duo-bar i{background:var(--qz-ink);border-radius:0}.qz .duo-bar i::after{display:none}
+.qz-pct{font-size:12px;color:var(--qz-mute);font-variant-numeric:tabular-nums;min-width:32px;text-align:right}
+.qz-head{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.qz-eye{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--qz-mute);font-weight:500}
+.qz-q{margin:0;font-family:"Inter Tight",sans-serif;font-weight:500;font-size:clamp(26px,5.6vw,34px);line-height:1.15;letter-spacing:-.03em;color:var(--qz-ink)}
+.qz-q b{font-weight:500}
+.qz-sub{margin:0;font-size:15.5px;line-height:1.5;color:var(--qz-mute)}
+.qz-note{margin:0 0 6px;font-family:"Instrument Serif",serif;font-style:italic;font-size:19px;line-height:1.35;color:#5A564F;animation:archup .4s both}
+.qz-say{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:8vh 0}
+.qz-big{margin:0;font-family:"Instrument Serif",serif;font-weight:400;font-size:clamp(38px,8.5vw,56px);line-height:1.05;letter-spacing:-.01em;color:var(--qz-ink)}
+/* options */
+.qz .duo-body .opts{gap:10px}
+.qz .duo-body .opt{background:#fff;border:1px solid var(--qz-line)!important;border-radius:14px;box-shadow:none;padding:17px 18px;font-weight:500;font-size:16px;color:var(--qz-ink);min-height:0;transition:border-color .15s,background .15s,color .15s,transform .1s}
+.qz .duo-body .opts2 .opt,.qz .duo-body .opts3 .opt{min-height:0;flex-direction:row;align-items:center}
+.qz .duo-body .opt:hover{border-color:#BDB8AF!important}
+.qz .duo-body .opt:active{transform:scale(.99)}
+.qz .duo-body .opt .arr{opacity:0;transition:opacity .15s;margin-top:0}
+.qz .duo-body .opt[aria-pressed="true"]{background:var(--qz-ink);border-color:var(--qz-ink)!important;color:#fff}
+.qz .duo-body .opt[aria-pressed="true"] .arr{opacity:1;color:#fff}
+.qz .duo-body .opt .muted{color:inherit;opacity:.6}
+.qz .duo-body .chip,.qz .duo-body .tgrid .chip{background:#fff;border:1px solid var(--qz-line)!important;border-radius:14px;box-shadow:none;font-weight:500;font-size:15.5px;color:var(--qz-ink);padding:15px 16px}
+.qz .duo-body .tgrid .chip::after{border-radius:50%;border:1px solid #CFCAC1;width:18px;height:18px}
+.qz .duo-body .chip[aria-pressed="true"],.qz .duo-body .tgrid .chip[aria-pressed="true"]{background:var(--qz-ink);color:#fff;border-color:var(--qz-ink)!important}
+.qz .duo-body .tgrid .chip[aria-pressed="true"]::after{background:#fff;color:var(--qz-ink);border-color:#fff}
+.qz .duo-body .input,.qz .duo-body .ta{background:transparent;border:0;border-bottom:1px solid #CFCAC1;border-radius:0;padding:12px 2px;font-size:20px;font-family:"Inter Tight",sans-serif;box-shadow:none}
+.qz .duo-body .ta{min-height:96px;border:1px solid var(--qz-line);border-radius:14px;background:#fff;padding:14px 16px;font-size:17px}
+.qz .duo-body .input:focus,.qz .duo-body .ta:focus{outline:none;border-color:var(--qz-ink)}
+.qz .duo-body .field label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--qz-mute);font-weight:500}
+.qz .pickc{font-size:13px;color:var(--qz-mute)}
+/* footer CTA */
+.qz .duo-foot,body:has(.qz) .duo-foot{background:linear-gradient(to top,#F6F4F0 70%,rgba(246,244,240,0));border-top:0;padding-left:max(16px,calc(50vw - 280px));padding-right:max(16px,calc(50vw - 280px))}
+.qz .duo-cta{background:var(--qz-ink)!important;color:#fff!important;border:0!important;box-shadow:none!important;border-radius:999px;text-transform:none;letter-spacing:-.01em;font-family:"Inter Tight",sans-serif;font-weight:500;font-size:16px;padding:17px}
+.qz .duo-cta:hover{background:#2A2A2A!important}
+.qz .duo-skip{background:transparent!important;color:var(--qz-ink)!important;border:1px solid #CFCAC1!important}
+/* archetype card, sleek */
+.qz.arch-screen .ar-card{background:#fff;border-radius:24px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 30px 60px -40px rgba(0,0,0,.35);padding:16px 16px 22px;gap:14px}
+.qz .ar-res{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:var(--qz-mute);border:0;padding:4px 4px 0}
+.qz .ar-photo img{border-radius:16px;filter:saturate(.9)}
+.qz .ar-match{width:auto;height:auto;border-radius:999px;border:0;padding:8px 14px;flex-direction:row;gap:6px;align-items:baseline;top:12px;right:12px;transform:none;background:rgba(17,17,17,.82);backdrop-filter:blur(6px);animation:archup .5s .4s both}
+.qz .ar-match b{font-family:"Inter Tight",sans-serif;font-size:18px;font-weight:600;color:#fff}
+.qz .ar-match em{font-size:11px;letter-spacing:.06em;color:#CFCBC4;font-weight:500;text-transform:none}
+.qz .ar-name{font-family:"Instrument Serif",serif;font-weight:400;font-size:clamp(46px,11vw,64px);letter-spacing:-.015em;line-height:.95;margin-top:10px}
+.qz .ar-name small{font-family:"Inter Tight",sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:var(--qz-mute);margin-bottom:10px}
+.qz .ar-who{background:none;padding:0;color:var(--qz-ink);font-family:"Instrument Serif",serif;font-style:italic;font-weight:400;font-size:20px}
+.qz .ar-who em{color:var(--qz-mute)}
+.qz .ar-desc{font-size:16px;line-height:1.6;color:#3A3732;padding:0 4px}
+.qz .ar-traits{border-top:1px solid #EFECE6;padding:14px 4px 0;gap:10px}
+.qz .ar-traits li{font-size:15px;font-weight:500}
+.qz .ar-traits li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--qz-ink)}
+.qz .ar-store{background:#F6F4F0;color:var(--qz-ink);border-radius:18px;padding:18px}
+.qz .ar-store>span{font-family:"Inter Tight",sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--qz-mute)}
+.qz .ar-store li{background:none;padding:0;color:var(--qz-ink);font-size:16.5px;font-weight:500}
+.qz .ar-store li i{background:var(--qz-ink);color:#fff;width:24px;height:24px;font-size:12px;font-weight:600}
+@media (min-width:700px){.qz.arch-screen .ar-card{padding:20px 22px 26px}}
 </style>
 </head>
 <body>
@@ -2437,8 +2497,8 @@ function needsFrom(a){const picked=new Set(a.needs||[]),found=new Set();
 function spotted(a,k){const r=ASSESS[k],v=a[k];if(v==null||+v<r.lim)return null;const adds=(typeof r.adds==="function"?r.adds(a):r.adds).filter(x=>!(a.needs||[]).includes(x));
   return adds.length?`Good to know. I’ll add ${listJoin(adds.map(x=>NEED_LABEL[x].toLowerCase()))} to your plan.`:"That matches what you checked. It’s already in your plan."}
 const DIAG_FAST=[
-  {id:"hi",kind:"say",prompt:"Hi! I’m Lan, your internship buddy."},
-  {id:"hi2",kind:"say",prompt:"First, a quick quiz to find your internship archetype. Then we’ll build your plan around it."},
+  {id:"hi",kind:"say",prompt:"Let’s figure out your next move."},
+  {id:"hi2",kind:"say",prompt:"First, a quick quiz to find your internship archetype. Then we build your plan around it."},
   {id:"me",kind:"fields",optional:true,prompt:"First, who are you?",sub:"Add your LinkedIn and your plan can build on what you’ve already done.",
     fields:[{k:"name",label:"First name",ph:"e.g. Maya",ac:"given-name"},{k:"linkedin",label:"LinkedIn profile (optional)",ph:"linkedin.com/in/your-name",type:"url",ac:"url"}],
     note:"Prototype: we save your link to your plan. Importing your work history from it is coming soon.",
@@ -2462,7 +2522,7 @@ const DIAG_FAST=[
   {id:"c_sure",kind:"choice",prompt:"Last one. How sure are you about the direction you’re heading?",cols:2,options:[{v:"0",label:"Not at all"},{v:"1",label:"A little"},{v:"2",label:"Pretty sure"},{v:"3",label:"Very sure"}]},
   {id:"arch",kind:"arch",optional:true,prompt:"Your archetype"},
   // Part 2: build your plan
-  {id:"needs",kind:"multi",text:false,grid:true,min:1,prompt:"What do you think you need to work on?",sub:"Part 2: building your plan. Check everything that applies.",options:NEEDS},
+  {id:"needs",kind:"multi",text:false,grid:true,min:1,prompt:"What do you think you need to work on?",sub:"Check everything that applies.",options:NEEDS},
   {id:"a_li",kind:"choice",prompt:"When did you last update your LinkedIn?",cols:2,options:[{v:"0",label:"This month"},{v:"1",label:"This year"},{v:"2",label:"Over a year ago"},{v:"3",label:"I barely have one"}],coach:a=>spotted(a,"a_li")},
   {id:"a_res",kind:"choice",prompt:"If a recruiter skimmed your resume for 10 seconds, would they know what role you want?",cols:2,options:[{v:"0",label:"Yes, instantly"},{v:"1",label:"Probably"},{v:"2",label:"Probably not"},{v:"3",label:"I don’t have a resume yet"}],coach:a=>spotted(a,"a_res")},
   {id:"a_net",kind:"choice",prompt:"Is there someone at a company you want who’d put in a good word for you?",options:[{v:"0",label:"Yes, already"},{v:"1",label:"Someone I could ask"},{v:"2",label:"Not yet"}],coach:a=>spotted(a,"a_net")},
@@ -3296,31 +3356,30 @@ function vPlanReady(p){const pl=plan(p);
   </main></div>`}
 function hasAns(v){if(v==null)return false;if(Array.isArray(v))return v.length>0;if(typeof v==="object")return Object.values(v).some(x=>String(x||"").trim());return String(v).trim()!==""}
 function archHTML(f,top){const a=f.a,c=clarityFrom(a),A=c.arch,why=clarityWhy(a);
-  return `<div class="duo arch-screen" data-q="arch">${top}
-    <div class="ar-rays" aria-hidden="true"></div>
+  return `<div class="duo qz arch-screen" data-q="arch">${top}
     <article class="ar-card">
       <p class="ar-res">Your result:</p>
-      <div class="ar-photo"><img src="${A.img}" alt="${esc(A.who)}"><span class="ar-match"><b>${c.score}</b><em>clarity</em></span></div>
-      <h1 class="ar-name"><small>You’re</small>${esc(A.name)} <span>${A.e}</span></h1>
+      <div class="ar-photo"><img src="${A.img}" alt="${esc(A.who)}"><span class="ar-match"><b>${c.score}</b><em>/100 clarity</em></span></div>
+      <h1 class="ar-name"><small>You’re</small>${esc(A.name)}</h1>
       <p class="ar-who">${esc(A.who)} energy${A.whoSub?` · <em>${esc(A.whoSub)}</em>`:""}</p>
       <p class="ar-desc">${esc(A.gz)}</p>
       <ul class="ar-traits">${A.traits.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>
-      <div class="ar-store"><span>What we’ll get you to do</span><ol>${A.store.map((t,i)=>`<li><i>${i+1}</i>${esc(t)}</li>`).join("")}</ol></div>
+      <div class="ar-store"><span>What we’ll have you do</span><ol>${A.store.map((t,i)=>`<li><i>${i+1}</i>${esc(t)}</li>`).join("")}</ol></div>
     </article>
     <div class="duo-foot"><button class="btn primary duo-cta" data-act="next">Build my plan →</button></div>
   </div>`}
 function renderDuo(f){
   const q=f.qs[f.idx],a=f.a,done=f.stack.length,remain=f.qs.slice(f.idx).filter(x=>!x.when||x.when(a,f.ctx)).length,total=done+remain,pct=Math.round(done/total*100);
-  const top=`<div class="duo-top">${done?`<button class="duo-back" data-act="back" aria-label="Back">←</button>`:`<a class="duo-back" href="#welcome" aria-label="Exit">✕</a>`}<div class="duo-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.max(3,pct)}%"></i></div></div>`;
+  const ai=f.qs.findIndex(x=>x.kind==="arch"),part=ai<0||f.idx<ai?"Part 1 · Your archetype":"Part 2 · Your plan";
+  const top=`<div class="duo-top">${done?`<button class="duo-back" data-act="back" aria-label="Back">←</button>`:`<a class="duo-back" href="#welcome" aria-label="Exit">✕</a>`}<div class="duo-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.max(3,pct)}%"></i></div><span class="qz-pct">${pct}%</span></div>`;
   if(q.kind==="arch")return archHTML(f,top);
-  if(q.kind==="say")return `<div class="duo" data-q="${q.id}">${top}<div class="duo-say">${says(esc(V(f,q.prompt)),"walk",true)}</div><div class="duo-foot"><button class="btn primary duo-cta" data-act="next">Continue</button></div></div>`;
+  if(q.kind==="say")return `<div class="duo qz" data-q="${q.id}">${top}<div class="qz-say"><span class="qz-eye">Landit</span><h1 class="qz-big">${esc(V(f,q.prompt))}</h1></div><div class="duo-foot"><button class="btn primary duo-cta" data-act="next">Continue</button></div></div>`;
   const inner=renderFlow({...f,qs:[q],idx:0,stack:[]}),m=inner.match(/<div class="q-body">([\s\S]*?)<\/div>\s*<p class="q-err"/),body=m?m[1]:"";
   const ok=hasAns(a[q.id]),last=done+1===total;
-  return `<div class="duo" data-q="${q.id}">${top}
-    ${f.note?`<p class="duo-note"><i>✓</i>${f.note}</p>`:""}
-    ${says(`<b>${V(f,q.prompt)}</b>${q.sub?`<span>${V(f,q.sub)}</span>`:""}`,"wave")}
+  return `<div class="duo qz" data-q="${q.id}">${top}
+    <div class="qz-head">${f.note?`<p class="qz-note">${f.note}</p>`:""}<span class="qz-eye">${part}</span><h1 class="qz-q">${V(f,q.prompt)}</h1>${q.sub?`<p class="qz-sub">${V(f,q.sub)}</p>`:""}</div>
     <div class="q-wrap duo-body" data-q="${q.id}"><div class="q-body">${body}</div><p class="q-err" id="q-err" hidden></p></div>
-    <div class="duo-foot">${ok||!q.optional?`<button class="btn primary duo-cta" data-act="next">${last?"Build my plan":"Continue"}</button>`:`<button class="btn duo-cta duo-skip" data-act="skip">${last?"Skip and build my plan":"Skip for now"}</button>`}</div>
+    <div class="duo-foot">${ok||!q.optional?`<button class="btn primary duo-cta" data-act="next">${last?"Build my plan":"Continue"}</button>`:`<button class="btn duo-cta duo-skip" data-act="skip">${last?"Skip and build my plan":"Skip"}</button>`}</div>
   </div>`}
 /* ---------- sound effects ---------- */
 let SOUND=true;try{SOUND=localStorage.getItem("landit.sound.v2")!=="off"}catch(e){}
