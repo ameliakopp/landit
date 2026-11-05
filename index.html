@@ -1795,6 +1795,12 @@ body:has(.wk-cq){background:#F6F4F0}
 .wk-cq .qrate-b .chip{padding:9px 6px}
 .wk-cq .input{background:transparent;border:0;border-bottom:1px solid #CFCAC1;border-radius:0;padding:12px 2px;font-size:17px}
 .wk-cq .input:focus{outline:none;border-color:#111}
+/* readability pass */
+.qz-note{font-family:"Inter Tight",sans-serif;font-style:normal;font-size:15px;line-height:1.5;color:#5A564F;margin:0 0 14px;padding:12px 14px;background:#fff;border:1px solid #E4E0D9;border-radius:12px;letter-spacing:0}
+.qz-q{letter-spacing:-.012em;line-height:1.25;word-spacing:.02em}
+.qz-head{gap:14px}
+.qz .duo-body .opt,.qz .duo-body .chip{letter-spacing:0}
+.wk-cq .wk-h{letter-spacing:-.012em;line-height:1.25}
 </style>
 </head>
 <body>
@@ -2527,7 +2533,7 @@ function needsFrom(a){const picked=new Set(a.needs||[]),found=new Set();
   Object.entries(ASSESS).forEach(([k,r])=>{const v=a[k];if(v==null||+v<r.lim)return;(typeof r.adds==="function"?r.adds(a):r.adds).forEach(x=>found.add(x))});
   const extra=[...found].filter(x=>!picked.has(x));return{all:[...new Set([...picked,...found])],extra}}
 function spotted(a,k){const r=ASSESS[k],v=a[k];if(v==null||+v<r.lim)return null;const adds=(typeof r.adds==="function"?r.adds(a):r.adds).filter(x=>!(a.needs||[]).includes(x));
-  return adds.length?`Good to know. I’ll add ${listJoin(adds.map(x=>NEED_LABEL[x].toLowerCase()))} to your plan.`:"That matches what you checked. It’s already in your plan."}
+  return adds.length?`Got it. Adding ${listJoin(adds.map(x=>NEED_LABEL[x].toLowerCase()))} to your plan.`:"Already in your plan."}
 const DIAG_FAST=[
   {id:"hi",kind:"say",prompt:"Let’s figure out your next move."},
   {id:"hi2",kind:"say",prompt:"First, a quick quiz to find your internship archetype. Then we build your plan around it."},
@@ -2535,19 +2541,19 @@ const DIAG_FAST=[
     fields:[{k:"name",label:"First name",ph:"e.g. Maya",ac:"given-name"},{k:"linkedin",label:"LinkedIn profile (optional)",ph:"linkedin.com/in/your-name",type:"url",ac:"url"}],
     note:"Prototype: we save your link to your plan. Importing your work history from it is coming soon.",
     validate:v=>{const u=String(v.linkedin||"").trim();return u&&!/linkedin\.com\/in\/[^\s/]+/i.test(u)?"That doesn’t look like a LinkedIn profile link. It should contain linkedin.com/in/…":null},
-    coach:a=>{const n=a.me&&a.me.name&&a.me.name.trim(),l=a.me&&a.me.linkedin&&a.me.linkedin.trim();return n||l?`${n?`Nice to meet you, ${esc(n)}. `:""}${l?"LinkedIn saved. ":""}First, a quick personality quiz. No wrong answers.`:null}},
+    coach:a=>{const n=a.me&&a.me.name&&a.me.name.trim(),l=a.me&&a.me.linkedin&&a.me.linkedin.trim();return n||l?`${n?`Nice to meet you, ${esc(n)}. `:""}${l?"LinkedIn saved. ":""}Quick quiz next. No wrong answers.`:null}},
   {id:"c_stage",kind:"choice",optional:true,prompt:"Where are you in school?",options:STAGES.map(s=>({v:s.v,label:s.label}))},
   {id:"c_say",kind:"choice",prompt:"A friend asks what kind of job you’re looking for. What do you honestly say?",options:[{v:"none",label:"“Honestly, no idea yet.”"},{v:"vague",label:"“Something in business… or maybe not?”"},{v:"field",label:"“A field, like marketing, but not a specific role.”"},{v:"role",label:"“A specific role, like brand marketing at a beauty company.”"}],
-    coach:a=>a.c_say==="role"?"Love that. Let’s see if you can say it in one line.":a.c_say==="none"?"Totally normal. Most students start here.":null},
+    coach:a=>a.c_say==="role"?"Love that.":a.c_say==="none"?"Totally normal. Most people start here.":null},
   {id:"c_line",kind:"text",prompt:"Now say it in one sentence: the job you want, and why.",sub:"Type it like you’d say it to a recruiter. “I don’t know” is an allowed answer.",placeholder:"e.g. Brand marketing at a beauty company, because I love figuring out why people buy things",
-    coach:a=>{const n=lineScore(a.c_line);return n>=3?"That’s clear and specific. Recruiters love that.":n===2?"Pretty clear. A specific reason would make it even stronger.":"Noted. Being able to say this clearly is the #1 thing we’ll work on."}},
+    coach:a=>{const n=lineScore(a.c_line);return n>=3?"Nice, that’s clear.":n===2?"Pretty clear. A reason makes it stronger.":"Got it. We’ll help you put this into words."}},
   {id:"c_next",kind:"choice",prompt:"What do you think you need to do next to land an internship?",options:[{v:"apply",label:"Apply to as many jobs as I can"},{v:"resume",label:"Fix my resume first"},{v:"figure",label:"Figure out what I actually want"},{v:"people",label:"Talk to people in the field I want"},{v:"polish",label:"Prep for specific roles I’m targeting"}]},
   {id:"c_apps",kind:"choice",prompt:"How many internship applications have you sent so far?",cols:2,options:[{v:"0",label:"None yet"},{v:"1",label:"1 to 10"},{v:"11",label:"11 to 50"},{v:"50",label:"More than 50"}]},
   {id:"c_reply",kind:"choice",when:a=>a.c_apps&&a.c_apps!=="0",prompt:"And how many got you an interview?",cols:2,options:[{v:"0",label:"None"},{v:"1",label:"One or two"},{v:"3",label:"Three or more"},{v:"wait",label:"Still waiting to hear"}],
-    coach:a=>(a.c_apps==="50"||a.c_apps==="11")&&a.c_reply==="0"?"That’s a lot of effort for silence. That usually points to the method, not to you.":null},
+    coach:a=>(a.c_apps==="50"||a.c_apps==="11")&&a.c_reply==="0"?"That’s a lot of silence. It’s usually the method, not you.":null},
   {id:"c_peers",kind:"choice",prompt:"Think of friends who landed internships. How did most of them get in?",options:[{v:"spray",label:"They applied to everything they could"},{v:"knew",label:"Mostly through someone they knew"},{v:"mix",label:"A mix of both"},{v:"unsure",label:"Not sure, or none have landed one"}]},
   {id:"c_month",kind:"choice",prompt:"Be honest: what’s your plan for the next month?",options:[{v:"all",label:"Keep applying to everything I can find"},{v:"tweak",label:"Keep applying a lot, with a better resume"},{v:"narrow",label:"Narrow down, then apply to fewer roles"},{v:"people",label:"Talk to people first, then apply with referrals"}],
-    coach:a=>a.c_month==="all"?"Thanks for being honest. Mass-applying is the most common plan, and the least likely to work.":a.c_month==="people"?"That’s exactly how most internships actually get filled.":null},
+    coach:a=>a.c_month==="all"?"Thanks for being honest. Most people do this.":a.c_month==="people"?"That’s how most internships get filled.":null},
   {id:"c_block",kind:"multi",text:false,max:2,grid:true,prompt:"What’s really holding you back?",sub:"Pick up to two.",options:[{v:"what",label:"I don’t know what I want"},{v:"know",label:"I don’t know anyone in the field"},{v:"silence",label:"Applications go nowhere"},{v:"exp",label:"Not enough experience"},{v:"interview",label:"I freeze in interviews"},{v:"time",label:"Time or motivation"}]},
   {id:"c_people",kind:"choice",prompt:"In the last 3 months, how many people working in a field you’re curious about have you talked to?",cols:2,options:[{v:"0",label:"None"},{v:"1",label:"One or two"},{v:"3",label:"Three to five"},{v:"6",label:"Six or more"}]},
   {id:"c_cos",kind:"choice",prompt:"Could you name three companies you’d love to intern at?",options:[{v:"none",label:"Not one, honestly"},{v:"one",label:"Maybe one"},{v:"three",label:"Yes, three"},{v:"teams",label:"Yes, and I know which teams"}]},
