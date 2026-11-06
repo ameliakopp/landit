@@ -1801,6 +1801,7 @@ body:has(.wk-cq){background:#F6F4F0}
 .qz-head{gap:14px}
 .qz .duo-body .opt,.qz .duo-body .chip{letter-spacing:0}
 .wk-cq .wk-h{letter-spacing:-.012em;line-height:1.25}
+.qz .duo-body .chips:not(.tgrid){display:flex;flex-direction:column;gap:10px}.qz .duo-body .chips:not(.tgrid) .chip{width:100%;text-align:left;padding:17px 18px;font-size:16px}
 </style>
 </head>
 <body>
@@ -2516,7 +2517,7 @@ function lineScore(t){t=String(t||"").trim().toLowerCase();if(!t||/^(idk|i don.?
   const w=t.split(/\s+/).length;let n=w>=3?1:0;if(ROLE_WORDS.test(t))n++;if(w>=7&&/because|since|so that|\bi (love|like|enjoy)|\bat (a|an)\b|compan|startup|brand|agency|team|industry|\bin (tech|media|fashion|finance|health|sports)/.test(t))n++;
   if(/something in|maybe|kind of|sort of|anything|\bor\b|not sure/.test(t))n--;return clamp(n,0,3)}
 const CL_PTS={c_say:{none:0,vague:1,field:2,role:3},c_next:{apply:0,resume:1,figure:1,people:3,polish:2},c_peers:{spray:0,unsure:1,mix:2,knew:3},c_month:{all:0,tweak:1,narrow:2,people:3},c_people:{"0":0,"1":1,"3":2,"6":3},c_cos:{none:0,one:1,three:2,teams:3},c_sure:{"0":0,"1":1,"2":2,"3":3}};
-function clarityFrom(a){let sc=0,mx=0;Object.keys(CL_PTS).forEach(k=>{mx+=3;sc+=CL_PTS[k][a[k]]||0});mx+=3;sc+=lineScore(a.c_line);
+function clarityFrom(a){let sc=0,mx=0;Object.keys(CL_PTS).forEach(k=>{mx+=3;sc+=(Array.isArray(a[k])?(a[k].length?Math.round(a[k].reduce((n,v)=>n+(CL_PTS[k][v]||0),0)/a[k].length):0):(CL_PTS[k][a[k]]||0))});mx+=3;sc+=lineScore(a.c_line);
   const score=clamp(Math.round(sc/mx*100),6,98),mass=a.c_month==="all"||(a.c_month==="tweak"&&(a.c_apps==="50"||a.c_apps==="11"));
   let lvl=score<25?1:score<45?2:score<65?3:score<82?4:5;if(mass&&lvl>2)lvl=Math.max(2,lvl-1);if(lineScore(a.c_line)<2&&lvl>3)lvl=3;
   return{score,lvl,mass,arch:ARCH[lvl-1]}}
@@ -2547,7 +2548,7 @@ const DIAG_FAST=[
     coach:a=>a.c_say==="role"?"Love that.":a.c_say==="none"?"Totally normal. Most people start here.":null},
   {id:"c_line",kind:"text",prompt:"Now say it in one sentence: the job you want, and why.",sub:"Type it like you’d say it to a recruiter. “I don’t know” is an allowed answer.",placeholder:"e.g. Brand marketing at a beauty company, because I love figuring out why people buy things",
     coach:a=>{const n=lineScore(a.c_line);return n>=3?"Nice, that’s clear.":n===2?"Pretty clear. A reason makes it stronger.":"Got it. We’ll help you put this into words."}},
-  {id:"c_next",kind:"choice",prompt:"What do you think you need to do next to land an internship?",options:[{v:"apply",label:"Apply to as many jobs as I can"},{v:"resume",label:"Fix my resume first"},{v:"figure",label:"Figure out what I actually want"},{v:"people",label:"Talk to people in the field I want"},{v:"polish",label:"Prep for specific roles I’m targeting"}]},
+  {id:"c_next",kind:"multi",text:false,min:1,max:2,prompt:"What do you think you need to do next to land an internship?",sub:"Pick up to two.",options:[{v:"apply",label:"Apply to as many jobs as I can"},{v:"resume",label:"Fix my resume first"},{v:"figure",label:"Figure out what I actually want"},{v:"people",label:"Talk to people in the field I want"},{v:"polish",label:"Prep for specific roles I’m targeting"}]},
   {id:"c_apps",kind:"choice",prompt:"How many internship applications have you sent so far?",cols:2,options:[{v:"0",label:"None yet"},{v:"1",label:"1 to 10"},{v:"11",label:"11 to 50"},{v:"50",label:"More than 50"}]},
   {id:"c_reply",kind:"choice",when:a=>a.c_apps&&a.c_apps!=="0",prompt:"And how many got you an interview?",cols:2,options:[{v:"0",label:"None"},{v:"1",label:"One or two"},{v:"3",label:"Three or more"},{v:"wait",label:"Still waiting to hear"}],
     coach:a=>(a.c_apps==="50"||a.c_apps==="11")&&a.c_reply==="0"?"That’s a lot of silence. It’s usually the method, not you.":null},
@@ -3325,7 +3326,7 @@ const DIRS=[
   {id:"creator",t:"Creator & influencer marketing",role:"influencer marketing intern",ind:["fashion","media","consumer"],tags:["creative","hype","comm","fast","fun","voice","writing","improv"],not:[]},
 ];
 const QLAB=Object.fromEntries([...QSAT,...QAREA,...QFOR,...QSKILL,...QKNOWN,...QVAL,...QIND,...QPAIRS.flatMap(p=>[[p[1],p[2]],[p[3],p[4]]])].map(([k,l])=>[k,l.toLowerCase()]));
-function qWant(w){return [w.sat,w.area,...QPAIRS.map(x=>w[x[0]]),w.known,...(w.qfor||[]),...(w.qval||[]),...(w.qskill||[])].filter(Boolean)}
+function qWant(w){return [...[].concat(w.sat||[]),...[].concat(w.area||[]),...QPAIRS.map(x=>w[x[0]]),...[].concat(w.known||[]),...(w.qfor||[]),...(w.qval||[]),...(w.qskill||[])].filter(Boolean)}
 function qScore(w,d){const want=qWant(w),ind=w.qind||[],no=w.qnot||[];let sc=0;const love=[];
   d.tags.forEach(t=>{if(want.includes(t))sc+=(w.qskill||[]).includes(t)?1.5:1});
   sc+=d.ind.filter(i=>ind.includes(i)).length*1.5;
@@ -3342,14 +3343,14 @@ const qPairs=(w,ps)=>`<div class="qpairs">${ps.map(([k,a,al,b,bl])=>`<div class=
 const QN=15,qe=(n,x)=>`<span class="wk-eye">${n} of ${QN}${x?" · "+x:""}</span>`;
 const WKQ=[
   {sec:"intro",start:1,r:()=>""},
-  {sec:"you",r:(p,w)=>`${qe(1)}<h2 class="wk-h">A free Saturday. What are you most likely doing?</h2>${qChips(w,"sat",QSAT)}`},
-  {sec:"you",r:(p,w)=>`${qe(2)}<h2 class="wk-h">Which class or project made you lose track of time?</h2>${qChips(w,"area",QAREA)}
+  {sec:"you",r:(p,w)=>`${qe(1)}<h2 class="wk-h">A free Saturday. What are you most likely doing?</h2><p class="wk-hint">Pick up to 2.</p>${qChips(w,"sat",QSAT,1,2)}`},
+  {sec:"you",r:(p,w)=>`${qe(2)}<h2 class="wk-h">Which classes or projects made you lose track of time?</h2><p class="wk-hint">Pick up to 2.</p>${qChips(w,"area",QAREA,1,2)}
     <div class="wk-you" style="border:0;padding:0"><input class="input" data-wk="proj" value="${esc(w.proj||"")}" placeholder="Optional: the project was…"></div>`},
   {sec:"you",r:(p,w)=>`${qe(3,"This or that")}<h2 class="wk-h">How do you like to work?</h2>${qPairs(w,QPAIRS.slice(0,4))}`},
   {sec:"you",r:(p,w)=>`${qe(4,"This or that")}<h2 class="wk-h">And what kind of days?</h2>${qPairs(w,QPAIRS.slice(4))}`},
   {sec:"you",r:(p,w)=>`${qe(5)}<h2 class="wk-h">What do friends come to you for?</h2><p class="wk-hint">Pick up to 2.</p>${qChips(w,"qfor",QFOR,1,2)}`},
   {sec:"you",r:(p,w)=>`${qe(6)}<h2 class="wk-h">What are you genuinely good at?</h2><p class="wk-hint">Not what sounds good. Pick up to 3.</p>${qChips(w,"qskill",QSKILL,1,3)}`},
-  {sec:"you",r:(p,w)=>`${qe(7)}<h2 class="wk-h">In a group project, you’re…</h2>${qChips(w,"known",QKNOWN)}`},
+  {sec:"you",r:(p,w)=>`${qe(7)}<h2 class="wk-h">In a group project, you’re…</h2><p class="wk-hint">Pick up to 2.</p>${qChips(w,"known",QKNOWN,1,2)}`},
   {sec:"day",r:(p,w)=>`${qe(8,"Real tasks")}<h2 class="wk-h">Would you enjoy doing this at work?</h2><p class="wk-hint">Go with your gut. This matters most for your matches.</p>${qRate(w,QTASKS.slice(0,6).map(t=>t[0]))}`},
   {sec:"day",r:(p,w)=>`${qe(9,"Real tasks")}<h2 class="wk-h">How about these?</h2>${qRate(w,QTASKS.slice(6,12).map(t=>t[0]))}`},
   {sec:"day",r:(p,w)=>`${qe(10,"Real tasks")}<h2 class="wk-h">Last few.</h2>${qRate(w,QTASKS.slice(12).map(t=>t[0]))}`},
@@ -3858,7 +3859,7 @@ const ACT={
   helpclose:(el,e)=>{if(el.classList.contains("modal-bg")&&e.target!==el)return;UI.help=null;render()},
   helptype:el=>{const m=document.getElementById("help-msg");if(m)UI.help.msg=m.value;UI.help.type=el.dataset.v;render()},
   helpsend:()=>helpSend(),
-  wkmulti:el=>{const w=wkData(P()),k=el.dataset.k,a=w[k]||(w[k]=[]),v=el.dataset.v,j=a.indexOf(v),mx=+el.dataset.max||99;if(j>=0)a.splice(j,1);else{a.push(v);if(a.length>mx)a.shift()}save();render()},
+  wkmulti:el=>{const w=wkData(P()),k=el.dataset.k,a=Array.isArray(w[k])?w[k]:(w[k]=[]),v=el.dataset.v,j=a.indexOf(v),mx=+el.dataset.max||99;if(j>=0)a.splice(j,1);else{a.push(v);if(a.length>mx)a.shift()}save();render()},
   tab:el=>{UI.tab=el.dataset.v;try{localStorage.setItem("landit.tab",UI.tab)}catch(e){}render();window.scrollTo(0,0)},
   sound:()=>{SOUND=!SOUND;try{localStorage.setItem("landit.sound.v2",SOUND?"on":"off")}catch(e){}if(SOUND)sfx.select();render()},
   planok:()=>{UI.planReady=false;UI.planShown=false;render();window.scrollTo(0,0)},
