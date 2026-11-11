@@ -1,5 +1,5 @@
 // CLOCKED offline support. Bump VERSION to force every phone to refresh cached images.
-const VERSION = "clocked-v4";
+const VERSION = "clocked-v5";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", e => {
