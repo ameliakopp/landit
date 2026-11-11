@@ -54,8 +54,6 @@ a{color:inherit;text-decoration:none}
 .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:999px;padding:16px 22px;font-size:15.5px;font-weight:500;background:var(--ink);color:#fff;transition:transform .15s}
 .btn:active{transform:scale(.98)}
 .btn.glass{background:var(--card);color:var(--ink)}
-.btn.li{background:#fff;color:var(--ink)}
-.btn.li svg{width:19px;height:19px}
 .btn[disabled]{opacity:.35;pointer-events:none}
 .txt{background:none;border:0;padding:8px;color:var(--mute);font-size:14px}
 
@@ -201,7 +199,7 @@ const STORE="clocked.v1";
 function fresh(){return {v:"clocked1",profile:null,answers:{},results:{},draft:{}}}
 let S=(()=>{try{const s=JSON.parse(localStorage.getItem(STORE));if(s&&s.v==="clocked1")return s}catch(e){}return fresh()})();
 function save(){try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}cloudSave()}
-const UI={msg:"",busy:false,mode:"signup",liOn:null,help:null,toast:null,parse:null};
+const UI={msg:"",busy:false,mode:"signup",help:null,toast:null,parse:null};
 function toast(t){UI.toast=t;render();clearTimeout(toast.t);toast.t=setTimeout(()=>{UI.toast=null;render()},2600)}
 
 /* ---------- accounts (Supabase) ---------- */
@@ -216,19 +214,14 @@ async function cloudLoad(){const {data,error}=await sb.from("students").select("
   if(error){console.warn("Cloud load failed:",error.message);return}
   if(data&&data.state&&data.state.v==="clocked1"){S=data.state;try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}}else cloudSave()}
 function metaProfile(u){const m=(u&&u.user_metadata)||{},name=m.full_name||m.name||[m.given_name,m.family_name].filter(Boolean).join(" ")||"";
-  return {name,first:(m.given_name||name.split(" ")[0]||"").trim(),email:u.email||m.email||"",avatar:m.avatar_url||m.picture||"",linkedin:(u.app_metadata&&(u.app_metadata.provider==="linkedin_oidc"||(u.app_metadata.providers||[]).includes("linkedin_oidc")))||false}}
+  return {name,first:(m.given_name||name.split(" ")[0]||"").trim(),email:u.email||m.email||"",avatar:m.avatar_url||m.picture||""}}
 async function setUser(u){const was=AUTH.user&&AUTH.user.id;AUTH.user=u||null;
   if(AUTH.user&&AUTH.user.id!==was){await cloudLoad();const mp=metaProfile(AUTH.user);
-    S.profile=Object.assign({},mp,S.profile||{});["name","first","avatar"].forEach(k=>{if(!S.profile[k]&&mp[k])S.profile[k]=mp[k]});if(mp.linkedin)S.profile.linkedin=true;if(!S.profile.email)S.profile.email=mp.email;save();
+    S.profile=Object.assign({},mp,S.profile||{});["name","first","avatar"].forEach(k=>{if(!S.profile[k]&&mp[k])S.profile[k]=mp[k]});if(!S.profile.email)S.profile.email=mp.email;save();
     const r=route();if(r==="join"||r==="home"||/access_token|error_description|code=/.test(location.href))go(S.profile.done?(S.pending||"me"):"setup");else render()}
   else render()}
 if(sb){sb.auth.getSession().then(({data})=>setUser(data.session&&data.session.user));
   sb.auth.onAuthStateChange((ev,s)=>{if(ev==="SIGNED_OUT"){AUTH.user=null;render()}else if(s&&(!AUTH.user||AUTH.user.id!==s.user.id))setUser(s.user)})}
-async function liCheck(){if(UI.liOn!==null||!sb)return;try{const r=await fetch(SUPABASE_URL+"/auth/v1/settings",{headers:{apikey:SUPABASE_KEY}});const j=await r.json();UI.liOn=!!(j.external&&j.external.linkedin_oidc)}catch(e){UI.liOn=false}if(route()==="join")render()}
-async function liLogin(){if(!sb)return toast("Sign-in isn’t available right now.");
-  if(UI.liOn===false){UI.msg="LinkedIn sign-in is being switched on. Use email for now, then add your resume to fill in your profile.";render();return}
-  const {error}=await sb.auth.signInWithOAuth({provider:"linkedin_oidc",options:{redirectTo:location.origin+location.pathname}});
-  if(error){UI.msg=error.message;render()}}
 async function emailAuth(form){const email=form.querySelector("#au-email").value.trim(),password=form.querySelector("#au-pw").value;
   UI.busy=true;UI.msg="";render();
   const res=UI.mode==="signup"?await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}}):await sb.auth.signInWithPassword({email,password});
@@ -476,7 +469,6 @@ function finishQuiz(k){const a=S.draft[k].a;S.answers[k]=a;
 
 /* ---------- views ---------- */
 const MARK=`<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,WORD=`<a class="word" href="#home">${MARK}clocked</a>`;
-const SVG_LI=`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0A66C2" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4v11H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.82-2.06 3.75-2.06 4 0 4.74 2.63 4.74 6.06v5.4h-4v-4.8c0-1.14-.02-2.62-1.6-2.62-1.6 0-1.84 1.25-1.84 2.54v4.88h-4z"/></svg>`;
 function dring(val,mode,cls){const N=48,R=78,out=[];
   for(let ring=0;ring<6;ring++){const r=26+ring*9.5;if(Math.abs(r-R)<6)continue;const n=Math.round(2*Math.PI*r/7.5);for(let i=0;i<n;i++){const a=i/n*2*Math.PI;out.push(`<circle class="f" cx="${(100+r*Math.cos(a)).toFixed(1)}" cy="${(100+r*Math.sin(a)).toFixed(1)}" r="${(0.7+ring*0.06).toFixed(2)}"/>`)}}
   const on=Math.round(N*(val||0)/100);
@@ -500,28 +492,23 @@ function vHome(){const ra=S.results.arch;
       <button class="btn glass" data-act="begin" data-k="career">Which career fits me?</button>
     </div></main>`,{tabs:"home"})}
 
-function vJoin(){liCheck();if(AUTH.user)return vSetup();const up=UI.mode==="signup";
+function vJoin(){if(AUTH.user)return vSetup();const up=UI.mode==="signup";
   return shell(`<main class="screen center anim-in">
     ${dring(0,"tick","sm")}
-    <h1 class="t1">Make it yours.</h1>
-    <p class="t2">Log in to save your score. We’ll set up your profile from LinkedIn and your resume.</p>
-    <div class="stack">
-      <button class="btn li" data-act="li">${SVG_LI}Continue with LinkedIn</button>
-      ${UI.liOn===false?`<p class="msg">LinkedIn is being switched on. Use email for now.</p>`:""}
-      <details ${UI.msg?"open":""}><summary class="btn glass">Use email instead</summary>
-        <form data-auth style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-          <input class="in" id="au-email" type="email" autocomplete="email" required placeholder="Email" aria-label="Email">
-          <input class="in" id="au-pw" type="password" autocomplete="${up?"new-password":"current-password"}" minlength="6" required placeholder="${up?"Password (6+ characters)":"Password"}" aria-label="Password">
-          ${UI.msg?`<p class="msg${/check your email/i.test(UI.msg)?"":" err"}" role="status">${esc(UI.msg)}</p>`:""}
-          <button class="btn" type="submit" ${UI.busy?"disabled":""}>${UI.busy?"One sec…":up?"Create account":"Log in"}</button>
-          <button class="txt" type="button" data-act="authmode">${up?"Have an account? Log in":"New here? Sign up"}</button>
-        </form></details>
-      <button class="txt" data-act="guest">Skip for now</button>
-    </div></main>`)}
+    <h1 class="t1">${up?"Make it yours.":"Welcome back."}</h1>
+    <p class="t2">${up?"Create an account to save your score and your next steps.":"Log in to see your dashboard."}</p>
+    <form class="stack" data-auth>
+      <input class="in" id="au-email" type="email" autocomplete="email" required placeholder="Email" aria-label="Email">
+      <input class="in" id="au-pw" type="password" autocomplete="${up?"new-password":"current-password"}" minlength="6" required placeholder="${up?"Password (6+ characters)":"Password"}" aria-label="Password">
+      ${UI.msg?`<p class="msg${/check your email/i.test(UI.msg)?"":" err"}" role="status">${esc(UI.msg)}</p>`:""}
+      <button class="btn" type="submit" ${UI.busy?"disabled":""}>${UI.busy?"One sec…":up?"Create account":"Log in"}</button>
+      <button class="txt" type="button" data-act="authmode">${up?"Have an account? Log in":"New here? Sign up"}</button>
+      <button class="txt" type="button" data-act="guest">Skip for now</button>
+    </form></main>`)}
 
 function vSetup(){const p=S.profile||(S.profile={}),P=UI.parse||{},xp=p.experience||[];const found=p.resume&&!UI.edit;
   return shell(`<main class="screen anim-in">
-    <h1 class="ttl">Profile.<span>${p.linkedin?"Connected to LinkedIn.":p.resume?"Built from your resume.":"Add your resume to fill it in."}</span></h1>
+    <h1 class="ttl">Profile.<span>${p.resume?"Built from your resume.":"Add your resume to fill it in."}</span></h1>
     <label class="drop${p.resume?" done":""}" style="margin-top:26px"><input type="file" accept="application/pdf,.pdf" data-resume aria-label="Upload your resume as a PDF">
       <b>${P.busy?"Reading…":p.resume?"Resume added":"Drop PDF"}</b><span>${P.busy?"One sec":p.resume?"Tap to replace":"or tap to upload"}</span></label>
     ${P.err?`<p class="msg err" style="margin-bottom:14px">${esc(P.err)}</p>`:""}
@@ -646,7 +633,6 @@ function render(){const r=route();let html;
 const ACT={
   begin:el=>{const k=el.dataset.k,done=S.profile&&S.profile.done;if(!done&&!AUTH.user&&!S.guest){S.pending="q-"+k;save();go("join");return}if(!done&&AUTH.user){S.pending="q-"+k;save();go("setup");return}startQuiz(k)},
   toquizzes:(el,e)=>{if(route()==="home"){e.preventDefault();const q=$("#quizzes");if(q)q.scrollIntoView({behavior:"smooth"})}else{e.preventDefault();go("home");setTimeout(()=>{const q=$("#quizzes");if(q)q.scrollIntoView()},50)}},
-  li:()=>liLogin(),
   authmode:()=>{UI.mode=UI.mode==="signup"?"login":"signup";UI.msg="";render()},
   guest:()=>{S.guest=true;const n=S.pending||"q-arch";S.pending=null;save();startQuiz(n.slice(2))},
   addxp:()=>{const p=S.profile;(p.experience||(p.experience=[])).push({title:"",company:"",dates:""});save();render()},
