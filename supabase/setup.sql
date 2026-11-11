@@ -1,4 +1,4 @@
--- Landit database setup.
+-- CLOCKED (formerly Landit) database setup.
 -- Paste this whole file into Supabase → SQL Editor → New query, then click Run.
 -- Safe to run more than once.
 

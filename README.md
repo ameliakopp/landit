@@ -1,29 +1,23 @@
-# Landit
+# CLOCKED
 
-A week-by-week plan to land an internship, one clear step at a time.
+The internship quiz that tells you the truth. Two quizzes:
 
-Students take a one-minute quiz, get a countdown to their apply-by date, and work through six steps, each with its own short workshop:
+1. **What's your internship archetype?** 12 questions, a clarity score out of 100, one of five archetypes (Explorer, Shotgun, Detective, Builder, Closer) and three things to do next.
+2. **Which career are you actually built for?** 14 questions, including rating real tasks, then top matches with a % and the role to search for. A resume on file nudges the matches.
 
-1. Update your LinkedIn
-2. Find contacts at your target company
-3. Draft your outreach note
-4. Prep for the conversation with your contact
-5. Update your resume
-6. Prep for your interview
+Students sign in with LinkedIn (or email), upload a resume as a PDF, and the app fills in school, major, grad year, experience and skills. The PDF is read in the browser; the file itself is not uploaded.
 
-## How it's built
+Live: https://ameliakopp.github.io/landit/
 
-- `index.html` is the whole app: plain HTML, CSS and JavaScript, no build step.
-- `img/` holds the photos and workshop screenshots.
-- Accounts and saved progress use [Supabase](https://supabase.com). Without an account, progress is saved in the browser only.
-- `supabase/setup.sql` creates the `students` table and its security rules.
+## Turning on "Continue with LinkedIn"
 
-## Making changes
+LinkedIn only shares name, email and photo with apps like this (job history is restricted to LinkedIn partners), which is why the resume upload fills in experience.
 
-Edit the files on GitHub (pencil icon → **Commit changes**) or ask Claude. GitHub Pages republishes the site automatically after each commit.
+1. Go to https://www.linkedin.com/developers/apps and create an app (you'll need a LinkedIn company page; any page you admin works).
+2. In the app's **Products** tab, add **Sign In with LinkedIn using OpenID Connect**.
+3. In the **Auth** tab, add this redirect URL: `https://bzumycapvgqkejenexpq.supabase.co/auth/v1/callback`
+4. Copy the **Client ID** and **Client Secret**.
+5. In Supabase: **Authentication → Sign In / Providers → LinkedIn (OIDC)**, switch it on, paste the Client ID and Secret, save.
+6. In Supabase: **Authentication → URL Configuration**, set Site URL to `https://ameliakopp.github.io/landit/` and add the same URL under Redirect URLs.
 
-## Setup (one time)
-
-1. In Supabase, open **SQL Editor → New query**, paste `supabase/setup.sql`, and click **Run**.
-2. In Supabase, open **Authentication → URL Configuration** and set **Site URL** to the live site address (e.g. `https://ameliakopp.github.io/landit/`).
-3. In GitHub, open **Settings → Pages**, choose **Deploy from a branch**, branch `main`, folder `/ (root)`.
+The app checks whether LinkedIn is switched on and shows email sign-in until it is.
