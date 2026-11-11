@@ -364,6 +364,8 @@ body{line-height:1.55}
 .door.main em{color:rgba(11,11,12,.62)}
 .door.main i{background:#0B0B0C;color:var(--ink)}
 .nw{white-space:nowrap}.hook{text-wrap:balance}
+.part.pop{animation:fade .5s var(--ease) both}
+.still .part.pop{animation:fade .5s var(--ease) both}
 </style>
 </head>
 <body>
@@ -672,6 +674,7 @@ let QZ=null;
 function startQuiz(k){S.draft[k]=S.draft[k]||{i:0,a:{},stack:[]};if(S.draft[k].i>=QUIZ[k].qs.length)S.draft[k]={i:0,a:{},stack:[]};save();go("q-"+k)}
 function qVisible(k,a){return QUIZ[k].qs.filter(q=>!q.when||q.when(a))}
 function partsOf(q,a){return (q.parts||[]).filter(x=>!x.when||x.when(a))}
+function shownParts(q,a){const ps=partsOf(q,a),out=[];for(const x of ps){out.push(x);if(!x.optional&&!hasAns(x,a[x.id]))break}return out}
 function comboOk(q,a){return partsOf(q,a).every(x=>x.optional||hasAns(x,a[x.id]))}
 function hasAns(q,v){if(q.kind==="slider")return v!=null;if(q.kind==="pairs")return v&&q.pairs.every(p=>v[p[0]]);if(q.kind==="rate")return v&&q.tasks.every(t=>v[t]);if(Array.isArray(v))return v.length>0;return v!=null&&String(v).trim()!==""}
 function qNext(k){const d=S.draft[k],qs=QUIZ[k].qs;d.stack.push(d.i);let n=d.i+1;while(n<qs.length&&qs[n].when&&!qs[n].when(d.a))n++;const cs=qs[d.i].sec,ns=n<qs.length?qs[n].sec:null,left=new Set(qs.slice(n).filter(x=>!x.when||x.when(d.a)).map(x=>x.sec).filter(x=>DIMS.some(dd=>dd.n===x))).size;const qr=qs[d.i].react?qs[d.i].react(d.a):null,ms=cs&&ns&&cs!==ns&&DIMS.some(dd=>dd.n===cs)?`${cs} done. ${left?left+" to go.":"Last one."}`:null;d.react=qr&&ms?qr+" "+ms:(qr||ms);d.i=n;save();
@@ -815,7 +818,8 @@ function vQuiz(k){const Q=QUIZ[k],d=S.draft[k];if(!d)return startQuiz(k),"";if(d
   const q=Q.qs[d.i],a=d.a,vis=qVisible(k,a),idx=vis.indexOf(q),N=vis.length,ok=qOk(q,a),last=idx===N-1,V=x=>typeof x==="function"?x(a):x;
   const hint=q.kind==="combo"?(partsOf(q,a).length>1?`${partsOf(q,a).length} quick ones`:"Be honest"):q.kind==="many"?(q.max?`Pick up to ${q.max}`:"Pick all that apply"):q.kind==="one"?"Pick one":q.kind==="rate"?"Gut reaction":q.kind==="pairs"?"This or that":q.optional?"Optional":"In your own words";
   const left=Math.max(1,Math.round((N-idx)*(k==="arch"?.45:.22)));
-  const body=q.kind==="combo"?partsOf(q,a).map(x=>`<div class="part">${x.l?`<p class="plabel">${esc(V(x.l))}${x.kind==="many"&&x.max?` <span>${(a[x.id]||[]).length}/${x.max}</span>`:""}</p>`:""}${ctl(x,a[x.id],a,x.id)}</div>`).join(""):ctl(q,a[q.id],a,null);
+  const sp=q.kind==="combo"?shownParts(q,a):[],prevN=(UI.partsShown||(UI.partsShown={}))[q.id]||1;if(q.kind==="combo")UI.partsShown[q.id]=sp.length;
+  const body=q.kind==="combo"?sp.map((x,pi)=>`<div class="part${pi>=prevN?" pop":""}">${x.l?`<p class="plabel">${esc(V(x.l))}${x.kind==="many"&&x.max?` <span>${(a[x.id]||[]).length}/${x.max}</span>`:""}</p>`:""}${ctl(x,a[x.id],a,x.id)}</div>`).join(""):ctl(q,a[q.id],a,null);
   const cnt=q.kind==="many"&&q.max?`<span class="cnt">${(a[q.id]||[]).length} of ${q.max}</span>`:"";
   return shell(`<div class="qbar">${vis.map((x,i)=>`<i class="${i<=idx?"on":""}"></i>`).join("")}</div><main class="screen qz-body anim-in" data-q="${q.id}">
       <div class="qhead"><h1 class="qq">${esc(q.q)}</h1>${q.sub?`<p class="qsub">${esc(V(q.sub))}</p>`:""}</div>
@@ -916,6 +920,7 @@ function render(){const r=route();let html;
   const vk=UI.loading?"load":r+(r.startsWith("q-")&&S.draft[r.slice(2)]?":"+S.draft[r.slice(2)].i:"");document.body.classList.toggle("still",UI.lastView===vk);UI.lastView=vk;
   const ae=document.activeElement,keep=ae&&ae.id&&/^(pf-|qz-text|au-|help-|paste)/.test(ae.id)?[ae.id,ae.selectionStart]:null;
   $("#app").innerHTML=html+((r==="home"&&!UI.loading)||UI.help?helpUI():"")+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:"");
+  const np=[...document.querySelectorAll(".part.pop")].pop();if(np&&!keep)setTimeout(()=>np.scrollIntoView({behavior:"smooth",block:"nearest"}),60);
   if(keep){const el=document.getElementById(keep[0]);if(el){el.focus();try{el.setSelectionRange(keep[1],keep[1])}catch(e){}}}}
 
 /* ---------- events ---------- */
@@ -950,7 +955,7 @@ document.addEventListener("submit",e=>{if(e.target.matches("[data-auth]")){e.pre
 document.addEventListener("input",e=>{const t=e.target;
   if(t.dataset.pf){S.profile=S.profile||{};S.profile[t.dataset.pf]=t.value;save()}
   else if(t.dataset.xp!=null){S.profile.experience[+t.dataset.xp][t.dataset.f]=t.value;save()}
-  else if(t.matches("[data-qtext]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i];d.a[t.dataset.pid||q.id]=t.value;save();footSync(k)}});
+  else if(t.matches("[data-qtext]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i];d.a[t.dataset.pid||q.id]=t.value;save();footSync(k);if(q.kind==="combo"){clearTimeout(UI.revT);UI.revT=setTimeout(()=>{if(route()==="q-"+k&&shownParts(q,d.a).length!==(UI.partsShown||{})[q.id])render()},700)}}});
 document.addEventListener("input",e=>{if(e.target.matches("[data-slider]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i],v=+e.target.value;d.a[e.target.dataset.pid||q.id]=v;save();$("#sl-n").textContent=v;$("#sl-l").textContent=selfLabel(v);footSync(k)}});
 function footSync(k){const d=S.draft[k],q=QUIZ[k].qs[d.i],ok=qOk(q,d.a),b=$(".qz-foot .go");if(!b)return;const last=qVisible(k,d.a).indexOf(q)===qVisible(k,d.a).length-1;b.disabled=!ok&&!q.optional;b.innerHTML=(!ok&&q.optional?"Skip":last?"Show me the truth":"Next")+"<i>→</i>"}
 document.addEventListener("change",e=>{if(e.target.matches("[data-resume]"))handleResume(e.target.files[0])});
