@@ -1,10 +1,12 @@
 # CLOCKED
 
-The internship quiz that tells you the truth. Two quizzes:
+The internship quiz built on one idea: **the biggest block is you.** Most students think they're ready to apply before they are.
 
-1. **Where do you actually stand?** 22 questions across Direction, Experience, Network and Strategy. Gives a readiness %, a stage (1 Exploring, 2 Scattered, 3 Focusing, 4 Building, 5 Ready), a score per area, and three next steps for weeks 1 to 3 aimed at the weakest areas.
-2. **Which career are you actually built for?** 14 questions, including rating real tasks, then top matches with a % and the role to search for. A resume on file nudges the matches.
+1. **Drop your resume.** It's read in the browser (the file isn't uploaded) and turned into a profile with strengths and weaknesses a recruiter would spot: real experience, leadership, bullets without numbers, weak "Responsible for…" openers, missing LinkedIn link, more than one page, thin skills.
+2. **Gut check, then 22 quick questions** across Direction, Experience, Network and Strategy. Students rate how ready they think they are first.
+3. **The truth:** "You think 85%. Reality 28%. 57-point gap." Plus a stage (1 Exploring to 5 Ready), four area scores, and the one thing to fix first.
+4. **Next steps tab:** areas to strengthen, weakest first, each with the reasons from their own answers and resume, and actions they can tick off. Dashboard and Profile tabs alongside.
 
-Students sign in with email (or skip), upload a resume as a PDF, and the app fills in school, major, grad year, experience and skills. The PDF is read in the browser; the file itself is not uploaded.
+A separate career match quiz suggests directions; a resume nudges the matches.
 
 Live: https://ameliakopp.github.io/landit/

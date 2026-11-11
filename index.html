@@ -215,6 +215,65 @@ details summary{list-style:none;cursor:pointer}details summary::-webkit-details-
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:60;background:#1c1c1f;border:1px solid var(--edge);color:var(--ink);font-size:14px;padding:12px 18px;border-radius:999px;animation:fade .4s var(--ease) both}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .still .anim-in,.still .ring .val,.still .tl .fill,.still .tl .bar i,.still .react{animation:none}
+
+/* v5: hook, resume read-out, gap reveal, plan */
+.how3{list-style:none;margin:-8px 0 28px;padding:0;display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.how3 li{display:flex;align-items:center;gap:8px;padding:7px 13px 7px 7px;border-radius:999px;background:var(--glass);border:1px solid var(--edge);font-size:13px;color:var(--mute)}
+.how3 b{width:20px;height:20px;border-radius:50%;background:var(--ink);color:#0B0B0C;display:grid;place-items:center;font-size:11px;font-weight:600}
+.sw{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;text-align:left}
+.sw:has(.sw-col:only-child){grid-template-columns:1fr}
+@media (max-width:520px){.sw{grid-template-columns:1fr}}
+.sw-col{border-radius:24px;background:var(--glass);border:1px solid var(--edge);padding:14px 16px;display:flex;flex-direction:column;gap:12px;animation:fade .6s var(--ease) both}
+.sw-col+.sw-col{animation-delay:.15s}
+.sw-col h3{margin:0;font-size:12.5px;font-weight:500;color:var(--mute)}
+.swi{display:flex;gap:12px;align-items:flex-start}
+.swi b{display:block;font-weight:500;font-size:15px;line-height:1.3}
+.swi span{display:block;font-size:13px;color:var(--mute);margin-top:2px;line-height:1.4}
+.swi i{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;margin-top:1px}
+.swi i.ok{background:rgba(120,230,170,.16);color:#8FEBB8}
+.swi i.no{background:rgba(255,122,69,.18);color:#FFA27A}
+.who{display:flex;gap:14px;align-items:center;width:100%;text-align:left;margin:16px 0 4px}
+.who b{display:block;font-weight:500;font-size:18px}.who span{font-size:13.5px;color:var(--mute)}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--glass2);border:1px solid var(--edge);display:grid;place-items:center;font-size:20px;flex:none}
+.paste{width:100%;text-align:center}
+.slide{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0}
+.slide-n{display:flex;align-items:flex-start;font-weight:300;font-size:clamp(96px,26vw,128px);line-height:1;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+.slide-n small{font-size:.4em;color:var(--mute);margin-top:.18em;letter-spacing:0}
+.slide-l{margin:0 0 22px;color:var(--mute);font-size:16px;min-height:24px}
+.slide input{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--a1),var(--a2),var(--a3));outline:none;opacity:.85}
+.slide input::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 6px rgba(255,255,255,.08),0 4px 20px rgba(0,0,0,.5);cursor:grab}
+.slide input::-moz-range-thumb{width:34px;height:34px;border:0;border-radius:50%;background:var(--ink);cursor:grab}
+.slide-ends{width:100%;display:flex;justify-content:space-between;font-size:12px;color:var(--faint);margin-top:10px}
+.gap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:18px 0 18px}
+.gap>div{text-align:center}
+.gap span{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
+.gap b{font-weight:300;font-size:clamp(60px,17vw,88px);line-height:1;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.gap b small{font-size:.4em;color:var(--mute);letter-spacing:0}
+.gap>div:first-child b{color:var(--mute)}
+.gap .real b{background:linear-gradient(135deg,#FFB089,#F0508A 55%,#A98BFF);-webkit-background-clip:text;background-clip:text;color:transparent;animation:fade .8s .5s var(--ease) both}
+.gap-mid{font-size:22px;color:var(--faint)}
+.gap-h{text-align:center;font-weight:500;font-size:clamp(24px,6vw,30px);letter-spacing:-.03em;margin:0 0 8px;animation:fade .7s .9s var(--ease) both}
+.gap-h+.sub{animation:fade .7s 1.1s var(--ease) both}
+.tl.hot{border-color:rgba(255,122,69,.35)}
+a.tl.first{min-height:0;gap:8px}
+.prog{height:4px;border-radius:2px;background:rgba(255,255,255,.08);margin:16px 0 6px;overflow:hidden}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:2px;transition:width .6s var(--ease)}
+.area{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.area-h{display:flex;gap:12px;align-items:center}
+.area-h b{display:block;font-weight:500;font-size:19px;letter-spacing:-.02em}
+.area-h span{font-size:13px;color:var(--mute)}
+.area-n{width:30px;height:30px;border-radius:50%;background:var(--glass2);border:1px solid var(--edge);display:grid;place-items:center;font-size:13px;flex:none}
+.bar2{height:3px;border-radius:2px;background:rgba(255,255,255,.07);overflow:hidden}
+.bar2 i{display:block;height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));animation:grow 1.2s .2s var(--ease) both}
+.why{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.why li{font-size:14px;color:var(--mute);padding-left:16px;position:relative}
+.why li::before{content:"";position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:#FFA27A}
+.tabs a{position:relative}
+.tabs .badge{position:absolute;top:0;left:calc(50% + 8px);min-width:17px;height:17px;padding:0 5px;border-radius:999px;background:var(--a2);color:#fff;font-size:10px;font-weight:600;display:grid;place-items:center}
+.step{align-items:center}
+.area{border-radius:24px;padding:4px 0}.area>summary{cursor:pointer;list-style:none}.area>summary::-webkit-details-marker{display:none}.area[open]{gap:10px}.area:not([open])>summary{opacity:.75}
+.chev{color:var(--faint);font-size:20px;transition:transform .3s var(--ease)}.area[open] .chev{transform:rotate(90deg)}
+.area[open]>*+*{margin-top:10px}
 </style>
 </head>
 <body>
@@ -267,7 +326,7 @@ async function emailAuth(form){const email=form.querySelector("#au-email").value
 /* ---------- resume reader ---------- */
 const PDFJS="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/";
 function loadPdf(){if(window.pdfjsLib)return Promise.resolve(window.pdfjsLib);return new Promise((ok,no)=>{const s=document.createElement("script");s.src=PDFJS+"pdf.min.js";s.onload=()=>{window.pdfjsLib.GlobalWorkerOptions.workerSrc=PDFJS+"pdf.worker.min.js";ok(window.pdfjsLib)};s.onerror=()=>no(new Error("Couldn’t load the PDF reader"));document.head.appendChild(s)})}
-async function pdfLines(file){const lib=await loadPdf(),doc=await lib.getDocument({data:await file.arrayBuffer()}).promise,out=[];
+async function pdfLines(file){const lib=await loadPdf(),doc=await lib.getDocument({data:await file.arrayBuffer()}).promise,out=[];UI.pages=doc.numPages;
   for(let p=1;p<=Math.min(doc.numPages,4);p++){const pg=await doc.getPage(p),tc=await pg.getTextContent(),rows=[];
     tc.items.forEach(it=>{if(!it.str||!it.str.trim())return;const y=it.transform[5];let r=rows.find(r=>Math.abs(r.y-y)<=2.5);if(!r){r={y,it:[]};rows.push(r)}r.it.push({x:it.transform[4],w:it.width||0,s:it.str})});
     rows.sort((a,b)=>b.y-a.y).forEach(r=>{r.it.sort((a,b)=>a.x-b.x);let line="",end=null;r.it.forEach(i=>{if(end!==null){const gap=i.x-end;line+=gap>18?" | ":gap>1.5&&!/\s$/.test(line)&&!/^\s/.test(i.s)?" ":""}line+=i.s;end=i.x+i.w});out.push(line.replace(/\s+/g," ").trim())})}
@@ -277,7 +336,7 @@ const DATE_RX=new RegExp(`((?:${MON}\\s+)?(?:19|20)\\d{2}\\s*(?:–|—|-|to)\\s
 const HEAD_RX=/^(education|academic background|experience|work experience|professional experience|relevant experience|employment|internships?|leadership( experience)?|leadership & activities|activities|campus involvement|involvement|extracurriculars?|projects?|skills|skills & interests|skills and interests|technical skills|interests|honors( & awards)?|awards|certifications?|additional( information)?|volunteer(ing| experience)?|languages)\s*:?$/i;
 const SEC_OF=h=>/educ|academic/i.test(h)?"edu":/skill|interest|language|certif|additional/i.test(h)?"skills":/project/i.test(h)?"proj":/honor|award/i.test(h)?"other":"exp";
 function parseResume(lines){
-  const txt=lines.join("\n"),R={name:"",email:"",phone:"",linkedinUrl:"",school:"",major:"",grad:"",experience:[],skills:[],text:txt.slice(0,12000)};
+  const txt=lines.join("\n"),R={name:"",email:"",phone:"",linkedinUrl:"",school:"",major:"",grad:"",experience:[],skills:[],bullets:[],lines:lines.length,text:txt.slice(0,12000)};
   R.email=(txt.match(/[\w.+-]+@[\w-]+\.[\w.-]+/)||[""])[0];
   R.phone=(txt.match(/(\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/)||[""])[0];
   R.linkedinUrl=(txt.match(/linkedin\.com\/in\/[\w-]+/i)||[""])[0];
@@ -289,6 +348,7 @@ function parseResume(lines){
     const mj=l.match(/(?:bachelor(?:’s|'s)?|master(?:’s|'s)?|b\.?\s?a\.?|b\.?\s?s\.?|b\.?\s?b\.?\s?a\.?|m\.?\s?s\.?)\s*(?:of|in)?\s*(?:arts|science|business administration)?\s*(?:,|in|–|-)?\s*([A-Za-z&,\s]{3,60})/i)||l.match(/major(?:s)?\s*(?:in|:)?\s*([A-Za-z&,\s]{3,60})/i);
     if(!R.major&&mj&&mj[1])R.major=mj[1].replace(/\b(minor|gpa|expected|candidate|concentration)\b.*$/i,"").replace(/[,|\s]+$/,"").trim();
     (l.match(/\b(19|20)\d{2}\b/g)||[]).forEach(y=>{if(+y<=YEAR+6&&(!R.grad||+y>+R.grad))R.grad=y})})});
+  secs.filter(s=>s.k==="exp"||s.k==="proj").forEach(s=>s.lines.forEach(l=>{if((bullet(l)||l.length>48)&&!DATE_RX.test(l))R.bullets.push(l.replace(/^[•●▪◦∙·\-–*]\s*/,""))}));
   secs.filter(s=>s.k==="exp").forEach(s=>{const L=s.lines;for(let i=0;i<L.length;i++){const l=L[i];if(bullet(l))continue;const m=l.match(DATE_RX);if(!m)continue;
     const dates=m[0].replace(/\s+/g," ").trim();let a=l.replace(m[0],"").replace(/\s*\|\s*/g," | ").replace(/(^[\s|,–-]+|[\s|,–-]+$)/g,"");
     const parts=a.split(/\s\|\s|\s[–—]\s/).map(x=>x.trim()).filter(x=>x&&!/^(remote|hybrid|[A-Z][a-z]+(?: [A-Z][a-z]+)*,\s?[A-Z]{2}|New York|NYC)$/.test(x));
@@ -302,7 +362,7 @@ function parseResume(lines){
 function applyResume(R,fileName){const p=S.profile||(S.profile={});p.resume={name:fileName||"Pasted text",at:new Date().toISOString().slice(0,10)};p.resumeText=R.text;
   ["school","major","grad","phone","linkedinUrl"].forEach(k=>{if(R[k]&&!p[k])p[k]=R[k]});
   if(R.name&&!p.name){p.name=R.name;p.first=R.name.split(" ")[0]}if(R.email&&!p.email)p.email=R.email;
-  if(R.experience.length)p.experience=R.experience;if(R.skills.length)p.skills=R.skills;save();
+  if(R.experience.length)p.experience=R.experience;if(R.skills.length)p.skills=R.skills;p.resumeStats=resumeStats(R,UI.pages||1);UI.pages=null;save();
   UI.parse={ok:true,n:R.experience.length,s:R.skills.length,school:R.school};UI.edit=false}
 async function handleResume(file){if(!file)return;if(!/pdf$/i.test(file.type)&&!/\.pdf$/i.test(file.name)){UI.parse={err:"That’s not a PDF. Export your resume as a PDF, or paste the text below."};render();return}
   UI.parse={busy:true};render();
@@ -338,6 +398,7 @@ const STAGE=[null,
 function readiness(a){const sum={dir:0,exp:0,net:0,str:0},n={dir:0,exp:0,net:0,str:0};
   Object.entries(PTS).forEach(([k,[dm,map]])=>{const v=a[k];if(v==null||(Array.isArray(v)&&!v.length))return;const pt=Array.isArray(v)?v.reduce((s,x)=>s+(map[x]||0),0)/v.length:(map[v]||0);sum[dm]+=pt;n[dm]++});
   if(a.c_line!=null){sum.dir+=lineScore(a.c_line);n.dir++}
+  {const an=analyzeResume(S.profile||{});if(an){sum.exp+=an.score/100*3*2;n.exp+=2}else if(S.profile&&S.profile.noResume){n.exp+=1}}
   const dims={};DIMS.forEach(({k})=>dims[k]=n[k]?Math.round(100*sum[k]/(3*n[k])):0);
   const score=clamp(Math.round(DIMS.reduce((s,{k})=>s+dims[k]*DIM_W[k],0)),3,99);
   const mass=a.c_month==="all"||a.c_targets==="any"||(a.c_month==="tweak"&&(a.c_apps==="50"||a.c_apps==="11"));
@@ -438,6 +499,7 @@ const o=(...xs)=>xs.map(x=>({v:x[0],l:x[1]}));
 const STAGES=[["early","First or second year"],["junior","Third year"],["senior","Final year"],["grad","Graduated recently"]];
 const QUIZ={
   arch:{n:"01",title:"Where do you actually stand?",short:"Readiness",qs:[
+    {id:"c_self",sec:"Gut check",kind:"slider",q:"How ready are you to land an internship right now?",react:a=>+a.c_self>=60?"Noted. Let’s see if the answers agree.":"Noted. Let’s see where you really are."},
     {id:"c_stage",sec:"About you",kind:"one",q:"Where are you in school?",opts:o(...STAGES)},
     {id:"c_when",sec:"About you",kind:"one",q:"When do you want your internship?",opts:()=>[...TARGETS().map(t=>({v:t.v,l:t.l})),{v:"unsure",l:"Not sure yet"}]},
     {id:"c_say",sec:"Direction",kind:"one",cols:1,q:"A friend asks what job you’re looking for. What do you honestly say?",opts:o(["none","“Honestly, no idea yet.”"],["vague","“Something in business… or maybe not?”"],["field","“A field, like marketing. Not a specific role.”"],["role","“A specific role, like brand marketing at a beauty company.”"]),
@@ -495,7 +557,7 @@ let QZ=null;
 function startQuiz(k){S.draft[k]=S.draft[k]||{i:0,a:{},stack:[]};if(S.draft[k].i>=QUIZ[k].qs.length)S.draft[k]={i:0,a:{},stack:[]};save();go("q-"+k)}
 function qVisible(k,a){return QUIZ[k].qs.filter(q=>!q.when||q.when(a))}
 function hasAns(q,v){if(q.kind==="pairs")return v&&q.pairs.every(p=>v[p[0]]);if(q.kind==="rate")return v&&q.tasks.every(t=>v[t]);if(Array.isArray(v))return v.length>0;return v!=null&&String(v).trim()!==""}
-function qNext(k){const d=S.draft[k],qs=QUIZ[k].qs;d.stack.push(d.i);let n=d.i+1;while(n<qs.length&&qs[n].when&&!qs[n].when(d.a))n++;d.react=qs[d.i].react?qs[d.i].react(d.a):null;d.i=n;save();
+function qNext(k){const d=S.draft[k],qs=QUIZ[k].qs;d.stack.push(d.i);let n=d.i+1;while(n<qs.length&&qs[n].when&&!qs[n].when(d.a))n++;const cs=qs[d.i].sec,ns=n<qs.length?qs[n].sec:null,left=new Set(qs.slice(n).filter(x=>!x.when||x.when(d.a)).map(x=>x.sec).filter(x=>DIMS.some(dd=>dd.n===x))).size;d.react=cs&&ns&&cs!==ns&&DIMS.some(dd=>dd.n===cs)?`${cs} done. ${left?left+" section"+(left>1?"s":"")+" to go.":"Last stretch."}`:(qs[d.i].react?qs[d.i].react(d.a):null);d.i=n;save();
   if(n>=qs.length)finishQuiz(k);else render();window.scrollTo(0,0)}
 function qBack(k){const d=S.draft[k];if(!d.stack.length){go(S.profile?"me":"home");return}d.i=d.stack.pop();d.react=null;save();render();window.scrollTo(0,0)}
 function finishQuiz(k){const a=S.draft[k].a;S.answers[k]=a;
@@ -503,6 +565,58 @@ function finishQuiz(k){const a=S.draft[k].a;S.answers[k]=a;
   else{const m=careerResult(flatPairs(a));S.results.career={top:m.map(x=>({id:x.d.id,pct:x.pct,loves:x.loves,likes:x.likes,rb:x.rb})),at:new Date().toISOString().slice(0,10)}}
   S.draft[k]={i:0,a:{},stack:[]};save();UI.loading=k;render();setTimeout(()=>{UI.loading=null;go("r-"+k)},1700)}
 
+/* ---------- resume analysis: strengths and gaps a recruiter would spot ---------- */
+const WEAK_OPEN=/^(responsible for|helped|assisted|worked on|duties|tasks|participated in|involved in|in charge of)\b/i;
+const LEAD_RX=/\b(president|vice president|vp|founder|co-founder|captain|chair|head|lead|director|editor-in-chief|treasurer|organizer)\b/i;
+function resumeStats(R,pages){const b=R.bullets||[];
+  return {bullets:b.length,nums:b.filter(x=>/\d|%|\$/.test(x)).length,weak:b.filter(x=>WEAK_OPEN.test(x)).length,weakEx:(b.find(x=>WEAK_OPEN.test(x))||"").slice(0,70),
+    pages:pages||1,lines:R.lines||0,hasLi:!!R.linkedinUrl,hasEmail:!!R.email,hasPhone:!!R.phone,roles:R.experience.length,
+    intern:R.experience.some(x=>/intern/i.test(x.title+" "+x.company)),lead:R.experience.some(x=>LEAD_RX.test(x.title)),skills:R.skills.length,school:!!R.school,summary:/\b(summary|objective|profile)\b/i.test(R.text.slice(0,600))}}
+function analyzeResume(p){const st=p&&p.resumeStats;if(!st)return null;const good=[],bad=[];
+  if(st.intern)good.push({t:"Real internship experience",d:"This is what recruiters look for first."});
+  else if(st.roles>=2)good.push({t:`${st.roles} roles on paper`,d:"You’ve got material to work with."});
+  else bad.push({t:st.roles?"Only one role on paper":"No experience listed yet",d:"Clubs, projects and part-time jobs all count. Add them.",fix:"Add one club, project or part-time job with a result"});
+  if(st.lead)good.push({t:"Leadership role",d:"Shows people trust you to run things."});
+  if(st.bullets){const pct=Math.round(st.nums/st.bullets*100);
+    if(pct>=50)good.push({t:`${st.nums} of ${st.bullets} bullets show a result`,d:"Numbers make recruiters stop skimming."});
+    else bad.push({t:`Only ${st.nums} of ${st.bullets} bullets have a number`,d:"Recruiters skim for results. No numbers, no proof.",fix:`Add a number to ${Math.min(4,st.bullets-st.nums)} of your bullets`})}
+  if(st.weak)bad.push({t:`${st.weak} bullet${st.weak>1?"s start":" starts"} with “${st.weakEx.split(" ").slice(0,2).join(" ")}…”`,d:"That describes a job, not what you did.",fix:"Start every bullet with a strong verb: led, built, grew, cut"});
+  if(st.pages>1)bad.push({t:`${st.pages} pages long`,d:"Students get one page. Recruiters won’t flip.",fix:"Cut it to one page"});
+  if(!st.hasLi)bad.push({t:"No LinkedIn link",d:"The first thing a recruiter checks after your resume.",fix:"Add your LinkedIn URL to the top"});
+  else good.push({t:"LinkedIn linked",d:"Easy for recruiters to check you out."});
+  if(st.skills>=5)good.push({t:`${st.skills} skills listed`,d:"Make sure the top ones match the job you want."});
+  else bad.push({t:st.skills?"Thin skills section":"No skills section",d:"Recruiters keyword-search for these.",fix:"Add a skills line with 5+ tools you actually use"});
+  let score=50+good.length*10-bad.length*10;score=clamp(score,8,95);
+  return {score,good,bad}}
+/* ---------- the plan: what to strengthen, weakest first ---------- */
+const APPS_L={"1":"Up to 10","11":"11 to 50","50":"50+"};
+function whyLow(k,a,p){const out=[],an=analyzeResume(p||{});
+  if(k==="dir"){if(a.c_say==="none"||a.c_say==="vague")out.push("You can’t name the job you want yet.");if(lineScore(a.c_line)<2)out.push("You couldn’t say what you want in one sentence.");if(a.c_day==="none"||a.c_day==="rough")out.push("You don’t really know what the job looks like day to day.");if(a.c_targets==="any")out.push("You’re going for anything that’s open.");if(a.c_cos==="none")out.push("You can’t name 3 companies you want.")}
+  if(k==="exp"){if(!p||!p.resumeStats)out.push("No resume yet.");(an?an.bad:[]).slice(0,2).forEach(b=>out.push(b.t+"."));if(a.c_resume==="same")out.push("You send the same resume to every job.");if(a.c_li==="none"||a.c_li==="student")out.push("Your LinkedIn headline doesn’t say what you want.");if(a.c_exp==="none")out.push("Nothing related to your target on paper yet.")}
+  if(k==="net"){if(a.c_people==="0")out.push("You’ve talked to zero people in your field.");if(a.c_chat==="never")out.push("You’ve never had a coffee chat.");if(a.c_ref==="none")out.push("Nobody would refer you yet.")}
+  if(k==="str"){if(a.c_month==="all"||a.c_month==="tweak")out.push("Your plan is to keep mass-applying.");if((a.c_apps==="11"||a.c_apps==="50")&&a.c_reply==="0")out.push(`${APPS_L[a.c_apps]} applications, zero interviews.`);if(a.c_timing==="none")out.push("You don’t know when applications open.");if(a.c_why==="freeze"||a.c_why==="ramble")out.push("You’d struggle with “why this role?”")}
+  return out.slice(0,3)}
+const GOOD_L={dir:"You can say what you want. Most students can’t.",exp:"You’ve got real proof on paper.",net:"You already know people in your field.",str:"You’re not just spraying applications."};
+const AREA_ACT={
+  dir:r=>[["Take the career match quiz","5 min. Get 3 directions worth testing.","career"],[r?`Write one line: “I want ${r} because…”`:"Pick one role. Write it in one sentence.","Say it out loud until it sounds true."],[`Read 5 job posts for ${r||"that role"}`,"Highlight what keeps repeating."]],
+  net:r=>[[`Find 3 people working in ${r||"a field you like"}`,"LinkedIn. Alumni from your school first."],["Send 2 short messages asking for 15 min","Short and specific beats polished."],["Have one coffee chat","Ask what their week actually looks like."]],
+  exp:r=>[[`Rewrite the top of your resume for ${r||"one role"}`,"One role. Not every role."],[`Change your LinkedIn headline to name ${r||"the role you want"}`,"Recruiters search by it."],["Start one small project you can show","Finished beats impressive."]],
+  str:r=>[["Stop mass-applying for 2 weeks","Fewer, better applications."],[`List 10 companies that hire for ${r||"your target role"}`,"Note when each one opens applications."],["Practice “why this role?” out loud","Record it once. Fix the ramble."]],
+};
+function planFor(R){const p=S.profile||{},a=S.answers.arch||{},r=roleText(),an=analyzeResume(p);
+  const areas=DIMS.map(d=>({...d,score:R.dims[d.k]})).sort((x,y)=>x.score-y.score);
+  const fix=areas.filter(x=>x.score<75),keep=areas.filter(x=>x.score>=75);if(!fix.length&&areas.length)fix.push(areas[0]);
+  fix.forEach(x=>{x.why=whyLow(x.k,a,p);let acts=AREA_ACT[x.k](r);
+    if(x.k==="exp"){const rf=an?an.bad.filter(b=>b.fix).map(b=>[b.fix,b.d]):[];if(!p.resumeStats)rf.unshift(["Make a one-page resume","Use our template, then upload it here."]);acts=[...rf,...acts]}
+    if(x.k==="dir"&&S.results.career)acts=acts.filter(z=>z[2]!=="career");
+    x.acts=acts.slice(0,3).map(z=>({t:z[0],sub:z[1],quiz:z[2]||null,key:x.k+":"+z[0]}))});
+  const strengths=[...keep.map(x=>({t:x.n+" "+x.score+"%",d:GOOD_L[x.k]})),...(an?an.good.slice(0,3):[])];
+  const all=fix.flatMap(x=>x.acts),dn=S.stepsDone||{};
+  return {fix,keep,strengths,all,done:all.filter(z=>dn[z.key]).length,next:all.find(z=>!dn[z.key])}}
+function gapLine(self,score){const g=self-score;
+  if(g>=15)return{h:`${g}-point gap.`,t:"You think you’re ready. You’re not, yet. That gap is the block. Not the job market. Not your school. You."};
+  if(g<=-10)return{h:"You’re underselling yourself.",t:"You’re more ready than you think. The block is waiting. Start applying smarter."};
+  return{h:"You see yourself clearly.",t:"That’s rare. Most students overrate themselves by 30+ points. Now fix the weak spots."}}
 /* ---------- views ---------- */
 const MARK=`<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,WORD=`<a class="word" href="#home">${MARK}clocked</a>`;
 const amb=`<div class="amb" aria-hidden="true"><i></i><i></i><i></i></div>`;
@@ -511,68 +625,72 @@ function ring(val,label){const r=90,c=2*Math.PI*r,off=c*(1-val/100);
     <div class="num"><b>${val}<small>%</small></b><span>${label}</span></div></div>`}
 function topbar(right){const p=S.profile,me=p&&p.done;
   return `<header class="top">${WORD}${right!=null?right:me?`<a class="circ" href="#me" aria-label="Your dashboard">${p.avatar?`<img src="${esc(p.avatar)}" alt="">`:esc((p.first||"?").charAt(0).toUpperCase())}</a>`:AUTH.user?`<a class="chipc" href="#setup">Profile</a>`:`<a class="chipc" href="#join">Log in</a>`}</header>`}
-const TAB_I={home:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 9h16"/></svg>`,me:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 1.8" stroke-linecap="round"/></svg>`,setup:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 4-5 7-5s5.8 1.4 7 5" stroke-linecap="round"/></svg>`};
-function tabs(cur){return `<nav class="tabs" aria-label="Main"><div class="in">${[["home","Quizzes"],["me","Dashboard"],["setup","Profile"]].map(([r,l])=>`<a href="#${r}" class="${cur===r?"on":""}">${TAB_I[r]}${l}</a>`).join("")}</div></nav>`}
-const shell=(inner,opt)=>{opt=opt||{};const t=opt.tabs&&S.profile&&S.profile.done;return `${amb}<div class="app${t?" has-tabs":""}">${opt.bare?"":topbar(opt.top)}${inner}${t?tabs(opt.tabs):""}</div>`};
+const TAB_I={me:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 1.8" stroke-linecap="round"/></svg>`,steps:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 7h14M5 12h10M5 17h6"/></svg>`,setup:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 4-5 7-5s5.8 1.4 7 5" stroke-linecap="round"/></svg>`};
+function tabs(cur){const pl=S.answers.arch&&planFor(archR0()),n=pl?pl.all.length-pl.done:0;return `<nav class="tabs" aria-label="Main"><div class="in">${[["me","Dashboard"],["steps","Next steps"],["setup","Profile"]].map(([r,l])=>`<a href="#${r}" class="${cur===r?"on":""}">${TAB_I[r]}${l}${r==="steps"&&n?`<b class="badge">${n}</b>`:""}</a>`).join("")}</div></nav>`}
+const shell=(inner,opt)=>{opt=opt||{};const t=opt.tabs&&S.results.arch;return `${amb}<div class="app${t?" has-tabs":""}">${opt.bare?"":topbar(opt.top)}${inner}${t?tabs(opt.tabs):""}</div>`};
+const ICON_OK=`<i class="ok">✓</i>`,ICON_NO=`<i class="no">!</i>`;
 
 function vHome(){const ra=S.results.arch;
   return shell(`<main class="screen center anim-in">
     <div class="orb" aria-hidden="true"></div>
-    <p class="kick">The internship quiz</p>
-    <h1 class="t1">Find out where you<br><b>actually</b> stand.</h1>
-    <p class="t2">22 honest questions. One score out of 100. Your next 3 steps.</p>
+    <p class="kick">Not getting internships?</p>
+    <h1 class="t1">The biggest block<br>is <b>you.</b></h1>
+    <p class="t2">Most students think they’re ready to apply. Most aren’t. Find your real score in 5 minutes, and exactly what to fix.</p>
+    <ol class="how3"><li><b>1</b>Drop your resume</li><li><b>2</b>Answer quick questions</li><li><b>3</b>See the gap</li></ol>
     <div class="stack">
-      <button class="btn" data-act="begin" data-k="arch">${ra?"Retake the quiz":"Start"}</button>
-      ${ra?`<a class="btn glass" href="#r-arch">See my score</a>`:""}
-      <button class="btn glass" data-act="begin" data-k="career">Which career fits me?</button>
-    </div></main>`,{tabs:"home"})}
+      <button class="btn" data-act="begin" data-k="arch">${ra?"Retake it":"Find out"}</button>
+      ${ra?`<a class="btn glass" href="#me">My dashboard</a>`:""}
+    </div></main>`)}
 
-function vJoin(){if(AUTH.user)return vSetup();const up=UI.mode==="signup";
+function vJoin(){if(AUTH.user)return go("me"),"";const up=UI.mode==="signup";
   return shell(`<main class="screen center anim-in">
     <div class="orb sm" aria-hidden="true"></div>
-    <h1 class="t1">${up?"Make it yours.":"Welcome back."}</h1>
-    <p class="t2">${up?"Create an account to save your score and your next steps.":"Log in to see your dashboard."}</p>
+    <h1 class="t1">${up?"Don’t lose this.":"Welcome back."}</h1>
+    <p class="t2">${up?"Save your score and your next steps so you can come back and tick them off.":"Log in to see your dashboard."}</p>
     <form class="stack" data-auth>
       <input class="in" id="au-email" type="email" autocomplete="email" required placeholder="Email" aria-label="Email">
       <input class="in" id="au-pw" type="password" autocomplete="${up?"new-password":"current-password"}" minlength="6" required placeholder="${up?"Password (6+ characters)":"Password"}" aria-label="Password">
       ${UI.msg?`<p class="msg${/check your email/i.test(UI.msg)?"":" err"}" role="status">${esc(UI.msg)}</p>`:""}
-      <button class="btn" type="submit" ${UI.busy?"disabled":""}>${UI.busy?"One sec…":up?"Create account":"Log in"}</button>
+      <button class="btn" type="submit" ${UI.busy?"disabled":""}>${UI.busy?"One sec…":up?"Save my results":"Log in"}</button>
       <button class="txt" type="button" data-act="authmode">${up?"Have an account? Log in":"New here? Sign up"}</button>
-      <button class="txt" type="button" data-act="guest">Skip for now</button>
+      <a class="txt" href="#me">Not now</a>
     </form></main>`)}
 
-function vSetup(){const p=S.profile||(S.profile={}),P=UI.parse||{},xp=p.experience||[];const found=p.resume&&!UI.edit;
-  return shell(`<main class="screen anim-in">
-    <h1 class="ttl">Profile.<span>${p.resume?"Built from your resume.":"Add your resume to fill it in."}</span></h1>
-    <label class="drop${p.resume?" done":""}" style="margin-top:26px"><input type="file" accept="application/pdf,.pdf" data-resume aria-label="Upload your resume as a PDF">
-      <b>${P.busy?"Reading…":p.resume?"Resume added":"Drop PDF"}</b><span>${P.busy?"One sec":p.resume?"Tap to replace":"or tap to upload"}</span></label>
+function resumeBlock(p){const an=analyzeResume(p);if(!an)return"";
+  return `<div class="sw"><div class="sw-col"><h3>Strengths</h3>${an.good.length?an.good.map(x=>`<div class="swi">${ICON_OK}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join(""):`<p class="tiny">None yet. That’s what we’ll build.</p>`}</div>
+    <div class="sw-col"><h3>Weaknesses</h3>${an.bad.length?an.bad.map(x=>`<div class="swi">${ICON_NO}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join(""):`<p class="tiny">Nothing obvious. Nice.</p>`}</div></div>`}
+function vSetup(){const p=S.profile||(S.profile={}),P=UI.parse||{},xp=p.experience||[],first=!p.done,edit=UI.edit||(!p.resume&&!first);
+  const head=first?(p.resume?`<p class="kick">Step 1 of 3 · Done</p><h1 class="t1">Here’s what a recruiter sees.</h1><p class="t2">We read your resume. This is the honest version.</p>`
+      :`<p class="kick">Step 1 of 3</p><h1 class="t1">Drop your resume.</h1><p class="t2">We read it in seconds and show you what recruiters actually see. It stays on your device.</p>`)
+    :`<h1 class="ttl" style="text-align:left;width:100%">Profile.<span>${p.resume?"Built from your resume.":"Add your resume to see your strengths and weaknesses."}</span></h1>`;
+  return shell(`<main class="screen center anim-in">
+    ${head}
+    ${p.resume&&!first?`<div class="who"><div class="avatar">${esc((p.first||p.name||"?").charAt(0).toUpperCase())}</div><div><b>${esc(p.name||"You")}</b><span>${esc([p.school,p.major,p.grad&&"Class of "+p.grad].filter(Boolean).join(" · "))}</span></div></div>`:""}
+    ${!p.resume||!first?`<label class="drop${p.resume?" done":""}"${first?"":` style="width:150px;margin-top:10px"`}><input type="file" accept="application/pdf,.pdf" data-resume aria-label="Upload your resume as a PDF">
+      <b>${P.busy?"Reading…":p.resume?(first?"Resume added":"Replace"):"Drop PDF"}</b><span>${P.busy?"One sec":p.resume?(first?"Tap to replace":"resume"):"or tap to upload"}</span></label>`:""}
     ${P.err?`<p class="msg err" style="margin-bottom:14px">${esc(P.err)}</p>`:""}
-    ${found?`<div class="gcard">
-        <div class="alt"><span>Name</span><em>${esc(p.name||"Add")}</em></div>
-        <div class="alt"><span>School</span><em>${esc(p.school||"Add")}</em></div>
-        ${p.major?`<div class="alt"><span>Major</span><em>${esc(p.major)}</em></div>`:""}
-        ${p.grad?`<div class="alt"><span>Class of</span><em>${esc(p.grad)}</em></div>`:""}
-        ${xp.map(x=>`<div class="alt"><span>${esc(x.title||"Role")}</span><em>${esc(x.company)}</em></div>`).join("")}
-        ${(p.skills||[]).length?`<div class="alt"><span>Skills</span><em>${esc(p.skills.slice(0,4).join(", "))}${p.skills.length>4?` +${p.skills.length-4}`:""}</em></div>`:""}
-      </div><button class="txt" data-act="edit" style="align-self:center;margin-top:6px">Edit details</button>`
-    :`<div class="found" style="display:flex;flex-direction:column;gap:8px">
+    ${resumeBlock(p)}
+    ${!p.resume&&first?`<details class="paste"><summary class="txt">No PDF? Paste the text instead</summary><textarea class="in" id="paste-res" placeholder="Paste your resume here" style="margin-top:8px"></textarea><button class="btn glass" data-act="pasteres" style="margin-top:8px">Read it</button></details>`:""}
+    ${!first&&S.results.arch?(()=>{const pl=planFor(archR0());return `<div class="sw" style="margin-top:12px"><div class="sw-col"><h3>From your answers</h3>${pl.strengths.slice(0,2).map(x=>`<div class="swi">${ICON_OK}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join("")}${pl.fix.slice(0,2).map(x=>`<div class="swi">${ICON_NO}<div><b>${esc(x.n)} ${x.score}%</b><span>${esc(x.why[0]||"Room to grow.")}</span></div></div>`).join("")}</div></div>`})():""}
+    ${p.resume&&!edit?`<div class="gcard" style="margin-top:14px">${[["Name",p.name],["School",p.school],["Major",p.major],["Class of",p.grad]].filter(x=>x[1]).map(x=>`<div class="alt"><span>${x[0]}</span><em>${esc(x[1])}</em></div>`).join("")}${xp.map(x=>`<div class="alt"><span>${esc(x.title||"Role")}</span><em>${esc(x.company)}</em></div>`).join("")}</div><button class="txt" data-act="edit">Edit details</button>`:""}
+    ${edit?`<div class="found" style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
         <input class="in" id="pf-name" data-pf="name" value="${esc(p.name||"")}" placeholder="Your name" aria-label="Name">
         <div class="grid2"><input class="in" id="pf-school" data-pf="school" value="${esc(p.school||"")}" placeholder="School" aria-label="School"><input class="in" id="pf-grad" data-pf="grad" inputmode="numeric" value="${esc(p.grad||"")}" placeholder="Grad year" aria-label="Grad year"></div>
-        ${p.resume||xp.length?`<input class="in" id="pf-major" data-pf="major" value="${esc(p.major||"")}" placeholder="Major" aria-label="Major">
-        <p class="tiny" style="margin:6px 0 0">Experience</p>${xp.map((x,i)=>`<div class="xp"><input class="in" data-xp="${i}" data-f="title" value="${esc(x.title)}" placeholder="Title" aria-label="Title"><input class="in" data-xp="${i}" data-f="company" value="${esc(x.company)}" placeholder="Company" aria-label="Company"><button class="rm" data-act="rmxp" data-i="${i}" aria-label="Remove">×</button></div>`).join("")}
-        <button class="txt" data-act="addxp" style="align-self:flex-start">+ Add a role</button>`:""}
-        ${!p.resume?`<details><summary class="txt">No PDF? Paste the text</summary><textarea class="in" id="paste-res" placeholder="Paste your resume here" style="margin-top:8px"></textarea><button class="btn glass" data-act="pasteres" style="margin-top:8px">Read it</button></details>`:""}
-      </div>`}
-    <div class="stack" style="margin:24px auto 0">${p.done?`<a class="btn" href="#me">Done</a>`:`<button class="btn" data-act="setupdone">Continue</button>`}${!p.resume&&!p.done?`<button class="txt" data-act="setupdone">Skip the resume</button>`:""}
-      ${p.done?(AUTH.user?`<button class="txt" data-act="logout">Log out</button>`:`<a class="txt" href="#join">Save to an account</a>`):""}</div>
-  </main>`,{tabs:"setup"})}
+        <input class="in" id="pf-major" data-pf="major" value="${esc(p.major||"")}" placeholder="Major" aria-label="Major">
+        ${xp.map((x,i)=>`<div class="xp"><input class="in" data-xp="${i}" data-f="title" value="${esc(x.title)}" placeholder="Title" aria-label="Title"><input class="in" data-xp="${i}" data-f="company" value="${esc(x.company)}" placeholder="Company" aria-label="Company"><button class="rm" data-act="rmxp" data-i="${i}" aria-label="Remove">×</button></div>`).join("")}
+        <button class="txt" data-act="addxp" style="align-self:flex-start">+ Add a role</button></div>`:""}
+    <div class="stack" style="margin-top:24px">${first?(p.resume?`<button class="btn" data-act="setupdone">Next: the quiz →</button>`:`<button class="txt" data-act="setupdone">I don’t have a resume yet</button>`)
+      :(AUTH.user?`<button class="txt" data-act="logout">Log out</button>`:`<a class="btn glass" href="#join">Save my results</a>`)}</div>
+  </main>`,{tabs:"setup",top:first?"":undefined})}
 
 function vQuiz(k){const Q=QUIZ[k],d=S.draft[k];if(!d)return startQuiz(k),"";if(d.i>=Q.qs.length)d.i=0;
   const q=Q.qs[d.i],a=d.a,v=a[q.id],vis=qVisible(k,a),idx=vis.indexOf(q),N=vis.length,ok=hasAns(q,v),last=idx===N-1,opts=typeof q.opts==="function"?q.opts(a):q.opts;
-  const hint=q.kind==="many"?(q.max?`Select up to ${q.max}`:"Select all that apply"):q.kind==="one"?"Select one":q.kind==="rate"?"Gut reaction":q.kind==="pairs"?"This or that":q.optional?"Optional":"In your own words";
+  const hint=q.kind==="many"?(q.max?`Pick up to ${q.max}`:"Pick all that apply"):q.kind==="one"?"Pick one":q.kind==="rate"?"Gut reaction":q.kind==="pairs"?"This or that":q.kind==="slider"?"Be honest":q.optional?"Optional":"In your own words";
+  const left=Math.max(1,Math.round((N-idx)*.22));
   let body="";
   if(q.kind==="one"||q.kind==="many"){const sel=x=>q.kind==="one"?v===x:(v||[]).includes(x),one=q.cols===1||opts.some(x=>x.l.length>30);
     body=`<div class="tiles${one?" one-col":""}">${opts.map((x,i)=>`<button class="tile" data-act="${q.kind}" data-v="${esc(x.v)}" aria-pressed="${sel(x.v)}"><span class="k">${String(i+1).padStart(2,"0")}</span><span>${esc(x.l)}</span></button>`).join("")}</div>`}
+  else if(q.kind==="slider"){const val=v==null?50:+v;body=`<div class="slide"><div class="slide-n"><b id="sl-n">${v==null?"?":val}</b><small>%</small></div><p class="slide-l" id="sl-l">${esc(v==null?"Drag to answer":selfLabel(val))}</p><input type="range" min="0" max="100" step="1" value="${val}" data-slider aria-label="How ready you think you are"><div class="slide-ends"><span>Not at all</span><span>Fully ready</span></div></div>`}
   else if(q.kind==="text")body=`<textarea class="qtext" id="qz-text" data-qtext placeholder="${esc(q.ph||"What do you think?")}">${esc(v||"")}</textarea>`;
   else if(q.kind==="pairs"){const cur=v||{};body=`<div class="pairs">${q.pairs.map(([pk,a1,l1,b1,l2])=>`<div class="pair"><button class="tile" data-act="pair" data-p="${pk}" data-v="${a1}" aria-pressed="${cur[pk]===a1}"><span>${esc(l1)}</span></button><span>or</span><button class="tile" data-act="pair" data-p="${pk}" data-v="${b1}" aria-pressed="${cur[pk]===b1}"><span>${esc(l2)}</span></button></div>`).join("")}</div>`}
   else if(q.kind==="rate"){const cur=v||{};body=`<div class="rate">${q.tasks.map(t=>`<div class="rate-row"><b>${esc(QT[t][1])}</b><div class="rate-b">${[["love","Love it"],["maybe","Maybe"],["no","No"]].map(([x,l])=>`<button data-act="rate" data-t="${t}" data-v="${x}" aria-pressed="${cur[t]===x}">${l}</button>`).join("")}</div></div>`).join("")}</div>`}
@@ -580,27 +698,54 @@ function vQuiz(k){const Q=QUIZ[k],d=S.draft[k];if(!d)return startQuiz(k),"";if(d
   return shell(`<div class="qbar">${vis.map((x,i)=>`<i class="${i<=idx?"on":""}"></i>`).join("")}</div><main class="screen qz-body anim-in" data-q="${q.id}">
       <div class="qhead">${d.react?`<p class="react">${esc(d.react)}</p>`:""}<span class="qlabel">${q.sec?esc(q.sec)+" · ":""}${hint}</span><h1 class="qq">${esc(q.q)}</h1></div>
       ${body}</main>
-    <div class="qfoot qz-foot"><div class="in">${cnt}<button class="go" data-act="qnext" ${!ok&&!q.optional?"disabled":""}>${!ok&&q.optional?"Skip":last?"See my result":"Next"}<i>→</i></button></div></div>`,
-    {top:`<button class="circ" data-act="qback" aria-label="Back">←</button><span class="chipc">${idx+1}/${N}</span><button class="circ" data-act="qexit" aria-label="Close">×</button>`}).replace(WORD,"")}
+    <div class="qfoot qz-foot"><div class="in">${cnt}<button class="go" data-act="qnext" ${!ok&&!q.optional?"disabled":""}>${!ok&&q.optional?"Skip":last?"Show me the truth":"Next"}<i>→</i></button></div></div>`,
+    {top:`<button class="circ" data-act="qback" aria-label="Back">←</button><span class="chipc">${idx+1}/${N} · ${left} min left</span><button class="circ" data-act="qexit" aria-label="Close">×</button>`}).replace(WORD,"")}
+function selfLabel(v){return v>=85?"“I’m basically ready.”":v>=65?"“I’m pretty close.”":v>=40?"“I’m getting there.”":v>=20?"“I’m behind.”":"“I haven’t started.”"}
 
-function vLoading(k){return shell(`<main class="screen center"><div class="orb busy" aria-hidden="true"></div><span class="loadpill"><i></i>${k==="arch"?"Scoring your answers":"Matching you"}</span><p class="t2" style="margin:0">${k==="arch"?"Direction, experience, network, strategy.":"Comparing you against 24 career paths."}</p></main>`,{bare:true})}
+function vLoading(k){return shell(`<main class="screen center"><div class="orb busy" aria-hidden="true"></div><span class="loadpill"><i></i>${k==="arch"?"Checking your answers against your resume":"Matching you"}</span><p class="t2" style="margin:0">${k==="arch"?"No sugarcoating.":"Comparing you against 24 career paths."}</p></main>`,{bare:true})}
 
-function archR(){const a=S.answers.arch;if(!a)return null;const R=readiness(a);R.steps=nextSteps(R);R.weak=DIMS.slice().sort((x,y)=>R.dims[x.k]-R.dims[y.k])[0];return R}
-function stepRows(R){const dn=S.stepsDone||{};return `<div class="steps">${R.steps.map(s=>`<div class="step${dn[s.key]?" done":""}"><button class="ck" data-act="tick" data-k="${esc(s.key)}" aria-label="Mark done" aria-pressed="${!!dn[s.key]}" style="background:${dn[s.key]?"var(--ink)":"transparent"}">${dn[s.key]?"✓":""}</button><div style="flex:1"><span class="wk">Week ${s.week}</span><b>${esc(s.t)}</b><small>${esc(s.sub)}</small></div>${s.quiz&&!S.results.career?`<button class="go2" data-act="begin" data-k="${s.quiz}">Start</button>`:""}</div>`).join("")}</div>`}
-function vResArch(){const R=archR();if(!R)return go("home"),"";const W=R.weak,others=DIMS.filter(d=>d!==W);
+function archR0(){const a=S.answers.arch;if(!a)return null;const R=readiness(a);R.weak=DIMS.slice().sort((x,y)=>R.dims[x.k]-R.dims[y.k])[0];return R}
+function vResArch(){const R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,self=a.c_self!=null?+a.c_self:null,G=self!=null?gapLine(self,R.score):null,pl=planFor(R),W=pl.fix[0];
   return shell(`<main class="screen anim-in">
-    <p class="kick" style="text-align:center;margin-top:8px">Your readiness</p>
-    ${ring(R.score,"ready")}
-    <p class="verdict">Stage ${R.stage} of 5 · ${STAGE[R.stage].n}</p><p class="sub">${esc(STAGE[R.stage].line)}</p>
+    <p class="kick" style="text-align:center;margin-top:8px">The truth</p>
+    ${self!=null?`<div class="gap"><div><span>You think</span><b>${self}<small>%</small></b></div><div class="gap-mid">→</div><div class="real"><span>Reality</span><b>${R.score}<small>%</small></b></div></div>
+      <h2 class="gap-h">${esc(G.h)}</h2><p class="sub" style="max-width:34ch;margin:0 auto 26px">${esc(G.t)}</p>`:ring(R.score,"ready")}
     <div class="tiles2">
-      <div class="tl wide"><div class="fill" style="width:${Math.max(4,R.dims[W.k])}%"></div><div class="h">${W.n}.<em>Weakest spot</em></div><div class="v">${R.dims[W.k]}%</div></div>
-      ${others.map((d,i)=>`<div class="tl${i===2?" wide":""}"><div class="h">${d.n}.</div><div><div class="v">${R.dims[d.k]}%</div><div class="bar" style="margin-top:10px"><i style="width:${R.dims[d.k]}%"></i></div></div></div>`).join("")}
+      <div class="tl wide"><div class="h">Your stage<em>${R.stage} of 5</em></div><div class="v s">${STAGE[R.stage].n}</div><div class="d">${esc(STAGE[R.stage].line)}</div></div>
+      ${DIMS.map(d=>`<div class="tl${d===R.weak?" hot":""}">${d===R.weak?`<div class="fill" style="width:${Math.max(4,R.dims[d.k])}%"></div>`:""}<div class="h">${d.n}${d===R.weak?"<em>Weakest</em>":""}</div><div><div class="v">${R.dims[d.k]}%</div>${d===R.weak?"":`<div class="bar" style="margin-top:10px"><i style="width:${R.dims[d.k]}%"></i></div>`}</div></div>`).join("")}
     </div>
-    <h2 class="sech">Next steps.<span> Start this week.</span></h2>
-    ${stepRows(R)}
-    <div class="stack" style="margin:26px auto 0">${S.profile&&S.profile.done?`<a class="btn" href="#me">Go to my dashboard</a>`:`<a class="btn" href="#join">Save my results</a>`}
-      ${S.results.career?"":`<button class="btn glass" data-act="begin" data-k="career">Which career fits me?</button>`}
+    <h2 class="sech">Fix this first.</h2>
+    <a class="tl wide y first" href="#steps"><div class="h">${esc(W.n)} · ${W.score}%<em>Biggest block</em></div><div class="v s">${esc(W.why[0]||"This is holding you back the most.")}</div><div class="d" style="color:var(--ink)">First move: ${esc(W.acts[0].t)} →</div></a>
+    <div class="stack" style="margin:24px auto 0"><a class="btn" href="#steps">See my next steps</a>
+      ${AUTH.user?"":`<a class="btn glass" href="#join">Save my results</a>`}
       <button class="txt" data-act="begin" data-k="arch">Retake</button></div>
+  </main>`,{tabs:"me"})}
+
+function actRows(acts){const dn=S.stepsDone||{};return acts.map(s=>`<div class="step${dn[s.key]?" done":""}"><button class="ck" data-act="tick" data-k="${esc(s.key)}" aria-label="Mark done" aria-pressed="${!!dn[s.key]}">${dn[s.key]?"✓":""}</button><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.sub)}</small></div>${s.quiz&&!S.results.career?`<button class="go2" data-act="begin" data-k="${s.quiz}">Start</button>`:""}</div>`).join("")}
+function vSteps(){const R=archR0();if(!R)return go("home"),"";const pl=planFor(R),pct=pl.all.length?Math.round(pl.done/pl.all.length*100):0;
+  return shell(`<main class="screen anim-in">
+    <h1 class="ttl">Next steps.<span>${pl.done?`${pl.done} of ${pl.all.length} done. Keep going.`:"Weakest first. Tick them off."}</span></h1>
+    <div class="prog"><i style="width:${pct}%"></i></div>
+    ${(()=>{const oi=Math.max(0,pl.fix.findIndex(x=>x.acts.some(z=>!(S.stepsDone||{})[z.key])));return pl.fix.map((x,i)=>{const dn=x.acts.filter(z=>(S.stepsDone||{})[z.key]).length;return `<details class="area"${i===oi||UI.openArea===x.k?" open":""} data-area="${x.k}"><summary class="area-h"><span class="area-n">${dn===x.acts.length?"✓":i+1}</span><div style="flex:1"><b>Strengthen ${esc(x.n.toLowerCase())}</b><span>${esc(x.d)} · ${x.score}% · ${dn}/${x.acts.length} done</span></div><span class="chev">›</span></summary>
+      <div class="bar2"><i style="width:${Math.max(3,x.score)}%"></i></div>
+      ${x.why.length?`<ul class="why">${x.why.map(w=>`<li>${esc(w)}</li>`).join("")}</ul>`:""}
+      <div class="steps">${actRows(x.acts)}</div></details>`}).join("")})()}
+    ${pl.strengths.length?`<h2 class="sech">Already strong.</h2><div class="gcard">${pl.strengths.map(s=>`<div class="swi" style="padding:14px 16px">${ICON_OK}<div><b>${esc(s.t)}</b><span>${esc(s.d)}</span></div></div>`).join("")}</div>`:""}
+    <div class="stack" style="margin:26px auto 0"><button class="txt" data-act="begin" data-k="arch">Retake the quiz to see your new score</button></div>
+  </main>`,{tabs:"steps"})}
+
+function vMe(){const p=S.profile||{},R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,pl=planFor(R),self=a.c_self!=null?+a.c_self:null,rc=S.results.career,c1=rc&&DIRS.find(d=>d.id===rc.top[0].id),ab=applyBy(a),days=ab?Math.round((new Date(ab)-new Date(TODAY))/DAY):null;
+  return shell(`<main class="screen anim-in">
+    <h1 class="ttl">Dashboard.<span>${p.first?`Welcome back, ${esc(p.first)}.`:"Welcome back."}</span></h1>
+    ${ring(R.score,"ready")}
+    <p class="cap">${pl.done} of ${pl.all.length} fixes done${pl.done?". Retake to see your new score.":""}</p>
+    <div class="tiles2">
+      ${pl.next?`<a class="tl wide y" href="#steps"><div class="h">Do this next<em>${esc(pl.fix.find(x=>x.acts.includes(pl.next)).n)}</em></div><div class="v s">${esc(pl.next.t)}</div><div class="d" style="color:var(--ink)">${esc(pl.next.sub)}</div></a>`:`<button class="tl wide y" data-act="begin" data-k="arch"><div class="h">All fixes done</div><div class="v s">Retake the quiz to see your new score →</div></button>`}
+      <div class="tl"><div class="h">Stage</div><div class="v s">${R.stage}. ${STAGE[R.stage].n}</div></div>
+      ${self!=null?`<div class="tl"><div class="h">Your gap</div><div class="v">${self-R.score>0?"+":""}${self-R.score}</div><div class="d">You said ${self}%</div></div>`:`<div class="tl"><div class="h">Weakest</div><div class="v s">${R.weak.n}</div></div>`}
+      ${days!=null?`<div class="tl"><div class="h">${days>0?"Days to apply":"Apply"}</div><div class="v${days>0?"":" s"}">${days>0?days:"Now"}</div></div>`:""}
+      ${c1?`<a class="tl" href="#r-career"><div class="h">Top match</div><div><div class="v">${rc.top[0].pct}%</div><div class="d">${esc(c1.t)}</div></div></a>`:`<button class="tl" data-act="begin" data-k="career"><div class="h">Career match</div><div class="v s">Find yours →</div></button>`}
+    </div>
   </main>`,{tabs:"me"})}
 
 function vResCareer(){const r=S.results.career;if(!r)return go("home"),"";const M=r.top.map(x=>Object.assign({},x,{d:DIRS.find(d=>d.id===x.id)})).filter(x=>x.d),m1=M[0],rest=M.slice(1,UI.more?6:3),pick=(S.profile||{}).target;
@@ -617,24 +762,6 @@ function vResCareer(){const r=S.results.career;if(!r)return go("home"),"";const 
     <div class="stack" style="margin:22px auto 0"><button class="btn${pick===m1.d.id?" glass":""}" data-act="pickdir" data-v="${m1.d.id}">${pick===m1.d.id?"Saved as your target":"Make "+esc(m1.d.t.toLowerCase())+" my target"}</button>
       ${S.results.arch?`<a class="btn glass" href="#me">Go to my dashboard</a>`:`<button class="btn glass" data-act="begin" data-k="arch">Get my readiness score</button>`}
       <button class="txt" data-act="begin" data-k="career">Retake</button></div>
-  </main>`,{tabs:"me"})}
-
-function vMe(){const p=S.profile;if(!p)return go(AUTH.user?"setup":"join"),"";const R=archR(),rc=S.results.career,c1=rc&&DIRS.find(d=>d.id===rc.top[0].id),tgt=p.target&&DIRS.find(d=>d.id===p.target);
-  if(!R)return shell(`<main class="screen center anim-in"><div class="orb" aria-hidden="true"></div><h1 class="t1">Welcome, ${esc(p.first||"there")}.</h1><p class="t2">Take the quiz to get your readiness score and your next steps.</p><div class="stack"><button class="btn" data-act="begin" data-k="arch">Start</button></div></main>`,{tabs:"me"});
-  const dn=S.stepsDone||{},done=R.steps.filter(s=>dn[s.key]).length,nxt=R.steps.find(s=>!dn[s.key]),ab=applyBy(S.answers.arch),days=ab?Math.round((new Date(ab)-new Date(TODAY))/DAY):null;
-  return shell(`<main class="screen anim-in">
-    <h1 class="ttl">Dashboard.<span>Welcome back, ${esc(p.first||"you")}.</span></h1>
-    ${ring(R.score,"ready")}
-    <p class="cap">${done} of ${R.steps.length} steps done</p>
-    <div class="tiles2">
-      <div class="tl"><div class="h">Current stage</div><div class="v s">${R.stage}. ${STAGE[R.stage].n}</div></div>
-      <div class="tl"><div class="h">${days!=null?(days>0?"Days to apply":"Apply"):"Weakest spot"}</div><div class="v${days!=null&&days>0?"":" s"}">${days!=null?(days>0?days:"Now, late roles"):R.weak.n}</div></div>
-      <div class="tl wide${nxt?" y":""}"><div class="h">${nxt?"This week":"All steps done"}${nxt?`<em>Week ${nxt.week}</em>`:""}</div><div class="v s">${esc(nxt?nxt.t:"Retake the quiz to see your new stage.")}</div></div>
-      ${c1?`<a class="tl" href="#r-career"><div class="h">Top match</div><div><div class="v">${rc.top[0].pct}%</div><div class="d">${esc(c1.t)}</div></div></a>`:`<button class="tl" data-act="begin" data-k="career"><div class="h">Top match</div><div class="v s">Take the career quiz →</div></button>`}
-      <a class="tl" href="#r-arch"><div class="h">Breakdown</div><div class="d">${DIMS.map(d=>`${d.n} ${R.dims[d.k]}%`).join("<br>")}</div></a>
-    </div>
-    <h2 class="sech">Next steps.${tgt?`<span> Target: ${esc(tgt.t)}</span>`:""}</h2>
-    ${stepRows(R)}
   </main>`,{tabs:"me"})}
 
 /* ---------- help ---------- */
@@ -657,7 +784,7 @@ function render(){const r=route();let html;
   else if(r==="join")html=vJoin();else if(r==="setup")html=vSetup();
   else if(r==="q-arch"||r==="q-career")html=vQuiz(r.slice(2));
   else if(r==="r-arch")html=vResArch();else if(r==="r-career")html=vResCareer();
-  else if(r==="me")html=vMe();else html=vHome();
+  else if(r==="me")html=vMe();else if(r==="steps")html=vSteps();else html=vHome();
   const vk=UI.loading?"load":r+(r.startsWith("q-")&&S.draft[r.slice(2)]?":"+S.draft[r.slice(2)].i:"");document.body.classList.toggle("still",UI.lastView===vk);UI.lastView=vk;
   const ae=document.activeElement,keep=ae&&ae.id&&/^(pf-|qz-text|au-|help-|paste)/.test(ae.id)?[ae.id,ae.selectionStart]:null;
   $("#app").innerHTML=html+((r==="home"&&!UI.loading)||UI.help?helpUI():"")+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:"");
@@ -665,16 +792,16 @@ function render(){const r=route();let html;
 
 /* ---------- events ---------- */
 const ACT={
-  begin:el=>{const k=el.dataset.k,done=S.profile&&S.profile.done;if(!done&&!AUTH.user&&!S.guest){S.pending="q-"+k;save();go("join");return}if(!done&&AUTH.user){S.pending="q-"+k;save();go("setup");return}startQuiz(k)},
+  begin:el=>{const k=el.dataset.k;if(k==="arch"&&!(S.profile&&S.profile.done)){S.pending="q-arch";save();go("setup");return}startQuiz(k)},
   toquizzes:(el,e)=>{if(route()==="home"){e.preventDefault();const q=$("#quizzes");if(q)q.scrollIntoView({behavior:"smooth"})}else{e.preventDefault();go("home");setTimeout(()=>{const q=$("#quizzes");if(q)q.scrollIntoView()},50)}},
   authmode:()=>{UI.mode=UI.mode==="signup"?"login":"signup";UI.msg="";render()},
   guest:()=>{S.guest=true;const n=S.pending||"q-arch";S.pending=null;save();startQuiz(n.slice(2))},
   addxp:()=>{const p=S.profile;(p.experience||(p.experience=[])).push({title:"",company:"",dates:""});save();render()},
   rmxp:el=>{S.profile.experience.splice(+el.dataset.i,1);save();render()},
   pasteres:()=>{const t=($("#paste-res").value||"").trim();if(t.length<30){UI.parse={err:"Paste a bit more of your resume."};render();return}applyResume(parseResume(t.split(/\n+/).map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean)),"Pasted text");render()},
-  setupdone:()=>{const p=S.profile;if(!p.name){toast("Add your name first.");return}p.first=p.name.split(" ")[0];p.done=true;
-    if(p.grad&&!S.draft.arch){const y=+p.grad-YEAR;S.draft.arch={i:0,a:{c_stage:y<=0?"grad":y===1?"senior":y===2?"junior":"early"},stack:[]}}
-    save();const n=S.pending||"q-arch";S.pending=null;save();if(n.startsWith("q-"))startQuiz(n.slice(2));else go(n)},
+  setupdone:()=>{const p=S.profile||(S.profile={});if(!p.resume)p.noResume=true;if(p.name)p.first=p.name.split(" ")[0];p.done=true;
+    if(p.grad&&!(S.draft.arch&&S.draft.arch.stack.length)){const y=+p.grad-YEAR;S.draft.arch={i:0,a:{c_stage:y<=0?"grad":y===1?"senior":y===2?"junior":"early"},stack:[]}}
+    const n=S.pending||"q-arch";S.pending=null;save();startQuiz(n.slice(2))},
   one:el=>{const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i];d.a[q.id]=el.dataset.v;save();render()},
   many:el=>{const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i],a=Array.isArray(d.a[q.id])?d.a[q.id]:(d.a[q.id]=[]),v=el.dataset.v,j=a.indexOf(v);if(j>=0)a.splice(j,1);else{a.push(v);if(q.max&&a.length>q.max)a.shift()}save();render()},
   pair:el=>{const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i],cur=d.a[q.id]||(d.a[q.id]={});cur[el.dataset.p]=el.dataset.v;save();render()},
@@ -685,7 +812,7 @@ const ACT={
   pickdir:el=>{const p=S.profile||(S.profile={});p.target=el.dataset.v;save();toast("Saved as your target.");render()},
   more:()=>{UI.more=true;render()},
   edit:()=>{UI.edit=true;render()},
-  tick:el=>{const d=S.stepsDone||(S.stepsDone={}),k=el.dataset.k;d[k]=!d[k];save();render()},
+  tick:el=>{const d=S.stepsDone||(S.stepsDone={}),k=el.dataset.k;d[k]=!d[k];UI.openArea=k.split(":")[0];save();render()},
   logout:async()=>{if(sb)await sb.auth.signOut();AUTH.user=null;S=fresh();save();go("home")},
   help:()=>{UI.help={};render()},helpx:(el,e)=>{if(el.classList.contains("modal-bg")&&e.target!==el)return;UI.help=null;render()},
   helptype:el=>{UI.help.type=el.dataset.v;UI.help.msg=($("#help-msg")||{}).value||"";render()},helpsend:()=>helpSend(),
@@ -696,6 +823,7 @@ document.addEventListener("input",e=>{const t=e.target;
   if(t.dataset.pf){S.profile=S.profile||{};S.profile[t.dataset.pf]=t.value;save()}
   else if(t.dataset.xp!=null){S.profile.experience[+t.dataset.xp][t.dataset.f]=t.value;save()}
   else if(t.matches("[data-qtext]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i];d.a[q.id]=t.value;save();const b=$(".qz-foot .go"),ok=t.value.trim()!=="";b.disabled=!ok&&!q.optional;b.innerHTML=(!ok&&q.optional?"Skip":"Next")+"<i>→</i>"}});
+document.addEventListener("input",e=>{if(e.target.matches("[data-slider]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i],v=+e.target.value;d.a[q.id]=v;save();$("#sl-n").textContent=v;$("#sl-l").textContent=selfLabel(v);const b=$(".qz-foot .go");b.disabled=false}});
 document.addEventListener("change",e=>{if(e.target.matches("[data-resume]"))handleResume(e.target.files[0])});
 document.addEventListener("dragover",e=>{const d=e.target.closest&&e.target.closest(".drop");if(d){e.preventDefault();d.classList.add("over")}});
 document.addEventListener("dragleave",e=>{const d=e.target.closest&&e.target.closest(".drop");if(d)d.classList.remove("over")});

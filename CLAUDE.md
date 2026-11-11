@@ -2,5 +2,5 @@
 
 - The website (https://ameliakopp.github.io/landit/) and the installed phone/desktop app are the same code. Every change ships to both by pushing to `main`; GitHub Pages deploys it.
 - When changing or replacing anything in `img/` or `icons/`, bump `VERSION` in `sw.js` so installed apps drop their cached copies.
-- The app is two quizzes: a 22-question readiness quiz (score %, stage 1–5, four area scores, 3 weekly next steps) and a career match quiz, plus a dashboard and a profile built from a resume upload (email sign-in; LinkedIn sign-in was removed). The old workshops and the character archetypes/photos were removed (they are in git history).
+- Core idea: "The biggest block is you." Flow: resume upload first (read in the browser, builds a profile with strengths/weaknesses) → self-rated gut check → 22-question readiness quiz → the gap between what they think and their real score → Next steps tab (areas to strengthen, weakest first). Plus a career match quiz, dashboard and profile. Email sign-in only. Old workshops, archetype photos and LinkedIn sign-in were removed (in git history).
 - The old Claude artifact copy is retired; don't update it.
