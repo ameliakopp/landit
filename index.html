@@ -363,6 +363,7 @@ body{line-height:1.55}
 .door.main{background:var(--ink);color:#0B0B0C;border-color:transparent}
 .door.main em{color:rgba(11,11,12,.62)}
 .door.main i{background:#0B0B0C;color:var(--ink)}
+.nw{white-space:nowrap}.hook{text-wrap:balance}
 </style>
 </head>
 <body>
@@ -751,7 +752,7 @@ const ICON_OK=`<i class="ok">✓</i>`,ICON_NO=`<i class="no">!</i>`;
 function vHome(){const ra=S.results.arch,rc=S.results.career;
   return shell(`<main class="screen center anim-in">
     <div class="orb hero" aria-hidden="true"></div>
-    <h1 class="t1 hook">Why aren’t you getting <b>internships?</b></h1>
+    <h1 class="t1 hook">Why aren’t you <span class="nw">getting <b>internships?</b></span></h1>
     <p class="t2 hook2">Take the quiz to know what’s holding you back, and what to fix.</p>
     <div class="doors">
       <button class="door main" data-act="begin" data-k="arch"><span><b>I know what I want</b><em>Am I actually ready for it? Get your score.</em></span><i>→</i></button>
