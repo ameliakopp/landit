@@ -778,8 +778,8 @@ function resumeBlock(p){const an=analyzeResume(p);if(!an)return"";
   return `<div class="sw"><div class="sw-col"><h3>Strengths</h3>${an.good.length?an.good.map(x=>`<div class="swi">${ICON_OK}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join(""):`<p class="tiny">None yet. That’s what we’ll build.</p>`}</div>
     <div class="sw-col"><h3>Weaknesses</h3>${an.bad.length?an.bad.map(x=>`<div class="swi">${ICON_NO}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join(""):`<p class="tiny">Nothing obvious. Nice.</p>`}</div></div>`}
 function vSetup(){const p=S.profile||(S.profile={}),P=UI.parse||{},xp=p.experience||[],first=!p.done,edit=UI.edit||(!p.resume&&!first);
-  const head=first?(p.resume?`<p class="kick">Step 1 of 3 · Done</p><h1 class="t1">Here’s what a recruiter sees.</h1><p class="t2">We read your resume. This is the honest version.</p>`
-      :`<p class="kick">Step 1 of 3</p><h1 class="t1">Drop your resume.</h1><p class="t2">We read it in seconds and show you what recruiters actually see. It stays on your device.</p>`)
+  const head=first?(p.resume?`<p class="kick">Step 1 of 3 · Done</p><h1 class="t1">Got it.</h1><p class="t2">Here’s what we pulled from your resume. We’ll rate it at the end.</p>`
+      :`<p class="kick">Step 1 of 3</p><h1 class="t1">Drop your resume.</h1><p class="t2">We’ll use it so you don’t have to answer questions about yourself. It stays on your device.</p>`)
     :`<h1 class="ttl" style="text-align:left;width:100%">Profile.<span>${p.resume?"Built from your resume.":"Add your resume to see your strengths and weaknesses."}</span></h1>`;
   return shell(`<main class="screen center anim-in">
     ${head}
@@ -787,7 +787,7 @@ function vSetup(){const p=S.profile||(S.profile={}),P=UI.parse||{},xp=p.experien
     ${!p.resume||!first?`<label class="drop${p.resume?" done":""}"${first?"":` style="width:150px;margin-top:10px"`}><input type="file" accept="application/pdf,.pdf" data-resume aria-label="Upload your resume as a PDF">
       <b>${P.busy?"Reading…":p.resume?(first?"Resume added":"Replace"):"Drop PDF"}</b><span>${P.busy?"One sec":p.resume?(first?"Tap to replace":"resume"):"or tap to upload"}</span></label>`:""}
     ${P.err?`<p class="msg err" style="margin-bottom:14px">${esc(P.err)}</p>`:""}
-    ${resumeBlock(p)}
+    ${first?"":resumeBlock(p)}
     ${!p.resume&&first?`<details class="paste"><summary class="txt">No PDF? Paste the text instead</summary><textarea class="in" id="paste-res" placeholder="Paste your resume here" style="margin-top:8px"></textarea><button class="btn glass" data-act="pasteres" style="margin-top:8px">Read it</button></details>`:""}
     ${!first&&S.results.arch?(()=>{const pl=planFor(archR0());return `<div class="sw" style="margin-top:12px"><div class="sw-col"><h3>From your answers</h3>${pl.strengths.slice(0,2).map(x=>`<div class="swi">${ICON_OK}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join("")}${pl.fix.slice(0,2).map(x=>`<div class="swi">${ICON_NO}<div><b>${esc(x.n)} ${x.score}%</b><span>${esc(x.why[0]||"Room to grow.")}</span></div></div>`).join("")}</div></div>`})():""}
     ${!first&&S.answers.arch?learnBlock(S.answers.arch):""}
@@ -836,6 +836,7 @@ function vResArch(){const R=archR0();if(!R)return go("home"),"";const a=S.answer
     <div class="gcard stagecard">${stageTrack(R.stage)}<p><b>${STAGE[R.stage].n}.</b> ${esc(STAGE[R.stage].line)}</p></div>
     <h2 class="sech">Your 5 checks.</h2>
     ${areaRows(R,a)}
+    ${S.profile&&S.profile.resumeStats?`<h2 class="sech">Your resume, rated.</h2>${resumeBlock(S.profile)}`:""}
     ${learnBlock(a)}
     <h2 class="sech">Fix this first.</h2>
     <a class="tl wide y first" href="#steps"><div class="h">${esc(W.q)}<em>Biggest block</em></div><div class="v s">${esc(W.why[0]||"This is holding you back the most.")}</div><div class="d" style="color:var(--ink)">First move: ${esc(W.acts[0].t)} →</div></a>
