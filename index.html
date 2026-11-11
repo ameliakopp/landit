@@ -752,12 +752,12 @@ function vHome(){const ra=S.results.arch,rc=S.results.career;
   return shell(`<main class="screen center anim-in">
     <div class="orb hero" aria-hidden="true"></div>
     <h1 class="t1 hook">Why aren’t you getting <b>internships?</b></h1>
-    <p class="t2 hook2">Take the 3-minute quiz. Find out what’s really holding you back, and exactly what to fix.</p>
+    <p class="t2 hook2">Take the quiz to know what’s holding you back, and what to fix.</p>
     <div class="doors">
       <button class="door main" data-act="begin" data-k="arch"><span><b>I know what I want</b><em>Am I actually ready for it? Get your score.</em></span><i>→</i></button>
       <button class="door" data-act="begin" data-k="career"><span><b>I have no idea what I want</b><em>Find the career that actually fits you.</em></span><i>→</i></button>
     </div>
-    ${ra||rc?`<a class="txt" href="#${ra?"me":"r-career"}" style="margin-top:14px">See my results</a>`:`<p class="tiny" style="margin-top:16px">No sign-up needed.</p>`}
+    ${ra||rc?`<a class="txt" href="#${ra?"me":"r-career"}" style="margin-top:14px">See my results</a>`:`<p class="tiny" style="margin-top:16px">3 minutes. No sign-up needed.</p>`}
   </main>`)}
 function vJoin(){if(AUTH.user)return go("me"),"";const up=UI.mode==="signup";
   return shell(`<main class="screen center anim-in">
