@@ -349,6 +349,20 @@ body{line-height:1.55}
 .track span{font-size:11.5px;color:var(--faint)}.track .now span{color:var(--ink);font-weight:600}
 @media (min-width:480px){.track span{font-size:12.5px}}
 .tl .h em{white-space:nowrap;align-self:flex-start}
+
+.orb.hero{width:min(42vw,170px);margin-bottom:30px}
+.hook{font-size:clamp(36px,9.4vw,52px);margin-bottom:12px}
+.hook2{font-size:18px;margin-bottom:28px;color:var(--mute)}
+.doors{display:flex;flex-direction:column;gap:12px;width:100%;max-width:400px}
+.door{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border-radius:24px;padding:20px 20px;border:1px solid var(--edge);background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);color:var(--ink);transition:transform .25s var(--ease),background .3s}
+.door:hover{background:var(--glass2)}.door:active{transform:scale(.985)}
+.door span{flex:1;display:flex;flex-direction:column;gap:4px}
+.door b{font-weight:600;font-size:18px;letter-spacing:-.02em}
+.door em{font-style:normal;font-size:15px;color:var(--mute);line-height:1.4}
+.door i{font-style:normal;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--glass2);flex:none;font-size:17px}
+.door.main{background:var(--ink);color:#0B0B0C;border-color:transparent}
+.door.main em{color:rgba(11,11,12,.62)}
+.door.main i{background:#0B0B0C;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -734,18 +748,17 @@ function tabs(cur){const pl=S.answers.arch&&planFor(archR0()),n=pl?pl.all.length
 const shell=(inner,opt)=>{opt=opt||{};const t=opt.tabs&&S.results.arch;return `${amb}<div class="app${t?" has-tabs":""}">${opt.bare?"":topbar(opt.top)}${inner}${t?tabs(opt.tabs):""}</div>`};
 const ICON_OK=`<i class="ok">✓</i>`,ICON_NO=`<i class="no">!</i>`;
 
-function vHome(){const ra=S.results.arch;
+function vHome(){const ra=S.results.arch,rc=S.results.career;
   return shell(`<main class="screen center anim-in">
-    <div class="orb" aria-hidden="true"></div>
-    <p class="kick">Not getting internships?</p>
-    <h1 class="t1">The biggest block<br>is <b>you.</b></h1>
-    <p class="t2">Most students think they’re ready to apply. Most aren’t. Find your real score in 5 minutes, and exactly what to fix.</p>
-    <ol class="how3"><li><b>1</b>Drop your resume</li><li><b>2</b>Answer quick questions</li><li><b>3</b>See the gap</li></ol>
-    <div class="stack">
-      <button class="btn" data-act="begin" data-k="arch">${ra?"Retake it":"Find out"}</button>
-      ${ra?`<a class="btn glass" href="#me">My dashboard</a>`:""}
-    </div></main>`)}
-
+    <div class="orb hero" aria-hidden="true"></div>
+    <h1 class="t1 hook">Find out what’s<br><b>holding you back.</b></h1>
+    <p class="t2 hook2">A 3-minute quiz. Brutally honest answers.</p>
+    <div class="doors">
+      <button class="door main" data-act="begin" data-k="arch"><span><b>I know what I want</b><em>Am I actually ready for it? Get your score.</em></span><i>→</i></button>
+      <button class="door" data-act="begin" data-k="career"><span><b>I have no idea what I want</b><em>Find the career that actually fits you.</em></span><i>→</i></button>
+    </div>
+    ${ra||rc?`<a class="txt" href="#${ra?"me":"r-career"}" style="margin-top:14px">See my results</a>`:`<p class="tiny" style="margin-top:16px">No sign-up. Takes 3 minutes.</p>`}
+  </main>`)}
 function vJoin(){if(AUTH.user)return go("me"),"";const up=UI.mode==="signup";
   return shell(`<main class="screen center anim-in">
     <div class="orb sm" aria-hidden="true"></div>
@@ -804,7 +817,7 @@ function vQuiz(k){const Q=QUIZ[k],d=S.draft[k];if(!d)return startQuiz(k),"";if(d
   const body=q.kind==="combo"?partsOf(q,a).map(x=>`<div class="part">${x.l?`<p class="plabel">${esc(V(x.l))}${x.kind==="many"&&x.max?` <span>${(a[x.id]||[]).length}/${x.max}</span>`:""}</p>`:""}${ctl(x,a[x.id],a,x.id)}</div>`).join(""):ctl(q,a[q.id],a,null);
   const cnt=q.kind==="many"&&q.max?`<span class="cnt">${(a[q.id]||[]).length} of ${q.max}</span>`:"";
   return shell(`<div class="qbar">${vis.map((x,i)=>`<i class="${i<=idx?"on":""}"></i>`).join("")}</div><main class="screen qz-body anim-in" data-q="${q.id}">
-      <div class="qhead">${d.react?`<p class="react">${esc(d.react)}</p>`:""}<span class="qlabel">${q.sec?esc(q.sec)+" · ":""}${hint}</span><h1 class="qq">${esc(q.q)}</h1>${q.sub?`<p class="qsub">${esc(V(q.sub))}</p>`:""}</div>
+      <div class="qhead"><h1 class="qq">${esc(q.q)}</h1>${q.sub?`<p class="qsub">${esc(V(q.sub))}</p>`:""}</div>
       ${body}</main>
     <div class="qfoot qz-foot"><div class="in">${cnt}<button class="go" data-act="qnext" ${!ok&&!q.optional?"disabled":""}>${!ok&&q.optional?"Skip":last?"Show me the truth":"Next"}<i>→</i></button></div></div>`,
     {top:`<button class="circ" data-act="qback" aria-label="Back">←</button><span class="chipc">${idx+1}/${N} · ${left} min left</span><button class="circ" data-act="qexit" aria-label="Close">×</button>`}).replace(WORD,"")}
