@@ -634,6 +634,12 @@ html,body{background:#F4F3F1;color:#151515}
 .ph-c>div{display:flex;justify-content:space-between;align-items:center}.ph-c>div span{font-size:20px;color:#151515;letter-spacing:-.03em}.ph-c>div span small{font-size:.5em;color:rgba(21,21,21,.4)}
 .ph-c .dn{width:28px;height:28px}
 .ph-c .vd{font-style:normal;font-size:9px;padding:2px 6px;align-self:flex-start}
+.truth .gap{gap:4px}
+.truth .gap b{font-size:clamp(84px,24vw,128px)}
+.truth .gap span{font-size:15px}
+.truth .gap-mid{font-size:26px}
+.stage-lbl{margin:0 0 10px;font-size:15px;color:var(--mute)}
+.truth .stage1{font-size:18px;padding:10px 22px}
 </style>
 </head>
 <body>
@@ -1379,6 +1385,7 @@ function vResArch(){const R=archR0();if(!R)return go("home"),"";const a=S.answer
   return shell(`<main class="screen center anim-in truth">
     ${self!=null?`<h1 class="gap-top">${esc(G.t).replace("… ","…<br>")}</h1>
       <div class="gap"><div><span>You think</span><b>${self}<small>%</small></b></div><div class="gap-mid">→</div><div class="real"><span>Reality</span><b>${R.score}<small>%</small></b></div></div>`:`${ring(R.score,"hirable")}`}
+    <p class="stage-lbl">Your stage is</p>
     <span class="stage1">${STAGE[R.stage].n}</span>
     <div class="stack truth-go"><a class="btn" href="#breakdown">See my breakdown →</a></div>
     <div class="truth-foot">${AUTH.user?"":`<a class="txt" href="#join">Save my results</a><span>·</span>`}<button class="txt" data-act="begin" data-k="arch">Retake</button></div>
