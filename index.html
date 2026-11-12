@@ -746,7 +746,7 @@ async function handleResume(file){if(!file)return;if(!/pdf$/i.test(file.type)&&!
   catch(e){UI.parse={err:e.message||"Couldn’t read that file."}}render()}
 
 /* ---------- router ---------- */
-function route(){const h=(location.hash||"").replace(/^#\/?/,"");if(/access_token|error_description/.test(h))return"auth";return h.split(/[?&]/)[0]||"home"}
+function route(){const h=(location.hash||"").replace(/^#\/?/,"");if(/access_token|error_description/.test(h))return"auth";return h.split(/[?&]/)[0]||"about"}
 function go(r){if(("#"+r)===location.hash)render();else location.hash=r;window.scrollTo(0,0)}
 window.addEventListener("hashchange",()=>{window.scrollTo(0,0);render()});
 
@@ -1286,7 +1286,7 @@ function vHome(){const ra=S.results.arch,rc=S.results.career;
         <p class="tiny foot-note">A free tool for students</p>
   </main>`)}
 function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden="true"></div>
-  <header class="top">${WORD.replace('href="#about"','href="#home"')}<span></span></header>
+  <header class="top">${WORD.replace('href="#about"','href=""')}<span></span></header>
   <main class="ab-main anim-in">
     <h1 class="ab-h">Hirable is a free quiz that tells you:</h1>
     <div class="ab-tags"><span class="t1c">If you’re a good candidate</span><span class="t2c">What’s holding you back</span><span class="t3c">Where to spend your time</span></div>

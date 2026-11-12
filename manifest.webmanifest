@@ -2,7 +2,7 @@
   "name": "Hirable",
   "short_name": "Hirable",
   "description": "The internship quiz that tells you the truth.",
-  "start_url": "./#home",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#F4F3F1",
