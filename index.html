@@ -491,7 +491,7 @@ body:has(.aboutpg) .amb{display:none}
 .ab-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:520px}
 .ab-tags span{font-size:15.5px;padding:7px 12px;border-radius:7px;color:#151515}
 .ab-tags .t1c{background:#EBC9F2}.ab-tags .t2c{background:#C3D8F2}.ab-tags .t3c{background:#F2D7A8}
-.ab-p{margin:26px 0 30px;font-size:16px;color:#6B6B6B}
+.ab-p{margin:26px 0 56px;font-size:16px;color:#6B6B6B}
 .ab-btn{display:inline-flex;align-items:center;gap:10px;padding:8px 8px 8px 18px;border-radius:999px;background:#151515;color:#fff;font-size:15px;font-weight:500}
 .ab-btn i{font-style:normal;width:32px;height:32px;border-radius:50%;background:#3A3A3A;display:grid;place-items:center;font-size:14px}
 body:has(.aboutpg) .help-fab{display:none}
@@ -1286,7 +1286,7 @@ function vHome(){const ra=S.results.arch,rc=S.results.career;
         <p class="tiny foot-note">A free tool for students</p>
   </main>`)}
 function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden="true"></div>
-  <header class="top">${WORD.replace('href="#about"','href="#home"')}<a class="ab-x" href="#home" aria-label="Close">×</a></header>
+  <header class="top">${WORD.replace('href="#about"','href="#home"')}<span></span></header>
   <main class="ab-main anim-in">
     <h1 class="ab-h">Hirable is a free quiz that tells you:</h1>
     <div class="ab-tags"><span class="t1c">If you’re a good candidate</span><span class="t2c">What’s holding you back</span><span class="t3c">Where to spend your time</span></div>
