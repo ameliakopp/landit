@@ -754,6 +754,10 @@ html,body{background:#F4F3F1;color:#151515}
   .mtags .t1c{background:#EBC9F2}.mtags .t2c{background:#C3D8F2}.mtags .t3c{background:#F2D7A8}
   .ab-p{margin-top:auto!important;margin-bottom:16px!important;font-size:15px!important;max-width:28ch}
   .btnzone{margin-top:0!important;display:flex!important;justify-content:center}}
+.cpager{display:flex;gap:6px;justify-content:center;margin-top:6px}.cpager i{width:22px;height:4px;border-radius:2px;background:rgba(21,21,21,.12)}.cpager i.on{background:#151515}
+.fcard .fc-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.fcard em{font-style:normal;font-size:15px;font-weight:600;flex:none}
+.fcard small{font-size:13px;color:var(--mute);margin-top:auto;padding-top:4px}
+.qcards .qcard2.fcard:nth-child(4){background:#F1DDF5}.qcards .qcard2.fcard:nth-child(5){background:#DCE7F6}.qcards .qcard2.fcard:nth-child(6){background:#F6E5C6}
 </style>
 </head>
 <body>
@@ -1563,46 +1567,44 @@ function vMe(){const p=S.profile||{},R=archR0();if(!R)return go("home"),"";const
     </div>
   </main>`,{tabs:"me"})}
 
-function vResCareer(){const a=S.answers.career;if(!a)return go("home"),"";const R=careerReport(a),m1=R.M[0],more=R.M.slice(1,UI.more?6:3),pick=(S.profile||{}).target,dn=S.stepsDone||{};
-  const why=x=>[x.loves.length?"You’d love to "+listJoin(x.loves)+".":"",x.rb?"Your resume backs it up.":""].filter(Boolean).join(" ")||(x.likes.length?"You’re into "+listJoin(x.likes)+".":"Worth a test run.");
-  const sk=verdict(R.self);
-  const chats=R.M.slice(0,3).map(x=>({key:"chat:"+x.d.id,t:`Talk to 1 person in ${x.d.t.toLowerCase()}`,sub:`Search LinkedIn for “${x.titles[0].replace(/ Intern$| Summer Analyst$/,"")}” + your school.`}));
+function careerCtx(){const a=S.answers.career;if(!a)return null;const R=careerReport(a);return{a,R,m1:R.M[0],pick:(S.profile||{}).target}}
+const cWhy=x=>[x.loves.length?"You’d love to "+listJoin(x.loves)+".":"",x.rb?"Your resume backs it up.":""].filter(Boolean).join(" ")||(x.likes.length?"You’re into "+listJoin(x.likes)+".":"Worth a test run.");
+function cPager(n){return `<div class="cpager">${[1,2,3].map(i=>`<i class="${i===n?"on":""}"></i>`).join("")}</div>`}
+function vResCareer(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1}=C,fields=R.M.slice(0,UI.more?6:3);
   return shell(`<main class="screen anim-in">
+    ${cPager(1)}
     <p class="kick" style="text-align:center;margin-top:8px">Your top match</p>
     <h1 class="gap-top" style="margin-top:6px">You’re built for<br>${esc(m1.d.t.toLowerCase())}.</h1>
     ${ring(m1.pct,"match")}
-    <p class="sub" style="text-align:center;max-width:34ch;margin:0 auto">${esc(why(m1))}</p>
-
+    <p class="sub" style="text-align:center;max-width:34ch;margin:0 auto">${esc(cWhy(m1))}</p>
     <h2 class="sech">Your best qualities.</h2>
-    <div class="qcards">${(R.qual.length?R.qual:[{t:"Still figuring it out",d:"That’s okay. The coffee chats below will show you."}]).map(q=>`<div class="qcard2"><b>${esc(q.t)}</b><span>${esc(q.d)}</span></div>`).join("")}</div>
-
+    <div class="qcards">${(R.qual.length?R.qual:[{t:"Still figuring it out",d:"That’s okay. The coffee chats will show you."}]).map(q=>`<div class="qcard2"><b>${esc(q.t)}</b><span>${esc(q.d)}</span></div>`).join("")}</div>
+    <h2 class="sech">Fields to look into.</h2>
+    <div class="qcards">${fields.map((x,i)=>`<div class="qcard2 fcard"><div class="fc-top"><b>${esc(x.d.t)}</b><em>${x.pct}%</em></div><span>${esc(cWhy(x))}</span><small>Search: ${esc(x.titles[0])}</small></div>`).join("")}</div>
+    ${UI.more?"":`<button class="txt" data-act="more" style="align-self:flex-start">Show 3 more</button>`}
+    <div class="stack" style="margin:30px auto 0"><a class="btn" href="#r-career2">Why ${esc(m1.d.t.toLowerCase())}? →</a><button class="txt" data-act="begin" data-k="career">Retake</button></div>
+  </main>`,{tabs:"me"})}
+function vResCareer2(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1}=C;
+  return shell(`<main class="screen anim-in">
+    ${cPager(2)}
+    <h1 class="gap-top" style="margin-top:14px">Why ${esc(m1.d.t.toLowerCase())}?</h1>
+    <p class="sub" style="text-align:center;max-width:34ch;margin:0 auto 6px">It fits how you work and what gives you energy.</p>
     ${R.env.length?`<h2 class="sech">Where you thrive.</h2><div class="gcard">${R.env.map(e=>`<div class="swi" style="padding:14px 16px"><i class="ok">✓</i><div><b>${esc(e)}</b></div></div>`).join("")}</div>`:""}
-
     ${R.love.length||R.drain.length?`<h2 class="sech">What gives you energy.</h2><div class="sw">
       <div class="sw-col"><h3>Energizes you</h3>${R.love.map(t=>`<div class="swi"><i class="ok">+</i><div><b>${esc(t)}</b></div></div>`).join("")||`<p class="tiny">Nothing stood out yet.</p>`}</div>
       <div class="sw-col"><h3>Drains you</h3>${R.drain.map(t=>`<div class="swi"><i class="no">–</i><div><b>${esc(t)}</b></div></div>`).join("")||`<p class="tiny">Nothing you hated. Nice.</p>`}</div></div>`:""}
-
-    <h2 class="sech">Fields to look into first.</h2>
-    <div class="fields">${[m1,...more].map((x,i)=>`<div class="field-c${i===0?" is1":""}">
-      <div class="field-h"><span class="area-n">${i+1}</span><b>${esc(x.d.t)}</b><em>${x.pct}%</em></div>
-      ${i?`<p>${esc(why(x))}</p>`:""}
-      <p class="tiny" style="margin:0">Roles hiring right now</p>
-      <div class="chips">${x.titles.map(t=>`<span class="chip">${esc(t)}</span>`).join("")}</div>
-      <p class="tiny" style="margin:2px 0 0">${esc(x.when)}</p>
-      <button class="btn${pick===x.d.id?"":" glass"} pickbtn" data-act="pickdir" data-v="${x.d.id}">${pick===x.d.id?"Saved as your target":"Make this my target"}</button></div>`).join("")}</div>
-    ${UI.more?"":`<button class="txt" data-act="more" style="align-self:flex-start">Show 3 more</button>`}
-
-    <h2 class="sech">How well you know yourself.</h2>
-    <div class="arow"><div class="arow-t"><b>Self-knowledge</b><span class="vd ${sk[1]}">${R.self}%</span></div><div class="bar2"><i class="${sk[1]}" style="width:${Math.max(3,R.self)}%"></i></div>
-      ${R.improve.length?`<ul class="why">${R.improve.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:`<p>You know yourself well. Now go confirm it with real people.</p>`}</div>
-
-    <h2 class="sech">Your next move: 3 coffee chats.</h2>
-    <p class="sub" style="margin:-4px 0 14px">${R.untested.length?`You haven’t tested ${esc(listJoin(R.untested.map(x=>x.d.t.toLowerCase())))} yet. `:""}3 real conversations will give you more clarity than 50 applications.</p>
+    <div class="stack" style="margin:30px auto 0"><a class="btn" href="#r-career3">Your next steps →</a><a class="txt" href="#r-career">← Back</a></div>
+  </main>`,{tabs:"me"})}
+function vResCareer3(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1,pick}=C,dn=S.stepsDone||{};
+  const chats=R.M.slice(0,3).map(x=>({key:"chat:"+x.d.id,t:`Talk to 1 person in ${x.d.t.toLowerCase()}`,sub:`Search LinkedIn for “${x.titles[0].replace(/ Intern$| Summer Analyst$/,"")}” + your school.`}));
+  return shell(`<main class="screen anim-in">
+    ${cPager(3)}
+    <h1 class="gap-top" style="margin-top:14px">Your next move:<br>3 coffee chats.</h1>
+    <p class="sub" style="text-align:center;max-width:36ch;margin:0 auto 22px">${R.untested.length?`You haven’t tested ${esc(listJoin(R.untested.map(x=>x.d.t.toLowerCase())))} yet. `:""}3 real conversations will give you more clarity than 50 applications.</p>
     <div class="steps">${chats.map(s=>`<div class="step${dn[s.key]?" done":""}"><button class="ck" data-act="tick" data-k="${esc(s.key)}" aria-label="Mark done" aria-pressed="${!!dn[s.key]}">${dn[s.key]?"✓":""}</button><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.sub)}</small></div></div>`).join("")}</div>
     <div class="gcard msgcard"><p class="tiny" style="margin:0 0 8px">Copy this message</p><p id="chatmsg">${esc(chatMsg(m1.d.t))}</p><button class="btn glass" data-act="copymsg">Copy message</button></div>
-
     <div class="stack" style="margin:28px auto 0">${pick?`<button class="btn" data-act="begin" data-k="arch">Am I ready for ${esc((DIRS.find(d=>d.id===pick)||m1.d).t.toLowerCase())}? Get my score</button>`:`<button class="btn" data-act="pickdir" data-v="${m1.d.id}">Make ${esc(m1.d.t.toLowerCase())} my target</button>`}
-      <button class="txt" data-act="begin" data-k="career">Retake</button></div>
+      <a class="txt" href="#r-career2">← Back</a></div>
   </main>`,{tabs:"me"})}
 function helpUI(){if(!UI.help)return `<button class="help-fab" data-act="help" aria-label="Help and feedback">?</button>`;const h=UI.help;
   if(h.sent)return `<div class="modal-bg" data-act="helpx"><div class="modal"><h2>Got it.</h2><p class="t2" style="margin:0">Your message was sent. We read every one.</p><button class="btn" data-act="helpx">Done</button></div></div>`;
@@ -1621,7 +1623,7 @@ function render(){const r=route();let html;
   else if(r==="auth")html=shell(`<main class="screen center"><div class="orb busy"></div><span class="loadpill"><i></i>Logging you in</span></main>`,{bare:true});
   else if(r==="join")html=vJoin();else if(r==="setup")html=vSetup();
   else if(r==="q-arch"||r==="q-career")html=vQuiz(r.slice(2));
-  else if(r==="r-arch")html=vResArch();else if(r==="r-career")html=vResCareer();
+  else if(r==="r-arch")html=vResArch();else if(r==="r-career")html=vResCareer();else if(r==="r-career2")html=vResCareer2();else if(r==="r-career3")html=vResCareer3();
   else if(r==="me")html=vMe();else if(r==="steps")html=vSteps();else if(r==="about")html=vAbout();else if(r==="breakdown")html=vBreak();else if(r.startsWith("area-"))html=vArea(r.slice(5));else html=vHome();
   const vk=UI.loading?"load":r+(r.startsWith("q-")&&S.draft[r.slice(2)]?":"+S.draft[r.slice(2)].i:"");document.body.classList.toggle("still",UI.lastView===vk);UI.lastView=vk;
   const ae=document.activeElement,keep=ae&&ae.id&&/^(pf-|qz-text|au-|help-|paste)/.test(ae.id)?[ae.id,ae.selectionStart]:null;
