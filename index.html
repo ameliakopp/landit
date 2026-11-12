@@ -759,6 +759,16 @@ html,body{background:#F4F3F1;color:#151515}
 .fcard small{font-size:13px;color:var(--mute);margin-top:auto;padding-top:4px}
 .qcards .qcard2.fcard:nth-child(4){background:#F1DDF5}.qcards .qcard2.fcard:nth-child(5){background:#DCE7F6}.qcards .qcard2.fcard:nth-child(6){background:#F6E5C6}
 .dpop b{display:block;font-weight:600;margin-bottom:6px}.dpop ul{margin:0 0 8px;padding-left:18px;display:flex;flex-direction:column;gap:3px}.dpop span{display:block;font-size:13px;color:rgba(255,255,255,.65)}
+.loadv2{padding-top:18vh}
+.ld-mark{width:64px;height:64px;color:#151515;animation:ldspin 2.4s cubic-bezier(.6,0,.4,1) infinite}
+.ld-mark .mark{width:64px;height:64px}
+@keyframes ldspin{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+.ld-sub{margin:0;color:var(--mute);font-size:16px}
+.ld-q{position:relative;width:100%;max-width:360px;height:96px;margin-top:30px;overflow:hidden}
+.ld-q p{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;margin:0;padding:0 8px;text-align:center;font-family:"Instrument Serif",Georgia,serif;font-size:24px;line-height:1.2;color:#151515;opacity:0;animation:swipe 1.5s var(--ease) var(--d) both}
+.ld-q p:last-child{animation:swipelast 1.5s var(--ease) var(--d) both}
+@keyframes swipe{0%{opacity:0;transform:translateX(60px)}18%,78%{opacity:1;transform:none}100%{opacity:0;transform:translateX(-60px)}}
+@keyframes swipelast{0%{opacity:0;transform:translateX(60px)}18%,100%{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -931,7 +941,9 @@ function dayScore(t){t=String(t||"").trim();if(!t||/^(idk|i don.?t know|no idea|
 function whyScore(t){t=String(t||"").trim().toLowerCase();if(!t||/^(idk|i don.?t know|no idea|not sure)/.test(t))return 0;const w=t.split(/\s+/).length;let n=w>=8?1:0;
   if(/because|since|so that|that’s why|which is why/.test(t))n+=.75;if(/\b(i (led|built|ran|grew|started|worked|interned|organized|planned|created)|at (my|the) (internship|job|club))/.test(t))n+=.75;if(ROLE_WORDS.test(t))n+=.5;if(/\b(passion|passionate|dream|always wanted|love people|good with people)\b/.test(t))n-=.5;return clamp(Math.round(n*2)/2,0,3)}
 function resumeExp(){const st=(S.profile||{}).resumeStats;if(!st)return null;return st.intern?3:st.roles>=2?2:st.roles===1?1.2:0}
-function readiness(a){const P={cla:[],art:[],net:[],str:[]},add=(k,v)=>{if(v!=null&&!isNaN(v))P[k].push(v)},m=(map,v)=>v==null||Array.isArray(v)?null:map[v];
+const liHas=a=>a.c_lilink&&a.c_lilink!=="none"&&linkOk(a.c_lilink);
+const liNorm=a=>a&&a.c_lilink==="none"?Object.assign({},a,{c_lihead:"none"}):a;
+function readiness(a){a=liNorm(a);const P={cla:[],art:[],net:[],str:[]},add=(k,v)=>{if(v!=null&&!isNaN(v))P[k].push(v)},m=(map,v)=>v==null||Array.isArray(v)?null:map[v];
   add("cla",a.c_mode==="spec"?null:(a["c_line"]!=null?lineScore(a["c_line"]):null));
   if(a.c_skills)add("cla",knowScore(a.c_skills));if(a.c_title){const t=a.c_title;add("cla",t.includes("idk")?0:clamp(1.5*t.filter(v=>v[0]==="r").length-1.5*t.filter(v=>v[0]==="f").length,0,3))}
   if(a.c_hard!=null)add("cla",String(a.c_hard).trim().split(/\s+/).length>=4?2:0);
@@ -1159,10 +1171,11 @@ const QUIZ={
       {id:"c_chat",kind:"one",l:"Coffee chats you’ve ever had",opts:o(["never","Never"],["once","One"],["few","A few"],["lots","Lots"])},
       {id:"c_ref",kind:"one",l:"Anyone who’d refer you at a company you want?",opts:o(["none","No one"],["maybe","Maybe"],["yes","Yes"])}]},
     {id:"q_li",sec:"Your LinkedIn",kind:"combo",q:"How’s your LinkedIn?",parts:[
-      {id:"c_lihead",kind:"one",l:"What does your headline say?",opts:o(["none","I don’t have LinkedIn"],["student","Just “Student at…”"],["kinda","Sort of what I want"],["yes","Exactly the role I want"])},
-      {id:"c_liprof",kind:"one",when:a=>a.c_lihead!=="none",l:"Do you have a photo and an About section?",opts:o(["both","Both"],["one","One of them"],["neither","Neither"])},
-      {id:"c_liconn",kind:"one",when:a=>a.c_lihead!=="none",l:"How many connections?",opts:o(["0","Under 100"],["100","100–500"],["500","500+"])},
-      {id:"c_lipost",kind:"one",when:a=>a.c_lihead!=="none",l:"How often do you post or comment?",opts:o(["never","Never"],["rare","A few times a year"],["monthly","Monthly"],["weekly","Weekly"])}]},
+      {id:"c_lilink",kind:"url",none:"I don’t have LinkedIn",l:"Paste your LinkedIn profile link",ph:"linkedin.com/in/your-name"},
+      {id:"c_lihead",kind:"one",when:a=>liHas(a),l:"What does your headline say?",opts:o(["student","Just “Student at…”"],["kinda","Sort of what I want"],["yes","Exactly the role I want"])},
+      {id:"c_liprof",kind:"one",when:a=>liHas(a),l:"Do you have a photo and an About section?",opts:o(["both","Both"],["one","One of them"],["neither","Neither"])},
+      {id:"c_liconn",kind:"one",when:a=>liHas(a),l:"How many connections?",opts:o(["0","Under 100"],["100","100–500"],["500","500+"])},
+      {id:"c_lipost",kind:"one",when:a=>liHas(a),l:"How often do you post or comment?",opts:o(["never","Never"],["rare","A few times a year"],["monthly","Monthly"],["weekly","Weekly"])}]},
     {id:"q_plan",sec:"Last one",kind:"combo",q:"Be honest. What’s the plan?",parts:[
       {id:"c_month",kind:"one",l:"Next month you’ll…",opts:o(["all","Keep applying to everything"],["tweak","Apply a lot, better resume"],["narrow","Narrow down, apply less"],["people","Talk to people, then apply"])},
       {id:"c_block",kind:"many",l:"What’s really holding you back? Pick all that apply.",optional:true,opts:o(["what","Don’t know what I want"],["know","Don’t know anyone"],["silence","Applications go nowhere"],["exp","Not enough experience"],["interview","Interviews"],["time","Time or motivation"])}]},
@@ -1215,14 +1228,14 @@ function qVisible(k,a){return QUIZ[k].qs.filter(q=>!q.when||q.when(a))}
 function partsOf(q,a){return (q.parts||[]).filter(x=>!x.when||x.when(a))}
 function shownParts(q,a){const ps=partsOf(q,a),out=[];for(const x of ps){out.push(x);if(!x.optional&&!hasAns(x,a[x.id]))break}return out}
 function comboOk(q,a){return partsOf(q,a).every(x=>x.optional||hasAns(x,a[x.id]))}
-function hasAns(q,v){if(q.kind==="url"&&!q.optional)return linkOk(v);if(q.kind==="file")return v==="none"||v==="ok"||(v==null&&!!(q.doc==="cover"?null:(S.profile||{}).resume));if(q.kind==="slider")return v!=null;if(q.kind==="pairs")return v&&q.pairs.every(p=>v[p[0]]);if(q.kind==="rate")return v&&q.tasks.every(t=>v[t]);if(Array.isArray(v))return v.length>0;return v!=null&&String(v).trim()!==""}
+function hasAns(q,v){if(q.kind==="url"&&!q.optional)return v==="none"||linkOk(v);if(q.kind==="file")return v==="none"||v==="ok"||(v==null&&!!(q.doc==="cover"?null:(S.profile||{}).resume));if(q.kind==="slider")return v!=null;if(q.kind==="pairs")return v&&q.pairs.every(p=>v[p[0]]);if(q.kind==="rate")return v&&q.tasks.every(t=>v[t]);if(Array.isArray(v))return v.length>0;return v!=null&&String(v).trim()!==""}
 function qNext(k){const d=S.draft[k],qs=QUIZ[k].qs;d.stack.push(d.i);let n=d.i+1;while(n<qs.length&&qs[n].when&&!qs[n].when(d.a))n++;const cs=qs[d.i].sec,ns=n<qs.length?qs[n].sec:null,left=new Set(qs.slice(n).filter(x=>!x.when||x.when(d.a)).map(x=>x.sec).filter(x=>DIMS.some(dd=>dd.n===x))).size;const qr=qs[d.i].react?qs[d.i].react(d.a):null,ms=cs&&ns&&cs!==ns&&DIMS.some(dd=>dd.n===cs)?`${cs} done. ${left?left+" to go.":"Last one."}`:null;d.react=qr&&ms?qr+" "+ms:(qr||ms);d.i=n;save();
   if(n>=qs.length)finishQuiz(k);else render();window.scrollTo(0,0)}
 function qBack(k){const d=S.draft[k];if(!d.stack.length){go(S.profile?"me":"home");return}d.i=d.stack.pop();d.react=null;save();render();window.scrollTo(0,0)}
 function finishQuiz(k){const a=S.draft[k].a;S.answers[k]=a;
   if(k==="arch"){const p=S.profile||(S.profile={});if(a.c_resfile==="none"){p.noResume=true}if(a.c_covfile==="none"){delete p.cover;delete p.coverText}if(p.name)p.first=p.name.split(" ")[0];p.done=true;const R=readiness(a);S.results.arch={score:R.score,stage:R.stage,dims:R.dims,at:new Date().toISOString().slice(0,10)};S.stepsDone={}}
   else{const m=careerResult(flatPairs(a));S.results.career={top:m.map(x=>({id:x.d.id,pct:x.pct,loves:x.loves,likes:x.likes,rb:x.rb})),at:new Date().toISOString().slice(0,10)}}
-  UI.loadSteps=loadSteps(k,a);S.draft[k]={i:0,a:{},stack:[]};save();UI.loading=k;render();setTimeout(()=>{UI.loading=null;go("r-"+k)},UI.loadSteps.length*950+1400)}
+  UI.loadSteps=loadSteps(k,a);UI.said=saidQuotes(k,a);S.draft[k]={i:0,a:{},stack:[]};save();UI.loading=k;render();setTimeout(()=>{UI.loading=null;go("r-"+k)},Math.max(4,(UI.said||[]).length)*1500+900)}
 
 /* ---------- resume analysis: strengths and gaps a recruiter would spot ---------- */
 const WEAK_OPEN=/^(responsible for|helped|assisted|worked on|duties|tasks|participated in|involved in|in charge of)\b/i;
@@ -1251,7 +1264,7 @@ function analyzeResume(p){const st=p&&p.resumeStats;if(!st)return null;const goo
 const APPS_L={"1":"Up to 10","11":"11 to 50","51":"51 to 100","101":"101 to 200","200":"200+","50":"50+"};
 const manyApps=a=>["11","51","101","200","50"].includes(a.c_apps);
 /* ---------- the 5 checks: gaps and wins per area, from the student's own answers ---------- */
-function areaGaps(k,a,p){a=a||{};p=p||{};const G=[],W=[],d=targetDir(a),an=analyzeResume(p),st=p.resumeStats,co=coName(a),fld=d?d.t.toLowerCase():"your field";
+function areaGaps(k,a,p){a=liNorm(a||{});p=p||{};const G=[],W=[],d=targetDir(a),an=analyzeResume(p),st=p.resumeStats,co=coName(a),fld=d?d.t.toLowerCase():"your field";
   const g=t=>G.push(t),w=t=>W.push(t);
   if(k==="cla"){
     if(a.c_mode==="spec"){if(linkOk(a.c_link))w(`You have a specific posting: ${goalLine(a)}.`)}
@@ -1356,6 +1369,21 @@ function coverBlock(p,a){const c=analyzeCover(p,a);if(!c)return"";return `<div c
 function burst(x,y){const cols=["#FF7A45","#F0508A","#8F6BFF","#F2F0EC"];for(let i=0;i<10;i++){const e=document.createElement("i"),a=Math.PI*2*i/10+Math.random()*.4,r=26+Math.random()*22;
   e.className="spark";e.style.cssText=`left:${x}px;top:${y}px;background:${cols[i%4]};--dx:${Math.cos(a)*r}px;--dy:${Math.sin(a)*r}px`;document.body.appendChild(e);setTimeout(()=>e.remove(),650)}}
 function fxPill(t){const e=document.createElement("div");e.className="fxpill";e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),1900)}
+function saidQuotes(k,a){const out=[],cut=(t,n)=>{t=String(t||"").trim();return t.length>n?t.slice(0,n-1).trim()+"…":t};
+  if(k==="arch"){const w=x=>x&&!IDK_RX.test(x)&&String(x).trim().split(/\s+/).length>2;
+    if(a.c_self!=null)out.push(`You think you’re ${a.c_self}% ready.`);
+    if(a.c_mode==="spec")out.push(`You want ${goalLine(a)}.`);else if(w(a.c_line))out.push(`“${cut(a.c_line,70)}”`);
+    if(w(a.c_why))out.push(`“${cut(a.c_why,80)}”`);
+    if(w(a.c_tuesday))out.push(`A normal Tuesday: “${cut(a.c_tuesday,60)}”`);
+    if(a.c_mode==="type"&&a.c_cos3)out.push(`You’re interested in ${cut(a.c_cos3,50)}.`);
+    if(a.c_city&&a.c_city.length)out.push(`You want to work in ${listJoin(a.c_city.map(v=>lab(CITIES,v)).slice(0,3))}.`);
+    if(a.c_apps)out.push(a.c_apps==="0"?"You haven’t applied anywhere yet.":`You’ve sent ${(APPS_L[a.c_apps]||"").toLowerCase()} applications.`);
+    if(a.c_people)out.push(a.c_people==="0"?"You’ve talked to nobody in your field yet.":"You’ve talked to people in your field.");
+    if(a.c_month==="all"||a.c_month==="tweak")out.push("Your plan: keep applying a lot.")}
+  else{(a.qskill||[]).slice(0,2).forEach(v=>out.push(`You’re good at ${lab(QSKILL,v).toLowerCase()}.`));
+    const w=flatPairs(a);Object.keys(w).filter(x=>/^r_/.test(x)&&w[x]==="love").slice(0,3).forEach(x=>QT[x.slice(2)]&&out.push(`You’d love to ${QT[x.slice(2)][1].charAt(0).toLowerCase()+QT[x.slice(2)][1].slice(1)}.`));
+    (a.qval||[]).slice(0,1).forEach(v=>out.push(`You want ${lab(QVAL,v).toLowerCase()}.`));if(a.dream&&String(a.dream).trim())out.push(`Curious about: “${cut(a.dream,50)}”`)}
+  return out.slice(0,7)}
 function loadSteps(k,a){const p=S.profile||{},out=[],nm=p.first?p.first+"’s":"your";
   if(k==="arch"){const d=targetDir(a);
     if(p.resumeStats&&a.c_resfile!=="none")out.push([`Reading ${nm} resume`,`${(p.experience||[]).length} roles, ${(p.skills||[]).length} skills found`]);
@@ -1460,7 +1488,7 @@ function ctl(q,v,a,pid){const opts=typeof q.opts==="function"?q.opts(a):q.opts,P
   if(q.kind==="one"||q.kind==="many"){const sel=x=>q.kind==="one"?v===x:(v||[]).includes(x),one=!mini&&(q.cols===1||opts.some(x=>x.l.length>30));
     return `<div class="tiles${one?" one-col":""}${mini?" mini":""}">${opts.map((x,i)=>`<button class="tile" data-act="${q.kind}" data-v="${esc(x.v)}"${P} aria-pressed="${sel(x.v)}">${mini?"":`<span class="k">${String(i+1).padStart(2,"0")}</span>`}<span>${esc(x.l)}</span></button>`).join("")}</div>`}
   if(q.kind==="slider"){const val=v==null?50:+v;return `<div class="slide"><div class="slide-n"><b id="sl-n">${v==null?"?":val}</b><small>%</small></div><p class="slide-l" id="sl-l">${esc(v==null?"Drag to answer":selfLabel(val))}</p><input type="range" min="0" max="100" step="1" value="${val}" data-slider${P} aria-label="How ready you think you are"><div class="slide-ends"><span>Not at all</span><span>Fully ready</span></div></div>`}
-  if(q.kind==="url"){const co=postingCompany(v);return `<input class="in qlink" type="url" inputmode="url" autocomplete="off" id="qz-text${pid?"-"+pid:""}" data-qtext${P} value="${esc(v||"")}" placeholder="${esc(q.ph||"Paste a link")}">${co||slugRole(v)?`<p class="tiny" style="margin:8px 2px 0">Got it: <b style="color:var(--ink);font-weight:500">${esc([slugRole(v),co].filter(Boolean).join(" at "))}</b></p>`:""}`}
+  if(q.kind==="url"){const vv=v==="none"?"":v,co=q.none?"":postingCompany(vv),sr=q.none?"":slugRole(vv);return `<input class="in qlink" type="url" inputmode="url" autocomplete="off" id="qz-text${pid?"-"+pid:""}" data-qtext${P} value="${esc(vv||"")}" placeholder="${esc(q.ph||"Paste a link")}">${co||sr?`<p class="tiny" style="margin:8px 2px 0">Got it: <b style="color:var(--ink);font-weight:500">${esc([sr,co].filter(Boolean).join(" at "))}</b></p>`:""}${q.none?`<div class="tiles mini" style="margin-top:10px"><button class="tile" data-act="one" data-pid="${pid}" data-v="none" aria-pressed="${v==="none"}"><span>${esc(q.none)}</span></button></div>`:""}`}
   if(q.kind==="file"){const pr=S.profile||{},has=q.doc==="cover"?pr.cover:pr.resume,st=(UI.fileSt||{})[pid]||{},xp=(pr.experience||[]).length;
     return `<label class="fdrop${has&&v!=="none"?" done":""}"><input type="file" accept="application/pdf,.pdf" data-qfile="${q.doc}"${P} aria-label="Upload ${q.doc==="cover"?"cover letter":"resume"} as a PDF"><i>${has&&v!=="none"?"✓":"↑"}</i><span><b>${st.busy?"Reading…":has&&v!=="none"?esc(has.name):"Upload PDF"}</b><em>${st.err?esc(st.err):has&&v!=="none"?(q.doc==="cover"?"Got it · tap to replace":`${xp} role${xp===1?"":"s"}${pr.school?" · "+esc(pr.school.split(",")[0]):""} · tap to replace`):"Tap to choose a file"}</em></span></label>
     <div class="tiles mini" style="margin-top:10px"><button class="tile" data-act="one" data-pid="${pid}" data-v="none" aria-pressed="${v==="none"}"><span>${esc(q.none)}</span></button></div>`}
@@ -1480,7 +1508,7 @@ function depthOk(id,t){t=String(t||"").trim();if(IDK_RX.test(t))return true;cons
 function depthFail(k){const d=S.draft[k],q=QUIZ[k].qs[d.i];if(!q||q.kind!=="combo")return null;const nd=UI.nudged||(UI.nudged={});
   for(const x of shownParts(q,d.a)){if(DEPTH_MSG[x.id]&&!nd[k+":"+x.id]&&d.a[x.id]!=null&&String(d.a[x.id]).trim()!==""&&!depthOk(x.id,d.a[x.id]))return x.id}return null}
 function qOk(q,a){if(q.kind==="rate"){const c=a[q.id]||{};return taskList(q,a).every(t=>c[t])}return q.kind==="combo"?comboOk(q,a):hasAns(q,a[q.id])}
-function vQuiz(k){const Q=QUIZ[k],d=S.draft[k];if(!d)return startQuiz(k),"";if(d.i>=Q.qs.length)d.i=0;
+function vQuiz(k){const Q=QUIZ[k],d=S.draft[k];if(!d)return startQuiz(k),"";if(d.i>=Q.qs.length)d.i=0;if(Q.qs[d.i].id==="q_li"&&d.a.c_lilink==null&&(S.profile||{}).linkedinUrl)d.a.c_lilink=S.profile.linkedinUrl;
   const q=Q.qs[d.i],a=d.a,vis=qVisible(k,a),idx=vis.indexOf(q),N=vis.length,ok=qOk(q,a),last=idx===N-1,V=x=>typeof x==="function"?x(a):x;
   const hint=q.kind==="combo"?(partsOf(q,a).length>1?`${partsOf(q,a).length} quick ones`:"Be honest"):q.kind==="many"?(q.max?`Pick up to ${q.max}`:"Pick all that apply"):q.kind==="one"?"Pick one":q.kind==="rate"?"Gut reaction":q.kind==="pairs"?"This or that":q.optional?"Optional":"In your own words";
   const left=Math.max(1,Math.round((N-idx)*(k==="arch"?.45:.22)));
@@ -1494,14 +1522,14 @@ function vQuiz(k){const Q=QUIZ[k],d=S.draft[k];if(!d)return startQuiz(k),"";if(d
     {top:`<button class="circ" data-act="qback" aria-label="Back">←</button><span class="chipc">${idx+1}/${N} · ${left} min left</span><button class="circ" data-act="qexit" aria-label="Close">×</button>`}).replace(WORD,"")}
 function selfLabel(v){return v>=85?"“I’m basically ready.”":v>=65?"“I’m pretty close.”":v>=40?"“I’m getting there.”":v>=20?"“I’m behind.”":"“I haven’t started.”"}
 
-function vLoading(k){const st=UI.loadSteps||[],p=S.profile||{},T=st.length*950+700;
-  return shell(`<main class="screen center loadv" style="--T:${T}ms">
-    <div class="orb busy cute" aria-hidden="true"><span class="eyes"><i></i><i></i></span></div>
-    <h1 class="t1" style="font-size:clamp(28px,7vw,38px);margin-bottom:6px">${p.first?`Hang tight, ${esc(p.first)}.`:"Hang tight."}</h1>
-    <p class="t2" style="margin:0 0 22px">${k==="arch"?"Building your results. No sugarcoating.":"Finding what fits you."}</p>
-    <div class="lbar"><i></i></div>
-    <ul class="lsteps">${st.map(([t,d],i)=>`<li style="--d:${i*950}ms"><span class="lst"><i class="sp"></i><i class="ok2">✓</i></span><span><b>${esc(t)}</b>${d?`<em>${esc(d)}</em>`:""}</span></li>`).join("")}</ul>
-  </main>`,{bare:true})}
+function vLoading(k){const q=UI.said||[],p=S.profile||{},T=Math.max(4,q.length)*1500+900;
+  return `${amb}<div class="app"><main class="screen center loadv2" style="--T:${T}ms">
+    <div class="ld-mark">${MARK}</div>
+    <h1 class="t1" style="font-size:clamp(32px,8vw,44px);margin:28px 0 8px">${p.first?`Hang tight, ${esc(p.first)}.`:"Hang tight."}</h1>
+    <p class="ld-sub">Reading what you told us…</p>
+    <div class="ld-q">${q.map((t,i)=>`<p style="--d:${i*1500}ms">${esc(t)}</p>`).join("")}</div>
+    <div class="lbar" style="margin-top:34px"><i></i></div>
+  </main></div>`}
 
 function archR0(){const a=S.answers.arch;if(!a)return null;const R=readiness(a);R.weak=DIMS.slice().sort((x,y)=>R.dims[x.k]-R.dims[y.k])[0];return R}
 function vResArch(){const R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,self=a.c_self!=null?+a.c_self:null,G=self!=null?gapLine(self,R.score):null;
