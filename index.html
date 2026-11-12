@@ -418,6 +418,7 @@ body:has(.qz-body) .top{max-width:580px;padding-top:20px}
 body:has(.qz-body) .top{padding-top:calc(20px + env(safe-area-inset-top))!important}
 .help-fab{bottom:calc(16px + env(safe-area-inset-bottom))}
 .top{padding-left:max(clamp(18px,3vw,36px),env(safe-area-inset-left));padding-right:max(clamp(18px,3vw,36px),env(safe-area-inset-right))}
+.qlink{font-size:15.5px}
 </style>
 </head>
 <body>
@@ -534,6 +535,11 @@ const STAGE=[null,
 /* rough hourly intern pay by direction (US, varies a lot by city and company) */
 const PAY_BAND={swe:3,finance:3,consult:3,pm:2,data:2,strategy:2,ux:2,vc:1,sales:1,partner:1,brand:1,social:1,events:1,comms:1,ops:1,people:1,research:1,recruit:1,creator:1,visual:1,journal:0,program:0,policy:0,sustain:1};
 const PAY_L=["under $20/hr","$20–30/hr","$30–45/hr","$45+/hr"];
+function postingCompany(u){u=String(u||"").trim();if(!u)return"";try{const x=new URL(/^https?:/i.test(u)?u:"https://"+u),h=x.hostname.replace(/^www\./,""),seg=x.pathname.split("/").filter(Boolean);
+  let n="";if(/greenhouse\.io$|lever\.co$|ashbyhq\.com$|workable\.com$|smartrecruiters\.com$|wellfound\.com$/.test(h))n=seg[0]==="jobs"||seg[0]==="company"?seg[1]:seg[0];
+  else if(/myworkdayjobs\.com$/.test(h))n=h.split(".")[0];else if(/linkedin\.com$|indeed\.com$|handshake|joinhandshake\.com$|glassdoor/.test(h))return"";
+  else{const parts=h.split(".");n=parts.length>2&&/^(careers|jobs|apply|boards|job-boards)$/.test(parts[0])?parts[1]:parts[parts.length-2]}
+  return n?n.replace(/[-_]+/g," ").replace(/\b\w/g,c=>c.toUpperCase()):""}catch(e){return""}}
 function targetDir(a){const p=S.profile||{},t=String((a&&a.c_line)||"");if(p.target){const d=DIRS.find(x=>x.id===p.target);if(d)return d}
   return DIRS.find(d=>DIR_KW[d.id]&&DIR_KW[d.id].test(t))||null}
 const VERBS=/\b(meet|meeting|write|writ|analy|build|call|plan|review|present|email|design|research|pitch|code|edit|coordinat|manag|report|test|interview|sketch|brainstorm|negotiat|spreadsheet|deck|campaign|launch|track|model)\w*/gi;
@@ -567,6 +573,7 @@ const CITIES=[["nyc","New York"],["sf","SF Bay Area"],["la","Los Angeles"],["chi
 const lab=(arr,v)=>(arr.find(x=>x[0]===v)||[])[1]||"";
 function learned(a){if(!a)return[];const out=[],d=targetDir(a);
   if(a.c_line)out.push(["Going for",a.c_line]);
+  if(a.c_link&&String(a.c_link).trim())out.push(["Posting",postingCompany(a.c_link)||"Link added"]);
   const env=a.c_env||{},ev=ENV_PAIRS.map(([k,x,xl,y,yl])=>env[k]===x?xl:env[k]===y?yl:null).filter(Boolean);if(ev.length)out.push(["Works best",ev.join(" · ")]);
   if(a.c_best&&a.c_best!=="none"){const w=(a.c_bestwhy||[]).map(v=>lab(BEST_WHY,v).toLowerCase());out.push(["Best work so far",bestLabel(a.c_best)+(w.length?" because of "+listJoin(w):"")])}
   if(a.c_city&&a.c_city.length)out.push(["Location",a.c_city.map(v=>lab(CITIES,v)).join(", ")+(a.c_move==="any"?" · will move anywhere":a.c_move==="no"?" · can’t move":"")]);
@@ -659,7 +666,8 @@ const QUIZ={
     {id:"q_target",sec:"What you want",kind:"combo",q:"What are you going for?",sub:a=>{const x=((S.profile||{}).experience||[])[0];return x&&x.title?`Your resume says ${x.title}${x.company?" at "+x.company:""}. Same direction, or something new?`:"Name the role and the kind of company."},parts:[
       {id:"c_line",kind:"text",ph:"e.g. Brand marketing at a beauty company, because I love figuring out why people buy things"},
       {id:"c_sure",kind:"one",l:"How sure are you?",opts:o(["guess","Just a guess"],["lean","Leaning"],["pretty","Pretty sure"],["locked","Locked in"])},
-      {id:"c_targets",kind:"one",l:"How many kinds of roles are you applying to?",opts:o(["none","Haven’t started"],["any","Anything open"],["few","3 to 5"],["one","1 or 2"])}],
+      {id:"c_targets",kind:"one",l:"How many kinds of roles are you applying to?",opts:o(["none","Haven’t started"],["any","Anything open"],["few","3 to 5"],["one","1 or 2"])},
+      {id:"c_link",kind:"url",optional:true,l:"Looking at a specific posting? Paste the link (optional)",ph:"e.g. jobs.lever.co/spotify/…"}],
       react:a=>{const n=lineScore(a.c_line);return n>=3?"Clear target. That’s rare.":n===2?"Pretty clear. A reason makes it stronger.":"Fuzzy target. That’s the #1 thing we’ll fix."}},
     {id:"q_real",sec:"What you want",kind:"combo",q:"Do you know what that job is really like?",parts:[
       {id:"c_tuesday",kind:"text",l:"Describe a normal Tuesday in that job. One line.",ph:"e.g. Morning standup, pull campaign numbers, brief the designer, pitch ideas to my manager"},
@@ -773,7 +781,7 @@ const GOOD_L={dir:"You know what you’re going for. Most students don’t.",fit
 const AREA_ACT={
   dir:r=>[["Take the career match quiz","5 min. Get 3 directions worth testing.","career"],[r?`Write one line: “I want ${r} because…”`:"Pick one role. Write it in one sentence.","Say it out loud until it sounds true."],[`Read 5 job posts for ${r||"that role"}`,"Highlight what keeps repeating."]],
   fit:r=>[["Write your 3 non-negotiables","Team size, city, minimum pay. One line each."],[`Look up real intern pay for ${r||"your target role"}`,"Glassdoor or Levels.fyi. Note the range."],["Ask someone in the role about the culture","“What kind of person struggles there?”"]],
-  net:r=>[[`Find 3 people working in ${r||"a field you like"}`,"LinkedIn. Alumni from your school first."],["Send 2 short messages asking for 15 min","Short and specific beats polished."],["Have one coffee chat","Ask what their week actually looks like."]],
+  net:r=>[[(c=>c?`Find 3 people who work at ${c}`:`Find 3 people working in ${r||"a field you like"}`)(postingCompany((S.answers.arch||{}).c_link)),"LinkedIn. Alumni from your school first."],["Send 2 short messages asking for 15 min","Short and specific beats polished."],["Have one coffee chat","Ask what their week actually looks like."]],
   exp:r=>[[`Rewrite the top of your resume for ${r||"one role"}`,"One role. Not every role."],[`Change your LinkedIn headline to name ${r||"the role you want"}`,"Recruiters search by it."],["Start one small project you can show","Finished beats impressive."]],
   str:r=>[["Stop mass-applying for 2 weeks","Fewer, better applications."],["Rewrite your “why this role?” answer","One thing you did + why it points here."],["Practice it out loud 3 times","Record it once. Fix the ramble."]],
 };
@@ -861,6 +869,7 @@ function ctl(q,v,a,pid){const opts=typeof q.opts==="function"?q.opts(a):q.opts,P
   if(q.kind==="one"||q.kind==="many"){const sel=x=>q.kind==="one"?v===x:(v||[]).includes(x),one=!mini&&(q.cols===1||opts.some(x=>x.l.length>30));
     return `<div class="tiles${one?" one-col":""}${mini?" mini":""}">${opts.map((x,i)=>`<button class="tile" data-act="${q.kind}" data-v="${esc(x.v)}"${P} aria-pressed="${sel(x.v)}">${mini?"":`<span class="k">${String(i+1).padStart(2,"0")}</span>`}<span>${esc(x.l)}</span></button>`).join("")}</div>`}
   if(q.kind==="slider"){const val=v==null?50:+v;return `<div class="slide"><div class="slide-n"><b id="sl-n">${v==null?"?":val}</b><small>%</small></div><p class="slide-l" id="sl-l">${esc(v==null?"Drag to answer":selfLabel(val))}</p><input type="range" min="0" max="100" step="1" value="${val}" data-slider${P} aria-label="How ready you think you are"><div class="slide-ends"><span>Not at all</span><span>Fully ready</span></div></div>`}
+  if(q.kind==="url"){const co=postingCompany(v);return `<input class="in qlink" type="url" inputmode="url" autocomplete="off" id="qz-text${pid?"-"+pid:""}" data-qtext${P} value="${esc(v||"")}" placeholder="${esc(q.ph||"Paste a link")}">${co?`<p class="tiny" style="margin:8px 2px 0">Got it: <b style="color:var(--ink);font-weight:500">${esc(co)}</b></p>`:""}`}
   if(q.kind==="text")return `<textarea class="qtext${mini?" sm":""}" id="qz-text${pid?"-"+pid:""}" data-qtext${P} placeholder="${esc(q.ph||"What do you think?")}">${esc(v||"")}</textarea>`;
   if(q.kind==="pairs"){const cur=v||{};return `<div class="pairs">${q.pairs.map(([pk,a1,l1,b1,l2])=>`<div class="pair"><button class="tile" data-act="pair" data-p="${pk}" data-v="${a1}"${P} aria-pressed="${cur[pk]===a1}"><span>${esc(l1)}</span></button><span>or</span><button class="tile" data-act="pair" data-p="${pk}" data-v="${b1}"${P} aria-pressed="${cur[pk]===b1}"><span>${esc(l2)}</span></button></div>`).join("")}</div>`}
   if(q.kind==="rate"){const cur=v||{};return `<div class="rate">${q.tasks.map(t=>`<div class="rate-row"><b>${esc(QT[t][1])}</b><div class="rate-b">${[["love","Love it"],["maybe","Maybe"],["no","No"]].map(([x,l])=>`<button data-act="rate" data-t="${t}" data-v="${x}" aria-pressed="${cur[t]===x}">${l}</button>`).join("")}</div></div>`).join("")}</div>`}
@@ -1011,7 +1020,7 @@ document.addEventListener("submit",e=>{if(e.target.matches("[data-auth]")){e.pre
 document.addEventListener("input",e=>{const t=e.target;
   if(t.dataset.pf){S.profile=S.profile||{};S.profile[t.dataset.pf]=t.value;save()}
   else if(t.dataset.xp!=null){S.profile.experience[+t.dataset.xp][t.dataset.f]=t.value;save()}
-  else if(t.matches("[data-qtext]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i];d.a[t.dataset.pid||q.id]=t.value;save();footSync(k);if(q.kind==="combo"){clearTimeout(UI.revT);UI.revT=setTimeout(()=>{if(route()==="q-"+k&&shownParts(q,d.a).length!==(UI.partsShown||{})[q.id])render()},700)}}});
+  else if(t.matches("[data-qtext]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i];d.a[t.dataset.pid||q.id]=t.value;save();footSync(k);if(q.kind==="combo"){clearTimeout(UI.revT);UI.revT=setTimeout(()=>{if(route()==="q-"+k&&(t.type==="url"||shownParts(q,d.a).length!==(UI.partsShown||{})[q.id]))render()},700)}}});
 document.addEventListener("input",e=>{if(e.target.matches("[data-slider]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i],v=+e.target.value;d.a[e.target.dataset.pid||q.id]=v;save();$("#sl-n").textContent=v;$("#sl-l").textContent=selfLabel(v);footSync(k)}});
 function footSync(k){const d=S.draft[k],q=QUIZ[k].qs[d.i],ok=qOk(q,d.a),b=$(".qz-foot .go");if(!b)return;const last=qVisible(k,d.a).indexOf(q)===qVisible(k,d.a).length-1;b.disabled=!ok&&!q.optional;b.innerHTML=(!ok&&q.optional?"Skip":last?"Show me the truth":"Next")+"<i>→</i>"}
 document.addEventListener("change",e=>{if(e.target.matches("[data-resume]"))handleResume(e.target.files[0])});
