@@ -741,6 +741,19 @@ html,body{background:#F4F3F1;color:#151515}
 .pf-home{position:absolute;bottom:8px;left:50%;width:120px;margin-left:-60px;height:4px;border-radius:2px;background:#151515;opacity:.6}
 .fchip.c1{left:-26%;top:28%}.fchip.c2{right:-30%;top:16%}.fchip.c3{right:-28%;top:80%}
 .pf-in{padding-top:74px}.pf-in .hs-t{font-size:30px;margin-bottom:4px}.pf-in .hs-n{margin:14px 0 16px}.pf-in .hs-hint{margin:16px 0 14px}.pf-in .bk2{gap:12px}.pf-in .rt{padding:16px 15px;gap:9px}.pf-in .t2-p{font-size:13.5px}.pf-in .hs-btn{margin-top:20px;padding:18px}
+.mtags{display:none}
+@media (max-width:760px){
+  .ab-main{padding-top:12vh!important;padding-bottom:9vh!important}
+  .ab-main>.ab-txt{max-height:none!important;height:100%}
+  .bz{display:none!important}
+  .mtags{display:block;position:relative;width:300px;height:118px;margin:34px auto 0}
+  .mtags span{position:absolute;border-radius:12px;color:#151515;box-shadow:0 12px 24px -14px rgba(21,21,21,.3);white-space:nowrap;animation:fade .7s var(--ease) both}
+  .mtags .g1{right:6px;top:0;font-size:16px;padding:9px 15px;rotate:2deg;animation-delay:.2s}
+  .mtags .g2{left:4px;top:58px;font-size:13px;padding:7px 12px;rotate:-2deg;animation-delay:.35s}
+  .mtags .g3{left:150px;top:64px;font-size:15px;padding:8px 14px;rotate:-3deg;animation-delay:.5s}
+  .mtags .t1c{background:#EBC9F2}.mtags .t2c{background:#C3D8F2}.mtags .t3c{background:#F2D7A8}
+  .ab-p{margin-top:auto!important;margin-bottom:16px!important;font-size:15px!important;max-width:28ch}
+  .btnzone{margin-top:0!important;display:flex!important;justify-content:center}}
 </style>
 </head>
 <body>
@@ -1381,6 +1394,7 @@ function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden=
   <main class="ab-main anim-in">
     <div class="ab-txt">
     <h1 class="ab-h"><span class="nw2">Know if you’re hirable.</span> <i class="nw2">Before you apply.</i></h1>
+    <div class="mtags"><span class="t2c g1">What’s stopping me?</span><span class="t3c g2">What do I fix first?</span><span class="t1c g3">Am I ready?</span></div>
     <p class="ab-p">5 minutes. Your score, your gaps, <span style="white-space:nowrap">your next 3 moves.</span></p>
     <div class="btnzone"><span class="bz t1c b1">Am I ready?</span><span class="bz t2c b2">What’s stopping me?</span><a class="ab-btn" href="#home">Take the quiz <i>↗</i></a><span class="bz t3c b3">What do I fix first?</span></div>
     </div>
