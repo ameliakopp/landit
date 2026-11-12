@@ -601,7 +601,7 @@ function readiness(a){const P={dir:[],fit:[],exp:[],net:[],str:[]},add=(k,v)=>{i
   add("dir",a.c_mode==="spec"?(a.c_co&&a.c_role?3:1):(a["c_line"]!=null?lineScore(a["c_line"]):null));
   if(a.c_skills)add("dir",knowScore(a.c_skills));if(a.c_title){const t=a.c_title;add("dir",t.includes("idk")?0:clamp(1.5*t.filter(v=>v[0]==="r").length-1.5*t.filter(v=>v[0]==="f").length,0,3))}
   if(a.c_hard!=null)add("dir",String(a.c_hard).trim().split(/\s+/).length>=4?2:0);
-  if(a.c_mode==="type"&&a.c_cos3!=null)add("dir",Math.min(3,cosCount(a.c_cos3)));add("str",m({li:2,alumni:3,board:2,idk:0},a.c_cofind));
+  if(a.c_mode==="type"&&a.c_cos3!=null)add("dir",cosCount(a.c_cos3)?2:0);if(a.c_mode==="type"&&a.c_cowhy!=null)add("dir",whyScore(a.c_cowhy));add("str",m({yes:3,some:1.5,no:0},a.c_cofind));
   if(a.c_mode==="spec"){add("dir",m({yes:3,rough:1.5,no:0},a.c_team));add("str",a.c_whyco!=null?whyScore(a.c_whyco):null);add("str",m({yes:3,skim:1,no:0},a.c_news));add("net",m({talked:3,find:1.5,no:0},a.c_insider));add("str",m({yes:3,rough:1.5,no:0},a.c_dl))}
   {const cv=analyzeCover(S.profile,a);if(cv)add("str",cv.score/100*3);else if(a.c_covfile==="none")add("str",1)}
   {const ok=timingOk(a);add("str",ok==null?(a.c_open==="idk"?0:null):ok?3:1)}add("dir",m({guess:0,lean:1,pretty:2,locked:3},a.c_sure));add("dir",m({none:1,any:0,few:2,one:3},a.c_targets));
@@ -629,6 +629,7 @@ const CITIES=[["nyc","New York"],["sf","SF Bay Area"],["la","Los Angeles"],["chi
 const lab=(arr,v)=>(arr.find(x=>x[0]===v)||[])[1]||"";
 function learned(a){if(!a)return[];const out=[],d=targetDir(a);
   if(goalLine(a))out.push([a.c_mode==="spec"?"Applying to":"Going for",goalLine(a)]);
+  if(a.c_mode==="type"&&a.c_cos3)out.push(["Companies",a.c_cos3]);
   if(a.c_link&&String(a.c_link).trim())out.push(["Posting",postingCompany(a.c_link)||"Link added"]);
   const env=a.c_env||{},ev=ENV_PAIRS.map(([k,x,xl,y,yl])=>env[k]===x?xl:env[k]===y?yl:null).filter(Boolean);if(ev.length)out.push(["Works best",ev.join(" · ")]);
   if(a.c_best&&a.c_best!=="none"){const w=(a.c_bestwhy||[]).map(v=>lab(BEST_WHY,v).toLowerCase());out.push(["Best work so far",bestLabel(a.c_best)+(w.length?" because of "+listJoin(w):"")])}
@@ -787,13 +788,14 @@ const QUIZ={
       {id:"c_hard",kind:"text",when:shaky,l:"Quick follow-up: what do you think is the hardest part of that job?",ph:"Your best guess"},
       {id:"c_skills",kind:"many",when:a=>!!targetDir(a),l:a=>`Which skills do ${targetDir(a).t.toLowerCase()} postings usually ask for? Pick all that apply.`,opts:skillOpts},
       {id:"c_title",kind:"many",when:a=>!!targetDir(a)&&(shaky(a)||knowScore(a.c_skills)<2),l:"Which job titles would you search for? Pick all that apply.",opts:titleOpts}]},
-    {id:"q_co",sec:"What you want",kind:"combo",q:a=>a.c_mode==="spec"?`Why ${coName(a)}?`:"Where would you apply?",parts:[
+    {id:"q_co",sec:"What you want",kind:"combo",q:a=>a.c_mode==="spec"?`Why ${coName(a)}?`:"Which companies?",parts:[
       {id:"c_whyco",kind:"text",when:a=>a.c_mode==="spec",l:a=>`Why ${coName(a)} and not a competitor? One or two lines.`,ph:"e.g. Their Wrapped campaign is the reason I got into marketing, and I want to work on data-driven brand stories"},
       {id:"c_team",kind:"one",when:a=>a.c_mode==="spec",l:"Do you know what the team you’d join actually works on?",opts:o(["yes","Yes"],["rough","Roughly"],["no","No"])},
       {id:"c_news",kind:"one",when:a=>a.c_mode==="spec",l:a=>`Have you read anything ${coName(a)} put out in the last month?`,opts:o(["yes","Yes, and I have a take"],["skim","I skimmed their site"],["no","No"])},
       {id:"c_insider",kind:"one",when:a=>a.c_mode==="spec",l:a=>`Do you know anyone at ${coName(a)}?`,opts:o(["talked","Yes, I’ve talked to them"],["find","I could find someone"],["no","No one"])},
-      {id:"c_cos3",kind:"text",when:a=>a.c_mode==="type",l:"Name 3 companies that hire for this role.",ph:"e.g. Glossier, Spotify, Nike"},
-      {id:"c_cofind",kind:"one",when:a=>a.c_mode==="type"&&a.c_cos3!=null&&cosCount(a.c_cos3)<3,l:"Follow-up: how would you find companies that hire for it?",opts:o(["li","Search LinkedIn Jobs"],["alumni","Ask alumni or my career center"],["board","Job boards like Handshake"],["idk","No idea"])},
+      {id:"c_cos3",kind:"text",short:true,when:a=>a.c_mode==="type",l:"Which specific companies are you interested in?",ph:"e.g. Glossier, Spotify, Nike"},
+      {id:"c_cowhy",kind:"text",when:a=>a.c_mode==="type"&&cosCount(a.c_cos3)>0,l:a=>{const n=cosCount(a.c_cos3);return n>1?"Why these companies specifically?":`Why ${String(a.c_cos3).trim()} specifically?`},ph:"e.g. Glossier built a brand through its community, and that’s the kind of marketing I want to learn"},
+      {id:"c_cofind",kind:"one",when:a=>a.c_mode==="type"&&a.c_cowhy!=null&&whyScore(a.c_cowhy)<1.5,l:"Follow-up: have you looked at what they’re hiring for right now?",opts:o(["yes","Yes, I’ve read their postings"],["some","I’ve looked at one or two"],["no","Not yet"])},
       {id:"c_open",kind:"one",l:"When do applications usually open for this?",opts:o(["early","July–October"],["mid","August–December"],["late","November–March"],["idk","No idea"])}]},
     {id:"q_env",sec:"Your fit",kind:"combo",q:"Where do you do your best work?",parts:[
       {id:"c_exp",kind:"one",l:"Have you done anything related to the role you want?",when:()=>!(S.profile&&S.profile.resumeStats),opts:o(["none","Nothing yet"],["class","Class projects"],["club","Club or part-time job"],["real","Internship in it"])},
@@ -912,7 +914,7 @@ const APPS_L={"1":"Up to 10","11":"11 to 50","50":"50+"};
 function whyLow(k,a,p){const out=[],an=analyzeResume(p||{}),d=targetDir(a);
   if(k==="dir"){if(a.c_skills&&a.c_skills.includes("idk"))out.push("You’re not sure what skills the job asks for.");else if(a.c_skills&&knowScore(a.c_skills)<1.5)out.push(`You picked skills that don’t usually show up in ${d?d.t.toLowerCase():"these"} postings.`);
     if(a.c_title&&(a.c_title.includes("idk")||a.c_title.some(v=>v[0]==="f")))out.push("You’re not sure what the job is called on job posts.");
-    if(a.c_mode==="type"&&a.c_cos3!=null&&cosCount(a.c_cos3)<3)out.push("You couldn’t name 3 companies that hire for it.");if(a.c_mode==="spec"&&a.c_team==="no")out.push(`You don’t know what the team at ${coName(a)} actually works on.`);
+    if(a.c_mode==="type"&&a.c_cos3!=null&&!cosCount(a.c_cos3))out.push("You couldn’t name a single company you’re interested in.");else if(a.c_mode==="type"&&a.c_cowhy!=null&&whyScore(a.c_cowhy)<1.5)out.push("You couldn’t say why those companies specifically.");if(a.c_cofind==="no")out.push("You haven’t looked at what they’re hiring for.");if(a.c_mode==="spec"&&a.c_team==="no")out.push(`You don’t know what the team at ${coName(a)} actually works on.`);
     if(a.c_mode!=="spec"&&lineScore(goalLine(a))<2)out.push("You couldn’t name the job you want in one clear line.");if(a.c_sure==="guess"||a.c_sure==="lean")out.push("You’re not sure about your own target.");if(dayScore(a.c_tuesday)<1.5)out.push("You can’t really describe a normal day in that job.");if(a.c_src==="guess"||a.c_src==="media")out.push("Your picture of the job comes from guesses or social media.");if(a.c_targets==="any")out.push("You’re applying to anything that’s open.")}
   if(k==="fit"){if(a.c_best==="none")out.push("You haven’t found where you do your best work yet.");if(a.c_pay==="idk")out.push("You don’t know what interns in your field get paid.");else if(d&&a.c_pay&&+a.c_pay!==PAY_BAND[d.id])out.push(`You guessed ${PAY_L[+a.c_pay]}. ${d.t} interns usually make ${PAY_L[PAY_BAND[d.id]]}.`);if(a.c_city&&a.c_city.length===1&&a.c_city[0]==="any")out.push("“Anywhere” isn’t a location strategy.");if(a.c_when==="unsure")out.push("You haven’t picked when you want to start.")}
   if(k==="exp"){if(!p||!p.resumeStats)out.push("No resume yet.");(an?an.bad:[]).slice(0,2).forEach(b=>out.push(b.t+"."));if(d&&p&&p.resumeText&&!DIR_KW[d.id].test(p.resumeText))out.push(`Your resume doesn’t mention ${d.t.toLowerCase()} once.`);if(a.c_exp==="none")out.push("Nothing related to your target on paper yet.")}
