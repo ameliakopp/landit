@@ -704,6 +704,14 @@ html,body{background:#F4F3F1;color:#151515}
 .fchip.t1c{background:#EBC9F2}.fchip.t2c{background:#C3D8F2}.fchip.t3c{background:#F2D7A8}
 .hp-wrap{margin-bottom:-14vh}
 @media (max-width:760px){.m-only{display:flex!important;margin-bottom:22px!important}.ab-p{margin:0 auto 34px!important;font-size:16px!important}.ab-h{margin-bottom:20px!important}}
+.btnzone{display:contents}.bz{display:none}
+@media (max-width:760px){
+  .btnzone{display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;gap:16px 10px;margin-top:clamp(44px,9vh,90px)}
+  .bz{display:inline-block;padding:8px 13px;border-radius:12px;font-size:14.5px;color:#151515;box-shadow:0 10px 22px -12px rgba(21,21,21,.25);animation:fade .7s var(--ease) both}
+  .bz.t1c{background:#EBC9F2;rotate:-4deg;justify-self:end}.bz.t2c{background:#C3D8F2;rotate:3deg;justify-self:start}.bz.t3c{background:#F2D7A8;rotate:-2deg;grid-column:1/-1;justify-self:center}
+  .btnzone .ab-btn{grid-column:1/-1;justify-self:center;padding:12px 12px 12px 24px;font-size:16px}
+  .btnzone .ab-btn i{width:36px;height:36px}
+  .ab-p{margin-bottom:0!important}}
 </style>
 </head>
 <body>
@@ -1343,10 +1351,9 @@ function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden=
   <header class="top">${WORD.replace('href="#about"','href=""')}<span></span></header>
   <main class="ab-main anim-in">
     <div class="ab-txt">
-    <div class="ab-tags m-only"><span class="t1c">Am I ready?</span><span class="t2c">What’s stopping me?</span><span class="t3c">What do I fix first?</span></div>
     <h1 class="ab-h"><span class="nw2">Know if you’re hirable.</span> <i class="nw2">Before you apply.</i></h1>
     <p class="ab-p">5 minutes. Your score, your gaps, <span style="white-space:nowrap">your next 3 moves.</span></p>
-    <a class="ab-btn" href="#home">Get my score <i>↗</i></a>
+    <div class="btnzone"><span class="bz t1c b1">Am I ready?</span><span class="bz t2c b2">What’s stopping me?</span><a class="ab-btn" href="#home">Get my score <i>↗</i></a><span class="bz t3c b3">What do I fix first?</span></div>
     </div>
     <div class="hp-wrap" aria-hidden="true"><span class="fchip c1 t1c">Am I ready?</span><span class="fchip c2 t2c">What’s stopping me?</span><span class="fchip c3 t3c">What do I fix first?</span><div class="hp-stage">
       <div class="hp-scr" style="transform:matrix3d(0.49889008,-0.0052726337,0,-9.7439854e-05,-0.093888791,0.60776248,0,-3.5254758e-05,0,0,1,0,348,206,0,1)">
