@@ -650,6 +650,28 @@ html,body{background:#F4F3F1;color:#151515}
 .mp-g>div{background:rgba(255,255,255,.85);border-radius:12px;padding:8px;display:flex;justify-content:space-between;align-items:center}
 .mp-g span{font-size:9.5px;font-weight:500;color:#151515}.mp-g .dn{width:22px;height:22px}
 .ab-main{padding-bottom:40px}
+/* about: one screen, text left + phone right */
+.aboutpg{height:100vh;height:100dvh;min-height:0;overflow:hidden}
+.ab-main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:center;gap:40px;max-width:1100px;width:100%;margin:0 auto;padding:0 48px 40px;text-align:left;flex:1;min-height:0}
+.ab-main>*{grid-column:1}
+.ab-main .mini-ph{grid-column:2;grid-row:1/span 4;margin:0 auto;width:min(270px,30vw)}
+.ab-h{max-width:12ch;margin:0 0 22px;font-size:clamp(44px,5.6vw,78px)}
+.ab-tags{justify-content:flex-start}
+.ab-p{margin:22px 0 34px}
+.ab-btn{justify-self:start}
+.mini-ph .mp-n{font-size:56px}.mini-ph .mp-t{font-size:12px}.mini-ph .mp-g span{font-size:11px}.mini-ph .mp-g .dn{width:28px;height:28px}
+@media (max-width:760px){
+  .ab-main{grid-template-columns:1fr;gap:0;padding:4px 24px 20px;text-align:center;align-content:center}
+  .ab-main .mini-ph{grid-column:1;grid-row:auto;width:150px;margin:26px auto 0}
+  .ab-h{max-width:13ch;margin:0 auto 16px;font-size:clamp(34px,9vw,44px)}
+  .ab-tags{justify-content:center}.ab-tags span{font-size:14px;padding:6px 10px}
+  .ab-p{margin:16px 0 22px;font-size:15px}.ab-btn{justify-self:center}
+  .mini-ph .mp-n{font-size:34px}.mini-ph .mp-t{font-size:9px}.mini-ph .mp-g span{font-size:8.5px}.mini-ph .mp-g .dn{width:18px;height:18px}.mini-ph .mp-isl{margin-bottom:10px}}
+.ab-main>.ab-txt{grid-column:1;display:flex;flex-direction:column;align-items:flex-start}
+.ab-main .mini-ph{grid-row:auto}
+.ab-h{max-width:none;text-wrap:balance}
+@media (min-width:761px){.ab-h{font-size:clamp(44px,5vw,72px)}}
+@media (max-width:760px){.ab-main>.ab-txt{align-items:center}.ab-main .mini-ph{width:170px;margin-top:22px}.mp-g>div{padding:6px}.ab-main{padding-bottom:12px}}
 </style>
 </head>
 <body>
@@ -1288,10 +1310,12 @@ function vHome(){const ra=S.results.arch,rc=S.results.career;
 function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden="true"></div>
   <header class="top">${WORD.replace('href="#about"','href=""')}<span></span></header>
   <main class="ab-main anim-in">
+    <div class="ab-txt">
     <h1 class="ab-h">Hirable is a free quiz that tells you:</h1>
     <div class="ab-tags"><span class="t1c">If you’re a good candidate</span><span class="t2c">What’s holding you back</span><span class="t3c">Where to spend your time</span></div>
     <p class="ab-p">For anyone, at any stage of their career.</p>
     <a class="ab-btn" href="#home">Take the quiz <i>↗</i></a>
+    </div>
     <div class="mini-ph" aria-hidden="true"><div class="mp-scr">
       <span class="mp-isl"></span>
       <p class="mp-t">Your career readiness</p>
