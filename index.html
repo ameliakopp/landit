@@ -367,6 +367,13 @@ body{line-height:1.55}
 .part.pop{animation:fade .5s var(--ease) both}
 .still .part.pop{animation:fade .5s var(--ease) both}
 .gap-t{text-wrap:balance;text-align:center;font-size:clamp(20px,5vw,24px);font-weight:500;letter-spacing:-.02em;line-height:1.3;margin:4px auto 30px;max-width:22ch;animation:fade .7s .9s var(--ease) both}
+
+.home{max-width:460px;padding-top:0;padding-bottom:60px;min-height:calc(100vh - 70px)}
+.home .hook,.home .hook2,.home .doors,.home .ask{width:100%;max-width:440px}
+.home .hook2{margin-bottom:34px}
+.ask{margin:0 0 12px;font-size:15px;color:var(--mute);text-align:center}
+.door b{font-size:19px}
+@media (min-width:700px){.orb.hero{width:150px;margin-bottom:34px}.hook{font-size:50px}}
 </style>
 </head>
 <body>
@@ -754,13 +761,14 @@ const shell=(inner,opt)=>{opt=opt||{};const t=opt.tabs&&S.results.arch;return `$
 const ICON_OK=`<i class="ok">✓</i>`,ICON_NO=`<i class="no">!</i>`;
 
 function vHome(){const ra=S.results.arch,rc=S.results.career;
-  return shell(`<main class="screen center anim-in">
+  return shell(`<main class="screen center home anim-in">
     <div class="orb hero" aria-hidden="true"></div>
     <h1 class="t1 hook">Why aren’t you <span class="nw">getting <b>internships?</b></span></h1>
     <p class="t2 hook2">Take the quiz to know what’s holding you back, and what to fix.</p>
+    <p class="ask">Do you know what job you want?</p>
     <div class="doors">
-      <button class="door main" data-act="begin" data-k="arch"><span><b>I know what I want</b><em>Am I actually ready for it? Get your score.</em></span><i>→</i></button>
-      <button class="door" data-act="begin" data-k="career"><span><b>I have no idea what I want</b><em>Find the career that actually fits you.</em></span><i>→</i></button>
+      <button class="door main" data-act="begin" data-k="arch"><span><b>Yes</b><em>See if you’re actually ready. Get your score.</em></span><i>→</i></button>
+      <button class="door" data-act="begin" data-k="career"><span><b>Not yet</b><em>Find the career that fits you. Get your top matches.</em></span><i>→</i></button>
     </div>
     ${ra||rc?`<a class="txt" href="#${ra?"me":"r-career"}" style="margin-top:14px">See my results</a>`:`<p class="tiny" style="margin-top:16px">3 minutes. No sign-up needed.</p>`}
   </main>`)}
