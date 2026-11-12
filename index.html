@@ -675,10 +675,10 @@ html,body{background:#F4F3F1;color:#151515}
 @media (max-width:760px){.ab-main .mini-ph{display:none}.ab-h{font-size:clamp(40px,11vw,52px)}.ab-tags span{font-size:15px;padding:7px 12px}.ab-p{margin:22px 0 32px}}
 
 /* hand + phone composite (desktop About) */
-.hp-wrap{grid-column:2;justify-self:center;align-self:end;width:min(430px,33vw);aspect-ratio:598/1036;position:relative;margin-bottom:-12vh;animation:fade 1s .2s var(--ease) both}
-.hp-stage{position:absolute;left:0;top:0;width:598px;height:1036px;transform-origin:0 0;transform:scale(var(--k,0.7))}
-.hp-img{position:absolute;inset:0;width:598px;height:1036px;z-index:2}
-.hp-scr{position:absolute;left:0;top:0;width:390px;height:844px;transform-origin:0 0;z-index:1;border-radius:46px 46px 40px 40px;background:linear-gradient(180deg,#F8DCEA 0%,#FBEBDD 22%,#F4F3F1 42%);padding:58px 20px 0;overflow:hidden;color:#151515;font-family:var(--sans)}
+.hp-wrap{grid-column:2;justify-self:center;align-self:end;width:min(560px,40vw);aspect-ratio:922/1152;position:relative;margin-bottom:-12vh;animation:fade 1s .2s var(--ease) both}
+.hp-stage{position:absolute;left:0;top:0;width:922px;height:1152px;transform-origin:0 0;transform:scale(var(--k,0.7))}
+.hp-img{position:absolute;inset:0;width:922px;height:1152px;z-index:2}
+.hp-scr{position:absolute;left:0;top:0;width:390px;height:844px;transform-origin:0 0;z-index:1;border-radius:56px;background:linear-gradient(180deg,#F8DCEA 0%,#FBEBDD 22%,#F4F3F1 42%);padding:58px 20px 0;overflow:hidden;color:#151515;font-family:var(--sans)}
 .hs-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
 .hs-word{display:flex;align-items:center;gap:7px;font-weight:500;font-size:19px;letter-spacing:-.03em}.hs-word .mark{width:19px;height:19px}
 .hs-av{width:38px;height:38px;border-radius:50%;background:#FBEFE7;display:grid;place-items:center;font-size:15px}
@@ -694,6 +694,16 @@ html,body{background:#F4F3F1;color:#151515}
 .ab-h .nw2{display:block;white-space:nowrap}
 @media (min-width:761px){.ab-h{font-size:clamp(40px,4.4vw,64px)}}
 @media (max-width:420px){.ab-h{font-size:clamp(30px,8.6vw,40px)}}
+
+/* about: roomier, chips float by the phone */
+.ab-h{margin-bottom:28px!important}
+.ab-p{margin:0 0 44px!important;font-size:18px!important;max-width:30ch}
+.m-only{display:none!important}
+.fchip{position:absolute;z-index:4;padding:9px 15px;border-radius:12px;font-size:15px;color:#151515;box-shadow:0 14px 30px -14px rgba(21,21,21,.25);white-space:nowrap;animation:fade .8s var(--ease) both}
+.fchip.c1{left:0;top:30%;animation-delay:.5s}.fchip.c2{right:0;top:24%;animation-delay:.7s}.fchip.c3{right:-2%;top:50%;animation-delay:.9s}
+.fchip.t1c{background:#EBC9F2}.fchip.t2c{background:#C3D8F2}.fchip.t3c{background:#F2D7A8}
+.hp-wrap{margin-bottom:-14vh}
+@media (max-width:760px){.m-only{display:flex!important;margin-bottom:22px!important}.ab-p{margin:0 auto 34px!important;font-size:16px!important}.ab-h{margin-bottom:20px!important}}
 </style>
 </head>
 <body>
@@ -1333,13 +1343,13 @@ function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden=
   <header class="top">${WORD.replace('href="#about"','href=""')}<span></span></header>
   <main class="ab-main anim-in">
     <div class="ab-txt">
+    <div class="ab-tags m-only"><span class="t1c">Am I ready?</span><span class="t2c">What’s stopping me?</span><span class="t3c">What do I fix first?</span></div>
     <h1 class="ab-h"><span class="nw2">Know if you’re hirable.</span> <i class="nw2">Before you apply.</i></h1>
-    <div class="ab-tags"><span class="t1c">Am I ready?</span><span class="t2c">What’s stopping me?</span><span class="t3c">What do I fix first?</span></div>
     <p class="ab-p">5 minutes. Your score, your gaps, <span style="white-space:nowrap">your next 3 moves.</span></p>
     <a class="ab-btn" href="#home">Get my score <i>↗</i></a>
     </div>
-    <div class="hp-wrap" aria-hidden="true"><div class="hp-stage">
-      <div class="hp-scr" style="transform:matrix3d(0.53954894,0.0093073598,0,-9.7840253e-06,-0.10490503,0.55191191,0,-0.00015191449,0,0,1,0,201,93,0,1)">
+    <div class="hp-wrap" aria-hidden="true"><span class="fchip c1 t1c">Am I ready?</span><span class="fchip c2 t2c">What’s stopping me?</span><span class="fchip c3 t3c">What do I fix first?</span><div class="hp-stage">
+      <div class="hp-scr" style="transform:matrix3d(0.49889008,-0.0052726337,0,-9.7439854e-05,-0.093888791,0.60776248,0,-3.5254758e-05,0,0,1,0,348,206,0,1)">
         <div class="hs-top"><span class="hs-word">${MARK}hirable</span><span class="hs-av">A</span></div>
         <p class="hs-t">Amelia’s career readiness</p>
         <div class="hs-n"><b>36<small>%</small></b><span class="stage1 sm">Scattered</span></div>
@@ -1573,7 +1583,7 @@ function render(){const r=route();let html;
   const np=[...document.querySelectorAll(".part.pop")].pop();if(np&&!keep)setTimeout(()=>np.scrollIntoView({behavior:"smooth",block:"nearest"}),60);
   if(keep){const el=document.getElementById(keep[0]);if(el){el.focus();try{el.setSelectionRange(keep[1],keep[1])}catch(e){}}}}
 
-function fitHP(){const w=document.querySelector(".hp-wrap");if(w)w.querySelector(".hp-stage").style.setProperty("--k",w.getBoundingClientRect().width/598)}
+function fitHP(){const w=document.querySelector(".hp-wrap");if(w)w.querySelector(".hp-stage").style.setProperty("--k",w.getBoundingClientRect().width/922)}
 addEventListener("resize",()=>fitHP());
 function fitHook(){fitHP();const h=document.querySelector(".home .hook .fit");if(!h)return;const H=h.parentElement;H.style.fontSize="";
   const go=()=>{const one=innerWidth>=700,target=Math.min(innerWidth*(one?.6:.78),one?820:9999),cur=parseFloat(getComputedStyle(H).fontSize),w=one?h.getBoundingClientRect().width:Math.max(...[...h.querySelectorAll(".ln")].map(x=>x.getBoundingClientRect().width));if(w>0)H.style.fontSize=Math.min(one?160:90,cur*target/w)+"px"};
