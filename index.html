@@ -375,6 +375,7 @@ body{line-height:1.55}
 .door b{font-size:19px}
 @media (min-width:700px){.orb.hero{width:150px;margin-bottom:34px}.hook{font-size:50px}}
 .ask em{font-style:italic;color:var(--ink)}
+.home .hook{margin-bottom:30px}
 </style>
 </head>
 <body>
@@ -765,13 +766,12 @@ function vHome(){const ra=S.results.arch,rc=S.results.career;
   return shell(`<main class="screen center home anim-in">
     <div class="orb hero" aria-hidden="true"></div>
     <h1 class="t1 hook">Why aren’t you <span class="nw">getting <b>internships?</b></span></h1>
-    <p class="t2 hook2">Take the quiz to know what’s holding you back, and what to fix.</p>
     <p class="ask">Do you <em>really</em> know what job you want?</p>
     <div class="doors">
-      <button class="door main" data-act="begin" data-k="arch"><span><b>Yes</b><em>See if you’re actually ready. Get your score.</em></span><i>→</i></button>
-      <button class="door" data-act="begin" data-k="career"><span><b>Not yet</b><em>Find the career that fits you. Get your top matches.</em></span><i>→</i></button>
+      <button class="door main" data-act="begin" data-k="arch"><span><b>Yes</b><em>See if you’re ready</em></span><i>→</i></button>
+      <button class="door" data-act="begin" data-k="career"><span><b>Not yet</b><em>Find what fits you</em></span><i>→</i></button>
     </div>
-    ${ra||rc?`<a class="txt" href="#${ra?"me":"r-career"}" style="margin-top:14px">See my results</a>`:`<p class="tiny" style="margin-top:16px">3 minutes. No sign-up needed.</p>`}
+    ${ra||rc?`<a class="txt" href="#${ra?"me":"r-career"}" style="margin-top:14px">See my results</a>`:`<p class="tiny" style="margin-top:16px">3 minutes · Free</p>`}
   </main>`)}
 function vJoin(){if(AUTH.user)return go("me"),"";const up=UI.mode==="signup";
   return shell(`<main class="screen center anim-in">
