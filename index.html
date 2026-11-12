@@ -379,6 +379,7 @@ body{line-height:1.55}
 .home .door{padding:18px 20px}
 .home .hook2{margin-bottom:56px}
 @media (min-width:700px){.home .hook2{margin-bottom:64px}}
+.foot-note{margin-top:auto;padding-top:48px;letter-spacing:.01em}
 </style>
 </head>
 <body>
@@ -774,7 +775,7 @@ function vHome(){const ra=S.results.arch,rc=S.results.career;
       <button class="door main" data-act="begin" data-k="arch"><span><b>I have a role in mind</b></span><i>→</i></button>
       <button class="door" data-act="begin" data-k="career"><span><b>I’m not sure yet</b></span><i>→</i></button>
     </div>
-    ${ra||rc?`<a class="txt" href="#${ra?"me":"r-career"}" style="margin-top:14px">See my results</a>`:`<p class="tiny" style="margin-top:16px">3 minutes · Free</p>`}
+    <p class="tiny foot-note">A free tool for students</p>
   </main>`)}
 function vJoin(){if(AUTH.user)return go("me"),"";const up=UI.mode==="signup";
   return shell(`<main class="screen center anim-in">
