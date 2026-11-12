@@ -640,6 +640,16 @@ html,body{background:#F4F3F1;color:#151515}
 .truth .gap-mid{font-size:26px}
 .stage-lbl{margin:0 0 10px;font-size:15px;color:var(--mute)}
 .truth .stage1{font-size:18px;padding:10px 22px}
+.mini-ph{margin:64px auto 0;width:210px;border-radius:36px;padding:7px;background:rgba(255,255,255,.7);box-shadow:0 30px 60px -36px rgba(232,121,198,.55),0 0 0 1px rgba(21,21,21,.05);animation:fade .9s .3s var(--ease) both;opacity:.95}
+.mp-scr{border-radius:30px;background:linear-gradient(180deg,#FBE6F1,#FDF3EA 45%,#F8F7F5);padding:12px 16px 18px;display:flex;flex-direction:column;align-items:center}
+.mp-isl{width:54px;height:15px;border-radius:999px;background:#151515;margin-bottom:16px}
+.mp-t{margin:0;font-size:10px;color:rgba(21,21,21,.5);letter-spacing:.02em}
+.mp-n{font-weight:300;font-size:44px;letter-spacing:-.05em;line-height:1;margin:4px 0 10px;color:#151515}.mp-n small{font-size:.4em;color:rgba(21,21,21,.35)}
+.mp-scr .dbar{gap:3px;width:100%;margin-bottom:14px}.mp-scr .dbar i{max-width:6px}
+.mp-g{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%}
+.mp-g>div{background:rgba(255,255,255,.85);border-radius:12px;padding:8px;display:flex;justify-content:space-between;align-items:center}
+.mp-g span{font-size:9.5px;font-weight:500;color:#151515}.mp-g .dn{width:22px;height:22px}
+.ab-main{padding-bottom:40px}
 </style>
 </head>
 <body>
@@ -1267,21 +1277,13 @@ const ICON_OK=`<i class="ok">✓</i>`,ICON_NO=`<i class="no">!</i>`;
 function vHome(){const ra=S.results.arch,rc=S.results.career;
   return shell(`<main class="screen center home anim-in">
     <div class="orb hero" aria-hidden="true"></div>
-    <h1 class="t1 hook"><span class="fit"><span class="ln">Are you going to</span> <span class="ln"><b>get</b> the internship?</span></span></h1>
+    <h1 class="t1 hook"><span class="fit"><span class="ln">How <b>hirable</b></span> <span class="ln">are you?</span></span></h1>
     <p class="t2 hook2">Let’s find out.</p>
     <div class="doors">
       <button class="door main" data-act="begin" data-k="arch"><span><b>I have a role in mind</b></span><i>→</i></button>
       <button class="door" data-act="begin" data-k="career"><span><b>I’m not sure yet</b></span><i>→</i></button>
     </div>
-    <div class="phone" aria-hidden="true"><div class="ph-scr">
-      <div class="ph-bar"><span>9:41</span><span class="ph-isl"></span><span>●●●</span></div>
-      <p class="ph-t">Amelia’s career readiness</p>
-      <div class="ph-top"><b>39<small>%</small></b><span>Scattered</span></div>
-      ${dotbar(39,26)}
-      <div class="ph-g">${[["Career Clarity",69,"a","Almost"],["Artifacts",48,"n","Not yet"],["Strategy",13,"x","Not at all"],["Networking",0,"x","Not at all"]].map(([n,v,c,w])=>`<div class="ph-c"><b>${n}</b><div><span>${v}<small>%</small></span>${donut(v,c)}</div><i class="vd ${c}">${w}</i></div>`).join("")}</div>
-      <div class="ph-cta">See my next steps →</div>
-    </div></div>
-    <p class="tiny foot-note">A free tool for students</p>
+        <p class="tiny foot-note">A free tool for students</p>
   </main>`)}
 function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden="true"></div>
   <header class="top">${WORD.replace('href="#about"','href="#home"')}<a class="ab-x" href="#home" aria-label="Close">×</a></header>
@@ -1290,6 +1292,13 @@ function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden=
     <div class="ab-tags"><span class="t1c">If you’re a good candidate</span><span class="t2c">What’s holding you back</span><span class="t3c">Where to spend your time</span></div>
     <p class="ab-p">For anyone, at any stage of their career.</p>
     <a class="ab-btn" href="#home">Take the quiz <i>↗</i></a>
+    <div class="mini-ph" aria-hidden="true"><div class="mp-scr">
+      <span class="mp-isl"></span>
+      <p class="mp-t">Your career readiness</p>
+      <div class="mp-n">39<small>%</small></div>
+      ${dotbar(39,18)}
+      <div class="mp-g">${[["Clarity",69,"a"],["Artifacts",48,"n"],["Strategy",22,"x"],["Network",8,"x"]].map(([n,v,c])=>`<div><span>${n}</span>${donut(v,c)}</div>`).join("")}</div>
+    </div></div>
   </main></div>`}
 function vJoin(){if(AUTH.user)return go("me"),"";const up=UI.mode==="signup";
   return shell(`<main class="screen center anim-in">
@@ -1513,7 +1522,7 @@ function render(){const r=route();let html;
   if(keep){const el=document.getElementById(keep[0]);if(el){el.focus();try{el.setSelectionRange(keep[1],keep[1])}catch(e){}}}}
 
 function fitHook(){const h=document.querySelector(".home .hook .fit");if(!h)return;const H=h.parentElement;H.style.fontSize="";
-  const go=()=>{const one=innerWidth>=700,target=innerWidth*(one?.9:.88),cur=parseFloat(getComputedStyle(H).fontSize),w=one?h.getBoundingClientRect().width:Math.max(...[...h.querySelectorAll(".ln")].map(x=>x.getBoundingClientRect().width));if(w>0)H.style.fontSize=Math.min(one?160:90,cur*target/w)+"px"};
+  const go=()=>{const one=innerWidth>=700,target=Math.min(innerWidth*(one?.6:.78),one?820:9999),cur=parseFloat(getComputedStyle(H).fontSize),w=one?h.getBoundingClientRect().width:Math.max(...[...h.querySelectorAll(".ln")].map(x=>x.getBoundingClientRect().width));if(w>0)H.style.fontSize=Math.min(one?160:90,cur*target/w)+"px"};
   go();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go)}
 addEventListener("resize",()=>fitHook());
 /* ---------- events ---------- */
