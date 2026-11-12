@@ -388,6 +388,11 @@ body{line-height:1.55}
 .home .hook{margin-bottom:64px}
 .home .hook2{margin-bottom:18px}
 @media (min-width:700px){.home .hook{margin-bottom:110px}.home .hook2{margin-bottom:20px}}
+.home .hook{width:100vw;max-width:100vw;padding:0 3vw;font-size:9.6vw;line-height:1.02;letter-spacing:-.045em;text-wrap:initial}
+@media (min-width:700px){.home .hook{font-size:5.15vw;white-space:nowrap}.home .hook .nw{white-space:nowrap}}
+.home .hook .fit{display:inline-block;white-space:nowrap}
+.home .hook .ln{display:block}
+@media (min-width:700px){.home .hook .ln{display:inline}}
 </style>
 </head>
 <body>
@@ -777,7 +782,7 @@ const ICON_OK=`<i class="ok">✓</i>`,ICON_NO=`<i class="no">!</i>`;
 function vHome(){const ra=S.results.arch,rc=S.results.career;
   return shell(`<main class="screen center home anim-in">
     <div class="orb hero" aria-hidden="true"></div>
-    <h1 class="t1 hook">Are you going to <span class="nw">get <b>the internship?</b></span></h1>
+    <h1 class="t1 hook"><span class="fit"><span class="ln">Are you going to</span> <span class="ln">get <b>the internship?</b></span></span></h1>
     <p class="t2 hook2">Let’s find out.</p>
     <div class="doors">
       <button class="door main" data-act="begin" data-k="arch"><span><b>I have a role in mind</b></span><i>→</i></button>
@@ -942,9 +947,14 @@ function render(){const r=route();let html;
   const vk=UI.loading?"load":r+(r.startsWith("q-")&&S.draft[r.slice(2)]?":"+S.draft[r.slice(2)].i:"");document.body.classList.toggle("still",UI.lastView===vk);UI.lastView=vk;
   const ae=document.activeElement,keep=ae&&ae.id&&/^(pf-|qz-text|au-|help-|paste)/.test(ae.id)?[ae.id,ae.selectionStart]:null;
   $("#app").innerHTML=html+((r==="home"&&!UI.loading)||UI.help?helpUI():"")+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:"");
+  fitHook();
   const np=[...document.querySelectorAll(".part.pop")].pop();if(np&&!keep)setTimeout(()=>np.scrollIntoView({behavior:"smooth",block:"nearest"}),60);
   if(keep){const el=document.getElementById(keep[0]);if(el){el.focus();try{el.setSelectionRange(keep[1],keep[1])}catch(e){}}}}
 
+function fitHook(){const h=document.querySelector(".home .hook .fit");if(!h)return;const H=h.parentElement;H.style.fontSize="";
+  const go=()=>{const one=innerWidth>=700,target=innerWidth*(one?.9:.88),cur=parseFloat(getComputedStyle(H).fontSize),w=one?h.getBoundingClientRect().width:Math.max(...[...h.querySelectorAll(".ln")].map(x=>x.getBoundingClientRect().width));if(w>0)H.style.fontSize=Math.min(one?160:90,cur*target/w)+"px"};
+  go();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go)}
+addEventListener("resize",()=>fitHook());
 /* ---------- events ---------- */
 const ACT={
   begin:el=>{const k=el.dataset.k;if(k==="arch"&&!(S.profile&&S.profile.done)){S.pending="q-arch";save();go("setup");return}startQuiz(k)},
