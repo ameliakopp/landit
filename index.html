@@ -758,6 +758,7 @@ html,body{background:#F4F3F1;color:#151515}
 .fcard .fc-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.fcard em{font-style:normal;font-size:15px;font-weight:600;flex:none}
 .fcard small{font-size:13px;color:var(--mute);margin-top:auto;padding-top:4px}
 .qcards .qcard2.fcard:nth-child(4){background:#F1DDF5}.qcards .qcard2.fcard:nth-child(5){background:#DCE7F6}.qcards .qcard2.fcard:nth-child(6){background:#F6E5C6}
+.dpop b{display:block;font-weight:600;margin-bottom:6px}.dpop ul{margin:0 0 8px;padding-left:18px;display:flex;flex-direction:column;gap:3px}.dpop span{display:block;font-size:13px;color:rgba(255,255,255,.65)}
 </style>
 </head>
 <body>
@@ -1470,13 +1471,14 @@ function ctl(q,v,a,pid){const opts=typeof q.opts==="function"?q.opts(a):q.opts,P
   return ""}
 const DEPTH_MSG={"c_line": "Give more detail: What kind of role exactly? At what kind of company? Why does it fit you?", "c_cowhy": "Give more detail: What differentiates them? Why do you have a unique perspective to work there? What about their culture speaks to you?", "c_whyco": "Give more detail: What differentiates them? Why do you have a unique perspective to work there? What about their culture speaks to you?", "c_why": "Give more detail: What have you actually done that points to this role? What part of the work excites you? What would you bring?", "c_tuesday": "Give more detail: Who do they meet with? What do they make or decide? What tools do they use?", "c_hard": "Give more detail: What makes it hard? A skill, the pace, the people, the pressure?"};
 const GENERIC=/\b(love the brand|love their brand|seems? (cool|fun|nice|great)|they(’|')?re (cool|great|nice)|i like (it|them)|passionate|always wanted|dream (job|company)|good company|big company|well known|good pay|looks fun|idk|i don.?t know|not sure|because yes|why not)\b/i;
-function depthOk(id,t){t=String(t||"").trim();const w=t.split(/\s+/).filter(Boolean).length;
+const IDK_RX=/\b(i\s*(do\s*n[o’']?t|dont|dunno)\s*know|idk|not sure|no idea|no clue|unsure|dunno)\b/i;
+function depthOk(id,t){t=String(t||"").trim();if(IDK_RX.test(t))return true;const w=t.split(/\s+/).filter(Boolean).length;
   if(id==="c_tuesday")return w>=8&&dayScore(t)>=1.5;
   if(id==="c_hard")return w>=6&&!GENERIC.test(t);
   if(id==="c_line")return w>=6&&lineScore(t)>=2;
   return w>=12&&!(GENERIC.test(t)&&w<22)}
-function depthFail(k){const d=S.draft[k],q=QUIZ[k].qs[d.i];if(!q||q.kind!=="combo")return null;
-  for(const x of shownParts(q,d.a)){if(DEPTH_MSG[x.id]&&d.a[x.id]!=null&&String(d.a[x.id]).trim()!==""&&!depthOk(x.id,d.a[x.id]))return x.id}return null}
+function depthFail(k){const d=S.draft[k],q=QUIZ[k].qs[d.i];if(!q||q.kind!=="combo")return null;const nd=UI.nudged||(UI.nudged={});
+  for(const x of shownParts(q,d.a)){if(DEPTH_MSG[x.id]&&!nd[k+":"+x.id]&&d.a[x.id]!=null&&String(d.a[x.id]).trim()!==""&&!depthOk(x.id,d.a[x.id]))return x.id}return null}
 function qOk(q,a){if(q.kind==="rate"){const c=a[q.id]||{};return taskList(q,a).every(t=>c[t])}return q.kind==="combo"?comboOk(q,a):hasAns(q,a[q.id])}
 function vQuiz(k){const Q=QUIZ[k],d=S.draft[k];if(!d)return startQuiz(k),"";if(d.i>=Q.qs.length)d.i=0;
   const q=Q.qs[d.i],a=d.a,vis=qVisible(k,a),idx=vis.indexOf(q),N=vis.length,ok=qOk(q,a),last=idx===N-1,V=x=>typeof x==="function"?x(a):x;
@@ -1654,7 +1656,7 @@ const ACT={
   many:el=>{const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i],pid=el.dataset.pid||q.id,part=q.kind==="combo"?q.parts.find(x=>x.id===pid):q;const a=Array.isArray(d.a[pid])?d.a[pid]:(d.a[pid]=[]),v=el.dataset.v,j=a.indexOf(v);if(j>=0)a.splice(j,1);else{a.push(v);if(part.max&&a.length>part.max)a.shift()}save();render()},
   pair:el=>{const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i],pid=el.dataset.pid||q.id,part=q.kind==="combo"?q.parts.find(x=>x.id===pid):q;const c=d.a[pid]||(d.a[pid]={});c[el.dataset.p]=el.dataset.v;save();render()},
   rate:el=>{const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i],cur=d.a[q.id]||(d.a[q.id]={});cur[el.dataset.t]=el.dataset.v;save();render()},
-  qnext:el=>{const k0=route().slice(2),bad=depthFail(k0);if(bad){const box=document.getElementById("qz-text-"+bad);if(box){box.classList.remove("shake");void box.offsetWidth;box.classList.add("shake");let pop=box.parentElement.querySelector(".dpop");if(!pop){pop=document.createElement("div");pop.className="dpop";box.insertAdjacentElement("afterend",pop)}pop.textContent=DEPTH_MSG[bad];box.scrollIntoView({behavior:"smooth",block:"center"});try{navigator.vibrate&&navigator.vibrate([20,40,20])}catch(e){}}return}
+  qnext:el=>{const k0=route().slice(2),bad=depthFail(k0);if(bad){const box=document.getElementById("qz-text-"+bad);if(box){box.classList.remove("shake");void box.offsetWidth;box.classList.add("shake");let pop=box.parentElement.querySelector(".dpop");if(!pop){pop=document.createElement("div");pop.className="dpop";box.insertAdjacentElement("afterend",pop)}(UI.nudged||(UI.nudged={}))[k0+":"+bad]=1;const qs_=DEPTH_MSG[bad].replace(/^Give more detail:\s*/,"").split("?").map(x=>x.trim()).filter(Boolean);pop.innerHTML=`<b>Add a little more. Answer one:</b><ul>${qs_.map(q=>`<li>${esc(q)}?</li>`).join("")}</ul><span>Or just write “I don’t know”, or tap Next again to skip.</span>`;box.scrollIntoView({behavior:"smooth",block:"center"});try{navigator.vibrate&&navigator.vibrate([20,40,20])}catch(e){}}return}
     const k=route().slice(2),d=S.draft[k],qs=QUIZ[k].qs,before=qVisible(k,d.a),bi=before.indexOf(qs[d.i]),cs=qs[d.i].sec;
     try{const r=el.querySelector("i").getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2)}catch(e){}try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}
     qNext(k);if(UI.loading||route()!=="q-"+k||!S.draft[k]||S.draft[k].i>=qs.length)return;
