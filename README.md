@@ -7,6 +7,6 @@ The internship quiz built on one idea: **the biggest block is you.** Most studen
 3. **The truth:** "You think 85%. Reality 28%. 57-point gap." Plus a stage (1 Exploring to 5 Ready), four area scores, and the one thing to fix first.
 4. **Next steps tab:** areas to strengthen, weakest first, each with the reasons from their own answers and resume, and actions they can tick off. Dashboard and Profile tabs alongside.
 
-A separate career match quiz suggests directions; a resume nudges the matches.
+**Career quiz ("I'm not sure yet")** — 11 adaptive screens: self-knowledge check; strengths (+ which is #1) and what friends come to you for; energy (Saturday, which one for 8 hours, classes); work style and kind of days (this-or-that); then three rounds of "would you enjoy this?" task ratings where rounds 2 and 3 are picked from the student's top-scoring fields so far (58 tasks across 31 fields); values (+ the one that matters most), industries, dealbreakers; exposure check against their top matches; a dream job. The report shows best qualities, where they thrive, what energizes/drains them, top fields with real internship titles that companies post plus typical posting season, a self-knowledge score with what to improve, and a 3-coffee-chat plan with a copyable outreach message. Internship titles are a curated list based on common postings (e.g. SimplifyJobs, Built In, InternDock), not a live feed.
 
 Live: https://ameliakopp.github.io/landit/

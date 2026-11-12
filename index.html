@@ -419,6 +419,19 @@ body:has(.qz-body) .top{padding-top:calc(20px + env(safe-area-inset-top))!import
 .help-fab{bottom:calc(16px + env(safe-area-inset-bottom))}
 .top{padding-left:max(clamp(18px,3vw,36px),env(safe-area-inset-left));padding-right:max(clamp(18px,3vw,36px),env(safe-area-inset-right))}
 .qlink{font-size:15.5px}
+
+.qcards{display:grid;grid-template-columns:1fr;gap:12px;width:100%}
+@media (min-width:640px){.qcards{grid-template-columns:repeat(3,1fr)}}
+.qcard2{border-radius:22px;padding:18px;background:linear-gradient(135deg,rgba(255,122,69,.16),rgba(240,80,138,.12) 60%,rgba(143,107,255,.12));border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:6px}
+.qcard2 b{font-weight:600;font-size:18px;letter-spacing:-.02em}.qcard2 span{font-size:15px;color:var(--mute);line-height:1.45}
+.fields{display:flex;flex-direction:column;gap:12px;width:100%}
+.field-c{border-radius:24px;background:var(--glass);border:1px solid var(--edge);padding:18px;display:flex;flex-direction:column;gap:10px}
+.field-c.is1{border-color:rgba(240,80,138,.35);box-shadow:0 0 40px -18px rgba(240,80,138,.6)}
+.field-h{display:flex;align-items:center;gap:12px}.field-h b{flex:1;font-weight:600;font-size:18px;letter-spacing:-.02em}.field-h em{font-style:normal;font-size:14px;color:var(--mute);font-variant-numeric:tabular-nums}
+.field-c p{margin:0;font-size:15px;color:var(--mute);line-height:1.45}
+.field-c .chips .chip{font-size:13.5px}
+.pickbtn{padding:12px 16px;font-size:14.5px;margin-top:4px}
+.msgcard{padding:18px;margin-top:12px}.msgcard p#chatmsg{margin:0 0 14px;font-size:15.5px;line-height:1.55}
 </style>
 </head>
 <body>
@@ -644,6 +657,56 @@ const DIRS=[
   {id:"creator",t:"Creator & influencer marketing",role:"influencer marketing intern",ind:["fashion","media","consumer"],tags:["creative","hype","comm","fast","fun","voice","writing","improv"],not:[]},
 ];
 const QLAB=Object.fromEntries([...QSAT,...QAREA,...QFOR,...QSKILL,...QKNOWN,...QVAL,...QIND,...QPAIRS.flatMap(p=>[[p[1],p[2]],[p[3],p[4]]])].map(([k,l])=>[k,l.toLowerCase()]));
+/* ---------- career data, extended: more fields, field-specific tasks, real internship titles ---------- */
+DIRS.push(
+  {id:"accounting",t:"Accounting & audit",role:"audit intern",ind:["finance"],tags:["numbers","plan","clear","depth","organize","stable","big","alone"],not:["numbers"]},
+  {id:"supply",t:"Supply chain & logistics",role:"supply chain intern",ind:["consumer","tech"],tags:["org","organize","plan","fig","numbers","doer","clear"],not:[]},
+  {id:"health",t:"Healthcare & public health",role:"public health intern",ind:["health","nonprofit","gov"],tags:["help","impact","research","stem","soc","trusted"],not:[]},
+  {id:"edu",t:"Education & learning design",role:"education program intern",ind:["edu","nonprofit"],tags:["help","explain","impact","people","words","trusted"],not:[]},
+  {id:"legal",t:"Law & legal",role:"legal intern",ind:["gov","finance"],tags:["words","research","depth","writing","prestige","smart","clear"],not:["writing"]},
+  {id:"ai",t:"AI & machine learning",role:"machine learning intern",ind:["tech","startups"],tags:["fig","code","stem","numbers","alone","learn","depth","smart"],not:["code","numbers"]},
+  {id:"hardware",t:"Hardware & mechanical engineering",role:"mechanical engineering intern",ind:["tech","climate"],tags:["make","fig","stem","alone","depth","doer"],not:[]});
+QTASKS.push(
+  ["launch","Plan how a new product gets launched",["brand","pm","events"]],["film","Film and edit a 30-second video",["social","creator"]],
+  ["coldemail","Turn a cold email into a real partnership",["partner","sales","vc"]],["users","Talk to users and decide what to fix first",["pm","ux"]],
+  ["redesign","Watch someone struggle with an app, then redesign it",["ux","visual"]],["messy","Turn a messy dataset into a clear chart",["data","research"]],
+  ["ceo","Solve a business problem in 2 weeks and present it to a CEO",["consult","strategy"]],["value","Figure out what a company is worth",["finance","vc"]],
+  ["debug","Track down why something broke",["swe","ai"]],["dayof","Handle the day-of chaos at a live event",["events","ops"]],
+  ["crisis","Write the statement when a brand is in trouble",["comms","policy"]],["story","Interview someone and write their story",["journal","comms"]],
+  ["onboard","Plan a new hire’s first week",["people","recruit"]],["process","Fix a process that wastes everyone’s time",["ops","supply"]],
+  ["call","Call someone and convince them to try something",["sales","partner"]],["volunteer","Organize volunteers for a community project",["program","edu"]],
+  ["carbon","Measure a company’s environmental impact",["sustain","research"]],["survey","Survey 100 people and find the surprising answer",["research","brand"]],
+  ["market","Decide which new market a company should enter",["strategy","consult"]],["founders","Meet founders and pick which one to bet on",["vc"]],
+  ["collab","Pitch a brand collab to a creator",["creator","partner"]],["reconcile","Make the numbers match to the penny",["accounting","finance"]],
+  ["ship","Get a product from a factory to a store faster",["supply","ops"]],["patients","Help run a study that improves patient care",["health","research"]],
+  ["teach","Teach someone until it finally clicks",["edu","program"]],["contract","Read a contract and spot the risky part",["legal","policy"]],
+  ["model","Train a computer to predict something",["ai","data"]],["build","Build or fix a physical thing",["hardware"]],
+  ["stocks","Find a pattern in stock market data",["finance","data","ai"]],["audit","Check a company’s books for mistakes",["accounting"]]);
+QTASKS.forEach(t=>QT[t[0]]=t);
+const BROAD_TASKS=["caption","sheet","pitch","screen","event","interview","code","coach"];
+const ROLE_TITLES={brand:["Brand Marketing Intern","Marketing Intern","Product Marketing Intern","Consumer Insights Intern"],social:["Social Media Intern","Content Creator Intern","Digital Marketing Intern","Video Production Intern"],
+  partner:["Partnerships Intern","Business Development Intern","Sponsorship Intern"],pm:["Product Management Intern","Associate Product Manager Intern","Technical Product Intern"],
+  ux:["UX Design Intern","Product Design Intern","UX Research Intern"],data:["Data Analyst Intern","Business Intelligence Intern","Marketing Analytics Intern","Data Science Intern"],
+  consult:["Consulting Summer Analyst","Business Analyst Intern","Strategy Consulting Intern"],finance:["Investment Banking Summer Analyst","Financial Analyst Intern","Equity Research Intern","Quantitative Research Intern"],
+  swe:["Software Engineering Intern","Full Stack Developer Intern","DevOps Intern"],events:["Events Intern","Experiential Marketing Intern","Event Coordinator Intern"],
+  comms:["Communications Intern","Public Relations Intern","Corporate Communications Intern"],journal:["Editorial Intern","Writing Intern","Newsroom Intern"],
+  people:["People Operations Intern","Human Resources Intern","Talent Acquisition Intern"],ops:["Operations Intern","Business Operations Intern","Project Coordinator Intern"],
+  sales:["Sales Development Intern","Account Management Intern","Customer Success Intern"],program:["Program Coordinator Intern","Community Engagement Intern","Nonprofit Development Intern"],
+  sustain:["Sustainability Intern","ESG Analyst Intern","Environmental Policy Intern"],research:["Market Research Intern","Research Assistant","Strategy & Insights Intern"],
+  strategy:["Strategy & Operations Intern","Corporate Strategy Intern","Business Strategy Intern"],vc:["Venture Capital Intern","Investment Analyst Intern","Startup Operations Intern"],
+  policy:["Policy Intern","Government Affairs Intern","Legislative Intern"],visual:["Graphic Design Intern","Visual Design Intern","Creative Intern"],
+  recruit:["Recruiting Intern","Talent Acquisition Intern","Recruiting Coordinator Intern"],creator:["Influencer Marketing Intern","Creator Partnerships Intern","Social & Creator Intern"],
+  accounting:["Audit Intern","Tax Intern","Accounting Intern"],supply:["Supply Chain Intern","Procurement Intern","Logistics Intern"],health:["Public Health Intern","Clinical Research Intern","Healthcare Administration Intern"],
+  edu:["Education Program Intern","Curriculum Design Intern","Teaching Fellow"],legal:["Legal Intern","Paralegal Intern","Compliance Intern"],
+  ai:["Machine Learning Intern","AI Engineer Intern","Data Science Intern"],hardware:["Mechanical Engineering Intern","Hardware Engineering Intern","Manufacturing Engineering Intern"]};
+const EARLY=new Set(["finance","consult","swe","ai","accounting"]),MID=new Set(["pm","data","ux","strategy","hardware","supply","sales"]);
+const postTime=id=>EARLY.has(id)?"Posts early: usually Jul–Oct":MID.has(id)?"Usually posts Aug–Dec":"Usually posts Nov–Mar";
+const SKILL_WHY={writing:"Words are your tool. You make people get it.",numbers:"You find the answer in numbers other people skip.",visual:"You have taste. You make things look and feel right.",talking:"You can talk to anyone. That opens doors.",organize:"You keep things on track when others are lost.",research:"You dig until you actually understand it.",code:"You can build things that actually work.",persuade:"You get people to say yes."};
+const KNOWN_WHY={creative:"You bring the ideas nobody else thought of.",smart:"You’re the one who figures out the hard part.",doer:"You turn plans into done.",trusted:"People come to you. You make them feel heard.",closer:"You make things happen.",voice:"You know what’s good and what isn’t."};
+function adaptTasks(a,topN,n){const w=flatPairs(a),rank=DIRS.map(d=>({d,s:qScore(w,d).sc})).sort((x,y)=>y.s-x.s).slice(0,topN).map(x=>x.d.id);
+  const seen=new Set([...BROAD_TASKS,...(a.rate2_t||[])]);
+  return QTASKS.filter(t=>!seen.has(t[0])).map(t=>({k:t[0],s:t[2].reduce((s,id)=>{const r=rank.indexOf(id);return s+(r<0?0:topN-r)},0)})).filter(x=>x.s>0).sort((x,y)=>y.s-x.s).slice(0,n).map(x=>x.k)}
+function topSoFar(a,n){const w=flatPairs(a);return DIRS.map(d=>({d,s:qScore(w,d).sc})).sort((x,y)=>y.s-x.s).slice(0,n).map(x=>x.d)}
 function qWant(w){return [...[].concat(w.sat||[]),...[].concat(w.area||[]),...QPAIRS.map(x=>w[x[0]]),...[].concat(w.known||[]),...(w.qfor||[]),...(w.qval||[]),...(w.qskill||[])].filter(Boolean)}
 function qScore(w,d){const want=qWant(w),ind=w.qind||[],no=w.qnot||[];let sc=0;const love=[];
   d.tags.forEach(t=>{if(want.includes(t))sc+=(w.qskill||[]).includes(t)?1.5:1});
@@ -704,29 +767,45 @@ const QUIZ={
       {id:"c_month",kind:"one",l:"Next month you’ll…",opts:o(["all","Keep applying to everything"],["tweak","Apply a lot, better resume"],["narrow","Narrow down, apply less"],["people","Talk to people, then apply"])},
       {id:"c_block",kind:"many",l:"What’s really holding you back? Pick all that apply.",optional:true,opts:o(["what","Don’t know what I want"],["know","Don’t know anyone"],["silence","Applications go nowhere"],["exp","Not enough experience"],["interview","Interviews"],["time","Time or motivation"])}]},
   ]},
-  career:{n:"02",title:"Which career are you actually built for?",short:"Career",qs:[
-    {id:"sat",kind:"many",q:"A free Saturday. What are you most likely doing?",sub:"Pick all that apply",opts:QSAT.map(([v,l])=>({v,l}))},
-    {id:"area",kind:"many",q:"Which classes or projects made you lose track of time?",sub:"Pick all that apply",opts:QAREA.map(([v,l])=>({v,l}))},
-    {id:"pairs1",kind:"pairs",q:"This or that: how do you like to work?",pairs:QPAIRS.slice(0,4)},
-    {id:"pairs2",kind:"pairs",q:"This or that: what kind of days?",pairs:QPAIRS.slice(4)},
-    {id:"qfor",kind:"many",q:"What do friends come to you for?",sub:"Pick all that apply",opts:QFOR.map(([v,l])=>({v,l}))},
-    {id:"qskill",kind:"many",q:"What are you genuinely good at?",sub:"Not what sounds good. Pick all that apply",opts:QSKILL.map(([v,l])=>({v,l}))},
-    {id:"known",kind:"many",q:"In a group project, you’re…",sub:"Pick all that apply",opts:QKNOWN.map(([v,l])=>({v,l}))},
-    {id:"rate1",kind:"rate",q:"Would you actually enjoy doing this at work?",sub:"Gut reaction. This counts the most",tasks:QTASKS.slice(0,6).map(t=>t[0])},
-    {id:"rate2",kind:"rate",q:"How about these?",tasks:QTASKS.slice(6,12).map(t=>t[0])},
-    {id:"rate3",kind:"rate",q:"Last few.",tasks:QTASKS.slice(12).map(t=>t[0])},
-    {id:"qval",kind:"many",q:"What matters most in your first job?",sub:"Pick all that apply",opts:QVAL.map(([v,l])=>({v,l}))},
-    {id:"qind",kind:"many",q:"Which industries sound interesting?",sub:"Pick all that apply",opts:QIND.map(([v,l])=>({v,l}))},
-    {id:"qnot",kind:"many",optional:true,q:"Anything you already know you don’t want?",sub:"Optional",opts:QNOT.map(([v,l])=>({v,l}))},
-    {id:"dream",kind:"text",optional:true,q:"Any job you’ve always been curious about?",sub:"Even if it feels random. Optional",ph:"e.g. Working at a music label"},
+  career:{n:"02",title:"What should you go for?",short:"Career",qs:[
+    {id:"k_self",kind:"combo",q:"First: how well do you know yourself?",parts:[
+      {id:"c_kgood",kind:"one",l:"Could you name your top 3 strengths right now?",opts:o(["none","Honestly, no"],["one","Maybe one"],["three","Yes, easily"])},
+      {id:"c_kenv",kind:"one",l:"Do you know what kind of team and workplace you do best in?",opts:o(["none","No idea"],["some","Some idea"],["yes","Yes"])},
+      {id:"c_kwork",kind:"one",l:"How many different kinds of work have you tried? Jobs, clubs and projects all count.",opts:o(["0","0 or 1"],["2","2 or 3"],["4","4 or more"])}]},
+    {id:"k_strong",kind:"combo",q:"What are you genuinely good at?",sub:"Not what sounds good. What’s true.",parts:[
+      {id:"qskill",kind:"many",l:"Pick all that apply",opts:QSKILL.map(([v,l])=>({v,l}))},
+      {id:"q_top",kind:"one",l:"Which would your friends say is your #1?",when:a=>(a.qskill||[]).length>1,opts:a=>(a.qskill||[]).map(v=>({v,l:lab(QSKILL,v)}))},
+      {id:"qfor",kind:"many",l:"What do friends come to you for?",opts:QFOR.map(([v,l])=>({v,l}))}]},
+    {id:"k_energy",kind:"combo",q:"What gives you energy?",parts:[
+      {id:"sat",kind:"many",l:"On a free Saturday, you’re most likely…",opts:QSAT.map(([v,l])=>({v,l}))},
+      {id:"q_8h",kind:"one",l:"Which of those could you do for 8 hours straight?",when:a=>(a.sat||[]).length>1,opts:a=>(a.sat||[]).map(v=>({v,l:lab(QSAT,v)}))},
+      {id:"area",kind:"many",l:"Which classes or projects made you lose track of time?",opts:QAREA.map(([v,l])=>({v,l}))}]},
+    {id:"k_style",kind:"combo",q:"How do you like to work?",parts:[
+      {id:"pairs1",kind:"pairs",pairs:QPAIRS.slice(0,4)},
+      {id:"known",kind:"many",l:"In a group project, you’re…",opts:QKNOWN.map(([v,l])=>({v,l}))}]},
+    {id:"k_days",kind:"combo",q:"What kind of days do you want?",parts:[{id:"pairs2",kind:"pairs",pairs:QPAIRS.slice(4)}]},
+    {id:"rate1",kind:"rate",q:"Would you actually enjoy doing this at work?",tasks:BROAD_TASKS},
+    {id:"rate2",kind:"rate",q:"Based on that, how about these?",tasks:a=>adaptTasks(a,8,6)},
+    {id:"rate3",kind:"rate",q:"Getting closer. Last few.",tasks:a=>adaptTasks(a,4,6)},
+    {id:"k_want",kind:"combo",q:"What do you want from your first job?",parts:[
+      {id:"qval",kind:"many",l:"Pick everything that matters",opts:QVAL.map(([v,l])=>({v,l}))},
+      {id:"q_val1",kind:"one",l:"If you could only have one?",when:a=>(a.qval||[]).length>1,opts:a=>(a.qval||[]).map(v=>({v,l:lab(QVAL,v)}))},
+      {id:"qind",kind:"many",l:"Which industries sound interesting?",opts:QIND.map(([v,l])=>({v,l}))},
+      {id:"qnot",kind:"many",optional:true,l:"Anything you already know you don’t want? (optional)",opts:QNOT.map(([v,l])=>({v,l}))}]},
+    {id:"k_expo",kind:"combo",q:"Have you actually tested any of these?",sub:"Your top matches so far.",parts:[
+      {id:"q_tried",kind:"many",l:"Pick any you’ve talked to someone about, or tried",opts:a=>[...topSoFar(a,5).map(d=>({v:d.id,l:d.t})),{v:"none",l:"None of them yet"}]},
+      {id:"q_people",kind:"one",l:"How many people do you know who work in any of them?",opts:o(["0","Nobody"],["1","1 or 2"],["3","3 or more"])}]},
+    {id:"k_dream",kind:"combo",q:"Any job you’ve always been curious about?",sub:"Even if it feels random. We’ll factor it in.",parts:[{id:"dream",kind:"text",optional:true,ph:"e.g. Working at a music label"}]},
   ]},
 };
 const TILE_C=["var(--cream)","var(--orange)","var(--mint)","var(--olive)","var(--pink)","var(--yellow)"];
 /* resume boosts the career match: words in their experience and skills that point at a direction */
 const DIR_KW={brand:/brand|marketing|campaign/i,social:/social media|content|tiktok|instagram|creator/i,partner:/partnership|business development|sponsor/i,pm:/product manag|product intern|roadmap/i,ux:/\bux\b|\bui\b|figma|user research|product design/i,data:/data|analytics|sql|python|tableau|excel/i,consult:/consult|case competition/i,finance:/finance|banking|investment|equity|accounting/i,swe:/software|engineer|developer|javascript|java\b|react|c\+\+/i,events:/event|festival|planning committee/i,comms:/communications|\bpr\b|public relations|press/i,journal:/journalis|editor|newspaper|magazine|writer/i,people:/\bhr\b|human resources|people ops|recruit/i,ops:/operations|logistics|supply chain/i,sales:/sales|business development|account exec/i,program:/program|community|nonprofit|volunteer/i,sustain:/sustainab|climate|environment/i,research:/research|lab\b|study/i,strategy:/strategy|strategic/i,vc:/venture|startup|investment club/i,policy:/policy|government|legislat|campaign/i,visual:/graphic design|illustrat|adobe|photoshop|visual/i,recruit:/recruit|talent/i,creator:/influencer|creator|ugc/i};
+Object.assign(DIR_KW,{accounting:/accounting|audit|tax|cpa/i,supply:/supply chain|logistics|procurement/i,health:/health|clinical|hospital|patient|medical/i,edu:/teach|tutor|education|curriculum/i,legal:/legal|law|paralegal|compliance/i,ai:/machine learning|\bai\b|artificial intelligence|neural|pytorch|tensorflow/i,hardware:/mechanical|hardware|cad|solidworks|manufactur/i});
+Object.assign(PAY_BAND,{accounting:1,supply:1,health:0,edu:0,legal:1,ai:3,hardware:2});
 function resumeBoost(d){const p=S.profile||{},t=[p.resumeText||"",(p.experience||[]).map(x=>x.title+" "+x.company).join(" "),(p.skills||[]).join(" "),p.major||""].join(" ");const k=DIR_KW[d.id];return k&&k.test(t)?2:0}
-function careerResult(w){const all=DIRS.map(d=>{const r=qScore(w,d),hit=d.tags.filter(t=>qWant(w).includes(t)),rb=resumeBoost(d);
-    return{d,score:r.sc+rb,rb,loves:r.love.slice(0,2).map(l=>l.charAt(0).toLowerCase()+l.slice(1)),likes:hit.slice(0,2).map(t=>QLAB[t]).filter(Boolean)}}).sort((a,b)=>b.score-a.score);
+function careerResult(w){const all=DIRS.map(d=>{const r=qScore(w,d),hit=d.tags.filter(t=>qWant(w).includes(t)),rb=resumeBoost(d),bonus=(d.tags.includes(w.q_top)?1.5:0)+(d.tags.includes(w.q_8h)?1.5:0)+(d.tags.includes(w.q_val1)?1:0);
+    return{d,score:r.sc+rb+bonus,rb,loves:r.love.slice(0,2).map(l=>l.charAt(0).toLowerCase()+l.slice(1)),likes:hit.slice(0,2).map(t=>QLAB[t]).filter(Boolean)}}).sort((a,b)=>b.score-a.score);
   const top=Math.max(1,all[0].score);all.forEach((x,i)=>x.pct=Math.max(40,Math.min(97,Math.round(96*x.score/top-(i?3:0)))));return all.slice(0,6)}
 function flatPairs(a){const w=Object.assign({},a);["pairs1","pairs2"].forEach(k=>Object.assign(w,a[k]||{}));["rate1","rate2","rate3"].forEach(k=>Object.entries(a[k]||{}).forEach(([t,v])=>w["r_"+t]=v));return w}
 
@@ -799,6 +878,33 @@ function gapLine(self,score){const g=self-score;
   if(g>=15)return{t:"You think you’re ready… You’re not."};
   if(g<=-10)return{t:"You think you’re not ready… You are."};
   return{t:"You know exactly where you stand."}}
+/* ---------- career report: who you are, where you thrive, what to test first ---------- */
+function taskList(q,a){if(Array.isArray(q.tasks))return q.tasks;const k=q.id+"_t";if(!a[k])a[k]=q.tasks(a);return a[k]}
+function selfKnow(a){const pts=[],m=(map,v)=>v==null?null:map[v];const add=v=>{if(v!=null)pts.push(v)};
+  add(m({none:0,one:1.5,three:3},a.c_kgood));add(m({none:0,some:1.5,yes:3},a.c_kenv));add(m({"0":.5,"2":2,"4":3},a.c_kwork));
+  const w=flatPairs(a),r=Object.keys(w).filter(k=>/^r_/.test(k)).map(k=>w[k]);if(r.length)add(3*r.filter(v=>v!=="maybe").length/r.length);
+  const n=(a.qskill||[]).length;add(n===0?0:n<=3?3:n<=5?2:1);
+  return Math.round(100*pts.reduce((s,x)=>s+x,0)/(3*Math.max(1,pts.length)))}
+function careerReport(a){const w=flatPairs(a),M=careerResult(w).map(x=>({...x,titles:ROLE_TITLES[x.d.id]||[x.d.role],when:postTime(x.d.id)}));
+  const sk=[a.q_top,...(a.qskill||[])].filter((v,i,arr)=>v&&arr.indexOf(v)===i);
+  const qual=[...sk.slice(0,2).map(v=>({t:lab(QSKILL,v),d:SKILL_WHY[v]})),...(a.known||[]).slice(0,1).map(v=>({t:lab(QKNOWN,v),d:KNOWN_WHY[v]}))].filter(x=>x.d).slice(0,3);
+  const P=k=>w[k],env=[];
+  if(P("t4"))env.push(P("t4")==="small"?"A small team where your work is visible":"A big company with structure and resources");
+  if(P("t5"))env.push(P("t5")==="fast"?"Fast days where every day is different":"Steady weeks you can plan around");
+  if(P("t1"))env.push(P("t1")==="people"?"Around people, talking things through":"Long stretches of focused, solo work");
+  if(P("t8"))env.push(P("t8")==="blank"?"Freedom to figure it out your way":"Clear goals and someone who sets them");
+  if(P("t6"))env.push(P("t6")==="front"?"Front of the room, presenting and pitching":"Behind the scenes, making it work");
+  const love=[],drain=[];Object.keys(w).filter(k=>/^r_/.test(k)).forEach(k=>{const t=QT[k.slice(2)];if(!t)return;if(w[k]==="love")love.push(t[1]);if(w[k]==="no")drain.push(t[1])});
+  const self=selfKnow(a),improve=[];
+  if(a.c_kwork==="0")improve.push("You’ve only tried one kind of work. You can’t know what you like until you test it.");
+  if(a.c_kgood==="none")improve.push("You couldn’t name your strengths. Ask 3 people what you’re best at. Their answers will surprise you.");
+  else if(a.c_kgood==="one")improve.push("You could only name one strength. Ask 3 people what you’re best at.");
+  {const r=Object.keys(w).filter(k=>/^r_/.test(k)).map(k=>w[k]);if(r.length&&r.filter(v=>v==="maybe").length/r.length>.4)improve.push("Lots of “maybe” answers. That means you need real exposure, not more thinking.")}
+  if(a.c_kenv==="none")improve.push("You don’t know where you work best yet. Notice which classes and groups make you feel sharp.");
+  const tried=new Set(a.q_tried||[]),untested=M.slice(0,3).filter(x=>!tried.has(x.d.id));
+  return{M,qual,env,love:love.slice(0,4),drain:drain.slice(0,3),self,improve:improve.slice(0,3),untested,people:a.q_people}}
+function chatMsg(field){const p=S.profile||{},yr=p.grad?(+p.grad-YEAR<=0?"recent grad":["senior","junior","sophomore","freshman"][Math.min(3,Math.max(0,+p.grad-YEAR-1))]):"student";
+  return `Hi [Name], I’m a ${yr}${p.school?" at "+p.school.split(",")[0]:""} exploring ${field.toLowerCase()}. I saw you work at [Company] and would love to hear what your week actually looks like. Would you have 15 minutes for a quick call in the next couple of weeks? Totally flexible. Thank you!`}
 /* ---------- views ---------- */
 const MARK=`<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,WORD=`<a class="word" href="#home">${MARK}clocked</a>`;
 const amb=`<div class="amb" aria-hidden="true"><i></i><i></i><i></i></div>`;
@@ -872,9 +978,9 @@ function ctl(q,v,a,pid){const opts=typeof q.opts==="function"?q.opts(a):q.opts,P
   if(q.kind==="url"){const co=postingCompany(v);return `<input class="in qlink" type="url" inputmode="url" autocomplete="off" id="qz-text${pid?"-"+pid:""}" data-qtext${P} value="${esc(v||"")}" placeholder="${esc(q.ph||"Paste a link")}">${co?`<p class="tiny" style="margin:8px 2px 0">Got it: <b style="color:var(--ink);font-weight:500">${esc(co)}</b></p>`:""}`}
   if(q.kind==="text")return `<textarea class="qtext${mini?" sm":""}" id="qz-text${pid?"-"+pid:""}" data-qtext${P} placeholder="${esc(q.ph||"What do you think?")}">${esc(v||"")}</textarea>`;
   if(q.kind==="pairs"){const cur=v||{};return `<div class="pairs">${q.pairs.map(([pk,a1,l1,b1,l2])=>`<div class="pair"><button class="tile" data-act="pair" data-p="${pk}" data-v="${a1}"${P} aria-pressed="${cur[pk]===a1}"><span>${esc(l1)}</span></button><span>or</span><button class="tile" data-act="pair" data-p="${pk}" data-v="${b1}"${P} aria-pressed="${cur[pk]===b1}"><span>${esc(l2)}</span></button></div>`).join("")}</div>`}
-  if(q.kind==="rate"){const cur=v||{};return `<div class="rate">${q.tasks.map(t=>`<div class="rate-row"><b>${esc(QT[t][1])}</b><div class="rate-b">${[["love","Love it"],["maybe","Maybe"],["no","No"]].map(([x,l])=>`<button data-act="rate" data-t="${t}" data-v="${x}" aria-pressed="${cur[t]===x}">${l}</button>`).join("")}</div></div>`).join("")}</div>`}
+  if(q.kind==="rate"){const cur=v||{};return `<div class="rate">${taskList(q,a).map(t=>`<div class="rate-row"><b>${esc(QT[t][1])}</b><div class="rate-b">${[["love","Love it"],["maybe","Maybe"],["no","No"]].map(([x,l])=>`<button data-act="rate" data-t="${t}" data-v="${x}" aria-pressed="${cur[t]===x}">${l}</button>`).join("")}</div></div>`).join("")}</div>`}
   return ""}
-function qOk(q,a){return q.kind==="combo"?comboOk(q,a):hasAns(q,a[q.id])}
+function qOk(q,a){if(q.kind==="rate"){const c=a[q.id]||{};return taskList(q,a).every(t=>c[t])}return q.kind==="combo"?comboOk(q,a):hasAns(q,a[q.id])}
 function vQuiz(k){const Q=QUIZ[k],d=S.draft[k];if(!d)return startQuiz(k),"";if(d.i>=Q.qs.length)d.i=0;
   const q=Q.qs[d.i],a=d.a,vis=qVisible(k,a),idx=vis.indexOf(q),N=vis.length,ok=qOk(q,a),last=idx===N-1,V=x=>typeof x==="function"?x(a):x;
   const hint=q.kind==="combo"?(partsOf(q,a).length>1?`${partsOf(q,a).length} quick ones`:"Be honest"):q.kind==="many"?(q.max?`Pick up to ${q.max}`:"Pick all that apply"):q.kind==="one"?"Pick one":q.kind==="rate"?"Gut reaction":q.kind==="pairs"?"This or that":q.optional?"Optional":"In your own words";
@@ -940,24 +1046,47 @@ function vMe(){const p=S.profile||{},R=archR0();if(!R)return go("home"),"";const
     </div>
   </main>`,{tabs:"me"})}
 
-function vResCareer(){const r=S.results.career;if(!r)return go("home"),"";const M=r.top.map(x=>Object.assign({},x,{d:DIRS.find(d=>d.id===x.id)})).filter(x=>x.d),m1=M[0],rest=M.slice(1,UI.more?6:3),pick=(S.profile||{}).target;
-  const why=x=>[x.loves.length?"You’d love to "+listJoin(x.loves)+".":"",x.rb?"Your resume backs it up.":""].filter(Boolean).join(" ")||(x.likes.length?"You’re into "+listJoin(x.likes)+".":"");
+function vResCareer(){const a=S.answers.career;if(!a)return go("home"),"";const R=careerReport(a),m1=R.M[0],more=R.M.slice(1,UI.more?6:3),pick=(S.profile||{}).target,dn=S.stepsDone||{};
+  const why=x=>[x.loves.length?"You’d love to "+listJoin(x.loves)+".":"",x.rb?"Your resume backs it up.":""].filter(Boolean).join(" ")||(x.likes.length?"You’re into "+listJoin(x.likes)+".":"Worth a test run.");
+  const sk=verdict(R.self);
+  const chats=R.M.slice(0,3).map(x=>({key:"chat:"+x.d.id,t:`Talk to 1 person in ${x.d.t.toLowerCase()}`,sub:`Search LinkedIn for “${x.titles[0].replace(/ Intern$| Summer Analyst$/,"")}” + your school.`}));
   return shell(`<main class="screen anim-in">
     <p class="kick" style="text-align:center;margin-top:8px">Your top match</p>
+    <h1 class="gap-top" style="margin-top:6px">You’re built for<br>${esc(m1.d.t.toLowerCase())}.</h1>
     ${ring(m1.pct,"match")}
-    <p class="verdict">You’re built for ${esc(m1.d.t.toLowerCase())}.</p><p class="sub">Search for “${esc(m1.d.role)}”</p>
-    <div class="tiles2">
-      <div class="tl wide y"><div class="h">Why it fits<em>#1</em></div><div class="d" style="color:var(--ink);font-size:15px">${esc(why(m1))}</div></div>
-      ${rest.map((x,i)=>`<div class="tl${rest.length%2&&i===rest.length-1?" wide":""}"><div class="h">${esc(x.d.t)}.</div><div><div class="v">${x.pct}%</div><div class="bar" style="margin-top:10px"><i style="width:${x.pct}%"></i></div></div></div>`).join("")}
-    </div>
-    ${UI.more?"":`<button class="txt" data-act="more" style="align-self:flex-start">Show more</button>`}
-    <div class="stack" style="margin:22px auto 0"><button class="btn${pick===m1.d.id?" glass":""}" data-act="pickdir" data-v="${m1.d.id}">${pick===m1.d.id?"Saved as your target":"Make "+esc(m1.d.t.toLowerCase())+" my target"}</button>
-      ${S.results.arch?`<a class="btn glass" href="#me">Go to my dashboard</a>`:`<button class="btn glass" data-act="begin" data-k="arch">Get my readiness score</button>`}
+    <p class="sub" style="text-align:center;max-width:34ch;margin:0 auto">${esc(why(m1))}</p>
+
+    <h2 class="sech">Your best qualities.</h2>
+    <div class="qcards">${(R.qual.length?R.qual:[{t:"Still figuring it out",d:"That’s okay. The coffee chats below will show you."}]).map(q=>`<div class="qcard2"><b>${esc(q.t)}</b><span>${esc(q.d)}</span></div>`).join("")}</div>
+
+    ${R.env.length?`<h2 class="sech">Where you thrive.</h2><div class="gcard">${R.env.map(e=>`<div class="swi" style="padding:14px 16px"><i class="ok">✓</i><div><b>${esc(e)}</b></div></div>`).join("")}</div>`:""}
+
+    ${R.love.length||R.drain.length?`<h2 class="sech">What gives you energy.</h2><div class="sw">
+      <div class="sw-col"><h3>Energizes you</h3>${R.love.map(t=>`<div class="swi"><i class="ok">+</i><div><b>${esc(t)}</b></div></div>`).join("")||`<p class="tiny">Nothing stood out yet.</p>`}</div>
+      <div class="sw-col"><h3>Drains you</h3>${R.drain.map(t=>`<div class="swi"><i class="no">–</i><div><b>${esc(t)}</b></div></div>`).join("")||`<p class="tiny">Nothing you hated. Nice.</p>`}</div></div>`:""}
+
+    <h2 class="sech">Fields to look into first.</h2>
+    <div class="fields">${[m1,...more].map((x,i)=>`<div class="field-c${i===0?" is1":""}">
+      <div class="field-h"><span class="area-n">${i+1}</span><b>${esc(x.d.t)}</b><em>${x.pct}%</em></div>
+      ${i?`<p>${esc(why(x))}</p>`:""}
+      <p class="tiny" style="margin:0">Roles hiring right now</p>
+      <div class="chips">${x.titles.map(t=>`<span class="chip">${esc(t)}</span>`).join("")}</div>
+      <p class="tiny" style="margin:2px 0 0">${esc(x.when)}</p>
+      <button class="btn${pick===x.d.id?"":" glass"} pickbtn" data-act="pickdir" data-v="${x.d.id}">${pick===x.d.id?"Saved as your target":"Make this my target"}</button></div>`).join("")}</div>
+    ${UI.more?"":`<button class="txt" data-act="more" style="align-self:flex-start">Show 3 more</button>`}
+
+    <h2 class="sech">How well you know yourself.</h2>
+    <div class="arow"><div class="arow-t"><b>Self-knowledge</b><span class="vd ${sk[1]}">${R.self}%</span></div><div class="bar2"><i class="${sk[1]}" style="width:${Math.max(3,R.self)}%"></i></div>
+      ${R.improve.length?`<ul class="why">${R.improve.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:`<p>You know yourself well. Now go confirm it with real people.</p>`}</div>
+
+    <h2 class="sech">Your next move: 3 coffee chats.</h2>
+    <p class="sub" style="margin:-4px 0 14px">${R.untested.length?`You haven’t tested ${esc(listJoin(R.untested.map(x=>x.d.t.toLowerCase())))} yet. `:""}3 real conversations will give you more clarity than 50 applications.</p>
+    <div class="steps">${chats.map(s=>`<div class="step${dn[s.key]?" done":""}"><button class="ck" data-act="tick" data-k="${esc(s.key)}" aria-label="Mark done" aria-pressed="${!!dn[s.key]}">${dn[s.key]?"✓":""}</button><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.sub)}</small></div></div>`).join("")}</div>
+    <div class="gcard msgcard"><p class="tiny" style="margin:0 0 8px">Copy this message</p><p id="chatmsg">${esc(chatMsg(m1.d.t))}</p><button class="btn glass" data-act="copymsg">Copy message</button></div>
+
+    <div class="stack" style="margin:28px auto 0">${pick?`<button class="btn" data-act="begin" data-k="arch">Am I ready for ${esc((DIRS.find(d=>d.id===pick)||m1.d).t.toLowerCase())}? Get my score</button>`:`<button class="btn" data-act="pickdir" data-v="${m1.d.id}">Make ${esc(m1.d.t.toLowerCase())} my target</button>`}
       <button class="txt" data-act="begin" data-k="career">Retake</button></div>
   </main>`,{tabs:"me"})}
-
-/* ---------- help ---------- */
-const HELP_TYPES=[["bug","Something’s broken"],["idea","I have an idea"],["help","I need help"],["other","Other"]];
 function helpUI(){if(!UI.help)return `<button class="help-fab" data-act="help" aria-label="Help and feedback">?</button>`;const h=UI.help;
   if(h.sent)return `<div class="modal-bg" data-act="helpx"><div class="modal"><h2>Got it.</h2><p class="t2" style="margin:0">Your message was sent. We read every one.</p><button class="btn" data-act="helpx">Done</button></div></div>`;
   return `<div class="modal-bg" data-act="helpx"><div class="modal" role="dialog" aria-modal="true"><div style="display:flex;justify-content:space-between;align-items:center"><h2>Talk to us</h2><button class="circ" data-act="helpx" aria-label="Close">×</button></div>
@@ -1009,6 +1138,7 @@ const ACT={
   qexit:()=>go(S.profile&&S.profile.done?"me":"home"),
   pickdir:el=>{const p=S.profile||(S.profile={});p.target=el.dataset.v;save();toast("Saved as your target.");render()},
   more:()=>{UI.more=true;render()},
+  copymsg:()=>{const t=($("#chatmsg")||{}).innerText||"";try{navigator.clipboard.writeText(t).then(()=>toast("Copied. Paste it into LinkedIn."),()=>toast("Select the text to copy it."))}catch(e){toast("Select the text to copy it.")}},
   edit:()=>{UI.edit=true;render()},
   tick:el=>{const d=S.stepsDone||(S.stepsDone={}),k=el.dataset.k;d[k]=!d[k];UI.openArea=k.split(":")[0];save();render()},
   logout:async()=>{if(sb)await sb.auth.signOut();AUTH.user=null;S=fresh();save();go("home")},
