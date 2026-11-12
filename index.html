@@ -578,7 +578,12 @@ html,body{background:#F4F3F1;color:#151515}
 .ph-rows .vd{font-style:normal;font-size:10px;padding:3px 7px;flex:none}
 .ph-cta{margin-top:12px;text-align:center;background:#151515;color:#fff;border-radius:999px;padding:10px;font-size:12px;font-weight:500}
 
-.truth{padding-top:4vh}
+.truth{padding-top:6vh;justify-content:flex-start}
+.truth .gap-top{margin:10px auto 44px}
+.truth .gap{margin-bottom:40px}
+.stage1{display:inline-block;padding:8px 18px;border-radius:999px;background:#F2D7A8;color:#151515;font-size:15px;font-weight:500;margin-bottom:56px}
+.truth-go{margin-top:auto}
+.truth-foot{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:18px;color:var(--faint)}
 .bk{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-top:6px}
 @media (max-width:520px){.bk{grid-template-columns:1fr}}
 .bk-t{display:flex;flex-direction:column;gap:8px;padding:18px;border-radius:24px;background:rgba(255,255,255,.75);border:1px solid var(--edge);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--ink);transition:transform .25s var(--ease),box-shadow .3s}
@@ -1341,11 +1346,11 @@ function vLoading(k){const st=UI.loadSteps||[],p=S.profile||{},T=st.length*950+7
 function archR0(){const a=S.answers.arch;if(!a)return null;const R=readiness(a);R.weak=DIMS.slice().sort((x,y)=>R.dims[x.k]-R.dims[y.k])[0];return R}
 function vResArch(){const R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,self=a.c_self!=null?+a.c_self:null,G=self!=null?gapLine(self,R.score):null;
   return shell(`<main class="screen center anim-in truth">
-    <p class="kick">The truth</p>
     ${self!=null?`<h1 class="gap-top">${esc(G.t).replace("… ","…<br>")}</h1>
       <div class="gap"><div><span>You think</span><b>${self}<small>%</small></b></div><div class="gap-mid">→</div><div class="real"><span>Reality</span><b>${R.score}<small>%</small></b></div></div>`:`${ring(R.score,"hirable")}`}
-    <p class="sub" style="text-align:center;margin:0 auto 34px;max-width:30ch">Stage ${R.stage} of 5: <b style="color:var(--ink);font-weight:500">${STAGE[R.stage].n}</b>. ${esc(STAGE[R.stage].line)}</p>
-    <div class="stack"><a class="btn" href="#breakdown">See my breakdown →</a>${AUTH.user?"":`<a class="txt" href="#join">Save my results</a>`}<button class="txt" data-act="begin" data-k="arch">Retake</button></div>
+    <span class="stage1">${STAGE[R.stage].n}</span>
+    <div class="stack truth-go"><a class="btn" href="#breakdown">See my breakdown →</a></div>
+    <div class="truth-foot">${AUTH.user?"":`<a class="txt" href="#join">Save my results</a><span>·</span>`}<button class="txt" data-act="begin" data-k="arch">Retake</button></div>
   </main>`,{tabs:"me"})}
 function vBreak(){const R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,p=S.profile||{};
   return shell(`<main class="screen anim-in">
