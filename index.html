@@ -432,6 +432,12 @@ body:has(.qz-body) .top{padding-top:calc(20px + env(safe-area-inset-top))!import
 .field-c .chips .chip{font-size:13.5px}
 .pickbtn{padding:12px 16px;font-size:14.5px;margin-top:4px}
 .msgcard{padding:18px;margin-top:12px}.msgcard p#chatmsg{margin:0 0 14px;font-size:15.5px;line-height:1.55}
+.fdrop{position:relative;display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:20px;border:1px dashed rgba(255,255,255,.25);background:var(--glass);cursor:pointer;transition:border-color .3s,background .3s}
+.fdrop:hover{border-color:rgba(255,255,255,.5);background:var(--glass2)}
+.fdrop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.fdrop>i{font-style:normal;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--glass2);flex:none;font-size:17px}
+.fdrop.done{border-style:solid;border-color:rgba(127,224,174,.4)}.fdrop.done>i{background:rgba(120,230,170,.18);color:#9BF0C2}
+.fdrop span{display:flex;flex-direction:column;gap:2px;min-width:0}.fdrop b{font-weight:500;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fdrop em{font-style:normal;font-size:14px;color:var(--mute)}
 </style>
 </head>
 <body>
@@ -597,6 +603,7 @@ function readiness(a){const P={dir:[],fit:[],exp:[],net:[],str:[]},add=(k,v)=>{i
   if(a.c_hard!=null)add("dir",String(a.c_hard).trim().split(/\s+/).length>=4?2:0);
   if(a.c_mode==="type"&&a.c_cos3!=null)add("dir",Math.min(3,cosCount(a.c_cos3)));add("str",m({li:2,alumni:3,board:2,idk:0},a.c_cofind));
   if(a.c_mode==="spec"){add("dir",m({yes:3,rough:1.5,no:0},a.c_team));add("str",a.c_whyco!=null?whyScore(a.c_whyco):null);add("str",m({yes:3,skim:1,no:0},a.c_news));add("net",m({talked:3,find:1.5,no:0},a.c_insider));add("str",m({yes:3,rough:1.5,no:0},a.c_dl))}
+  {const cv=analyzeCover(S.profile,a);if(cv)add("str",cv.score/100*3);else if(a.c_covfile==="none")add("str",1)}
   {const ok=timingOk(a);add("str",ok==null?(a.c_open==="idk"?0:null):ok?3:1)}add("dir",m({guess:0,lean:1,pretty:2,locked:3},a.c_sure));add("dir",m({none:1,any:0,few:2,one:3},a.c_targets));
   add("dir",a.c_tuesday!=null?dayScore(a.c_tuesday):null);add("dir",m({guess:0,media:.5,read:1.5,talked:3,done:3},a.c_src));
   if(a.c_best!=null)add("fit",a.c_best==="none"?0:2);if(a.c_bestwhy)add("fit",a.c_bestwhy.length?3:0);
@@ -771,6 +778,9 @@ const QUIZ={
       {id:"c_line",kind:"text",when:a=>a.c_mode==="type",l:"What kind of role? One line, and why.",ph:"e.g. Brand marketing at a beauty company, because I love figuring out why people buy things"},
       {id:"c_sure",kind:"one",when:a=>a.c_mode==="type",l:"How sure are you?",opts:o(["guess","Just a guess"],["lean","Leaning"],["pretty","Pretty sure"],["locked","Locked in"])},
       {id:"c_targets",kind:"one",when:a=>a.c_mode==="type",l:"How many kinds of roles are you applying to?",opts:o(["none","Haven’t started"],["any","Anything open"],["few","3 to 5"],["one","1 or 2"])}]},
+    {id:"q_docs",sec:"Your resume",kind:"combo",q:a=>a.c_mode==="spec"?`Your application for ${coName(a)}.`:"Your resume.",sub:a=>a.c_mode==="spec"?"Upload what you’d actually send. We’ll check it against this job.":"We’ll use it so you answer fewer questions. It stays on your device.",parts:[
+      {id:"c_resfile",kind:"file",doc:"resume",l:a=>a.c_mode==="spec"?`The resume you’d send to ${coName(a)}`:"Your resume",none:"I don’t have one yet"},
+      {id:"c_covfile",kind:"file",doc:"cover",when:a=>a.c_mode==="spec",l:a=>`Your cover letter for ${coName(a)}`,none:"No cover letter for this one"}]},
     {id:"q_real",sec:"What you want",kind:"combo",q:a=>`How well do you know ${targetDir(a)?targetDir(a).t.toLowerCase():"this job"}?`,parts:[
       {id:"c_tuesday",kind:"text",l:"Describe a normal Tuesday in that job. One line.",ph:"e.g. Morning standup, pull campaign numbers, brief the designer, pitch ideas to my manager"},
       {id:"c_src",kind:"one",l:"Where does that picture come from?",opts:o(["guess","Honestly a guess"],["media","TV or social media"],["read","I’ve read about it"],["talked","Someone who does it told me"],["done","I’ve done some of it"])},
@@ -865,12 +875,12 @@ function qVisible(k,a){return QUIZ[k].qs.filter(q=>!q.when||q.when(a))}
 function partsOf(q,a){return (q.parts||[]).filter(x=>!x.when||x.when(a))}
 function shownParts(q,a){const ps=partsOf(q,a),out=[];for(const x of ps){out.push(x);if(!x.optional&&!hasAns(x,a[x.id]))break}return out}
 function comboOk(q,a){return partsOf(q,a).every(x=>x.optional||hasAns(x,a[x.id]))}
-function hasAns(q,v){if(q.kind==="slider")return v!=null;if(q.kind==="pairs")return v&&q.pairs.every(p=>v[p[0]]);if(q.kind==="rate")return v&&q.tasks.every(t=>v[t]);if(Array.isArray(v))return v.length>0;return v!=null&&String(v).trim()!==""}
+function hasAns(q,v){if(q.kind==="file")return v==="none"||v==="ok"||(v==null&&!!(q.doc==="cover"?null:(S.profile||{}).resume));if(q.kind==="slider")return v!=null;if(q.kind==="pairs")return v&&q.pairs.every(p=>v[p[0]]);if(q.kind==="rate")return v&&q.tasks.every(t=>v[t]);if(Array.isArray(v))return v.length>0;return v!=null&&String(v).trim()!==""}
 function qNext(k){const d=S.draft[k],qs=QUIZ[k].qs;d.stack.push(d.i);let n=d.i+1;while(n<qs.length&&qs[n].when&&!qs[n].when(d.a))n++;const cs=qs[d.i].sec,ns=n<qs.length?qs[n].sec:null,left=new Set(qs.slice(n).filter(x=>!x.when||x.when(d.a)).map(x=>x.sec).filter(x=>DIMS.some(dd=>dd.n===x))).size;const qr=qs[d.i].react?qs[d.i].react(d.a):null,ms=cs&&ns&&cs!==ns&&DIMS.some(dd=>dd.n===cs)?`${cs} done. ${left?left+" to go.":"Last one."}`:null;d.react=qr&&ms?qr+" "+ms:(qr||ms);d.i=n;save();
   if(n>=qs.length)finishQuiz(k);else render();window.scrollTo(0,0)}
 function qBack(k){const d=S.draft[k];if(!d.stack.length){go(S.profile?"me":"home");return}d.i=d.stack.pop();d.react=null;save();render();window.scrollTo(0,0)}
 function finishQuiz(k){const a=S.draft[k].a;S.answers[k]=a;
-  if(k==="arch"){const R=readiness(a);S.results.arch={score:R.score,stage:R.stage,dims:R.dims,at:new Date().toISOString().slice(0,10)};S.stepsDone={}}
+  if(k==="arch"){const p=S.profile||(S.profile={});if(a.c_resfile==="none"){p.noResume=true}if(a.c_covfile==="none"){delete p.cover;delete p.coverText}if(p.name)p.first=p.name.split(" ")[0];p.done=true;const R=readiness(a);S.results.arch={score:R.score,stage:R.stage,dims:R.dims,at:new Date().toISOString().slice(0,10)};S.stepsDone={}}
   else{const m=careerResult(flatPairs(a));S.results.career={top:m.map(x=>({id:x.d.id,pct:x.pct,loves:x.loves,likes:x.likes,rb:x.rb})),at:new Date().toISOString().slice(0,10)}}
   S.draft[k]={i:0,a:{},stack:[]};save();UI.loading=k;render();setTimeout(()=>{UI.loading=null;go("r-"+k)},1700)}
 
@@ -908,6 +918,7 @@ function whyLow(k,a,p){const out=[],an=analyzeResume(p||{}),d=targetDir(a);
   if(k==="exp"){if(!p||!p.resumeStats)out.push("No resume yet.");(an?an.bad:[]).slice(0,2).forEach(b=>out.push(b.t+"."));if(d&&p&&p.resumeText&&!DIR_KW[d.id].test(p.resumeText))out.push(`Your resume doesn’t mention ${d.t.toLowerCase()} once.`);if(a.c_exp==="none")out.push("Nothing related to your target on paper yet.")}
   if(k==="net"){if(a.c_mode==="spec"&&a.c_insider==="no")out.push(`You don’t know anyone at ${coName(a)}.`);if(a.c_people==="0")out.push("You’ve talked to zero people in your field.");if(a.c_chat==="never")out.push("You’ve never had a coffee chat.");if(a.c_ref==="none")out.push("Nobody would refer you yet.")}
   if(k==="str"){if(timingOk(a)===false&&d)out.push(`${d.t} applications usually open ${postTime(d.id).replace(/^Posts early: usually |^Usually posts /,"")}. You guessed wrong.`);else if(a.c_open==="idk")out.push("You don’t know when applications open.");
+    {const cv=analyzeCover(p,a);if(cv&&cv.bad[0])out.push("Cover letter: "+cv.bad[0].t.charAt(0).toLowerCase()+cv.bad[0].t.slice(1)+".")}
     if(a.c_mode==="spec"){if(a.c_whyco!=null&&whyScore(a.c_whyco)<1.5)out.push(`Your “why ${coName(a)}?” answer is too generic.`);if(a.c_news==="no")out.push(`You haven’t read anything ${coName(a)} put out lately.`);if(a.c_dl==="no")out.push("You don’t know the deadline.")}if(a.c_month==="all"||a.c_month==="tweak")out.push("Your plan is to keep mass-applying.");if((a.c_apps==="11"||a.c_apps==="50")&&a.c_reply==="0")out.push(`${APPS_L[a.c_apps]} applications, zero interviews.`);if(a.c_how==="cold")out.push("Most of your applications went in cold.");if(whyScore(a.c_why)<1.5)out.push("Your “why this role?” answer is too generic.");if(a.c_prac==="never"||a.c_prac==="head")out.push("You’ve never said it out loud.")}
   return out.slice(0,3)}
 const GOOD_L={dir:"You know what you’re going for. Most students don’t.",fit:"You know where you work best, where and for what pay.",exp:"You’ve got real proof on paper.",net:"You already know people in your field.",str:"You’re going after it the smart way."};
@@ -959,6 +970,16 @@ function careerReport(a){const w=flatPairs(a),M=careerResult(w).map(x=>({...x,ti
   return{M,qual,env,love:love.slice(0,4),drain:drain.slice(0,3),self,improve:improve.slice(0,3),untested,people:a.q_people}}
 function chatMsg(field){const p=S.profile||{},yr=p.grad?(+p.grad-YEAR<=0?"recent grad":["senior","junior","sophomore","freshman"][Math.min(3,Math.max(0,+p.grad-YEAR-1))]):"student";
   return `Hi [Name], I’m a ${yr}${p.school?" at "+p.school.split(",")[0]:""} exploring ${field.toLowerCase()}. I saw you work at [Company] and would love to hear what your week actually looks like. Would you have 15 minutes for a quick call in the next couple of weeks? Totally flexible. Thank you!`}
+/* cover letter check */
+function analyzeCover(p,a){if(!p||!p.coverText)return null;const t=p.coverText,w=t.split(/\s+/).filter(Boolean).length,good=[],bad=[],co=(a&&a.c_co)||"",role=String((a&&a.c_role)||"").replace(/\bintern(ship)?\b/ig,"").trim();
+  if(/to whom it may concern|dear (sir|madam)|i am writing to (apply|express)/i.test(t))bad.push({t:"Generic opening",d:"“To whom it may concern” and “I am writing to apply” get skimmed. Open with why this company."});
+  if(co&&new RegExp(co.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"i").test(t))good.push({t:`Mentions ${co}`,d:"It’s clearly written for this company."});else if(co)bad.push({t:`Doesn’t mention ${co}`,d:"Reads like it could go to any company."});
+  if(role&&role.split(/\s+/).some(x=>x.length>3&&new RegExp(x,"i").test(t)))good.push({t:"Names the role",d:"They know what you’re applying for."});else if(role)bad.push({t:"Doesn’t name the role",d:"Say exactly which role you want."});
+  if(/\d/.test(t.replace(/20\d\d/g,"")))good.push({t:"Shows a result",d:"A number makes it believable."});else bad.push({t:"No results or numbers",d:"Add one thing you did and what happened."});
+  if(/passion|passionate|dream company|always wanted/i.test(t))bad.push({t:"Leans on “passion”",d:"Everyone says it. Show it with something you did."});
+  if(w>420)bad.push({t:`${w} words`,d:"Too long. Aim for under 300."});else if(w<120)bad.push({t:`Only ${w} words`,d:"Too short to make a case."});else good.push({t:`${w} words`,d:"Good length."});
+  return{score:clamp(50+good.length*12-bad.length*12,8,95),good,bad}}
+function coverBlock(p,a){const c=analyzeCover(p,a);if(!c)return"";return `<div class="sw"><div class="sw-col"><h3>Strengths</h3>${c.good.map(x=>`<div class="swi">${ICON_OK}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join("")||`<p class="tiny">Nothing stood out yet.</p>`}</div><div class="sw-col"><h3>Weaknesses</h3>${c.bad.map(x=>`<div class="swi">${ICON_NO}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join("")||`<p class="tiny">Nothing obvious. Nice.</p>`}</div></div>`}
 /* ---------- views ---------- */
 const MARK=`<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,WORD=`<a class="word" href="#home">${MARK}clocked</a>`;
 const amb=`<div class="amb" aria-hidden="true"><i></i><i></i><i></i></div>`;
@@ -1030,6 +1051,9 @@ function ctl(q,v,a,pid){const opts=typeof q.opts==="function"?q.opts(a):q.opts,P
     return `<div class="tiles${one?" one-col":""}${mini?" mini":""}">${opts.map((x,i)=>`<button class="tile" data-act="${q.kind}" data-v="${esc(x.v)}"${P} aria-pressed="${sel(x.v)}">${mini?"":`<span class="k">${String(i+1).padStart(2,"0")}</span>`}<span>${esc(x.l)}</span></button>`).join("")}</div>`}
   if(q.kind==="slider"){const val=v==null?50:+v;return `<div class="slide"><div class="slide-n"><b id="sl-n">${v==null?"?":val}</b><small>%</small></div><p class="slide-l" id="sl-l">${esc(v==null?"Drag to answer":selfLabel(val))}</p><input type="range" min="0" max="100" step="1" value="${val}" data-slider${P} aria-label="How ready you think you are"><div class="slide-ends"><span>Not at all</span><span>Fully ready</span></div></div>`}
   if(q.kind==="url"){const co=postingCompany(v);return `<input class="in qlink" type="url" inputmode="url" autocomplete="off" id="qz-text${pid?"-"+pid:""}" data-qtext${P} value="${esc(v||"")}" placeholder="${esc(q.ph||"Paste a link")}">${co?`<p class="tiny" style="margin:8px 2px 0">Got it: <b style="color:var(--ink);font-weight:500">${esc(co)}</b></p>`:""}`}
+  if(q.kind==="file"){const pr=S.profile||{},has=q.doc==="cover"?pr.cover:pr.resume,st=(UI.fileSt||{})[pid]||{},xp=(pr.experience||[]).length;
+    return `<label class="fdrop${has&&v!=="none"?" done":""}"><input type="file" accept="application/pdf,.pdf" data-qfile="${q.doc}"${P} aria-label="Upload ${q.doc==="cover"?"cover letter":"resume"} as a PDF"><i>${has&&v!=="none"?"✓":"↑"}</i><span><b>${st.busy?"Reading…":has&&v!=="none"?esc(has.name):"Upload PDF"}</b><em>${st.err?esc(st.err):has&&v!=="none"?(q.doc==="cover"?"Got it · tap to replace":`${xp} role${xp===1?"":"s"}${pr.school?" · "+esc(pr.school.split(",")[0]):""} · tap to replace`):"Tap to choose a file"}</em></span></label>
+    <div class="tiles mini" style="margin-top:10px"><button class="tile" data-act="one" data-pid="${pid}" data-v="none" aria-pressed="${v==="none"}"><span>${esc(q.none)}</span></button></div>`}
   if(q.kind==="text"&&q.short)return `<input class="in" id="qz-text${pid?"-"+pid:""}" data-qtext${P} value="${esc(v||"")}" placeholder="${esc(q.ph||"")}" autocomplete="off">`;
   if(q.kind==="text")return `<textarea class="qtext${mini?" sm":""}" id="qz-text${pid?"-"+pid:""}" data-qtext${P} placeholder="${esc(q.ph||"What do you think?")}">${esc(v||"")}</textarea>`;
   if(q.kind==="pairs"){const cur=v||{};return `<div class="pairs">${q.pairs.map(([pk,a1,l1,b1,l2])=>`<div class="pair"><button class="tile" data-act="pair" data-p="${pk}" data-v="${a1}"${P} aria-pressed="${cur[pk]===a1}"><span>${esc(l1)}</span></button><span>or</span><button class="tile" data-act="pair" data-p="${pk}" data-v="${b1}"${P} aria-pressed="${cur[pk]===b1}"><span>${esc(l2)}</span></button></div>`).join("")}</div>`}
@@ -1062,6 +1086,7 @@ function vResArch(){const R=archR0();if(!R)return go("home"),"";const a=S.answer
     <h2 class="sech">Your 5 checks.</h2>
     ${areaRows(R,a)}
     ${S.profile&&S.profile.resumeStats?`<h2 class="sech">Your resume, rated.</h2>${resumeBlock(S.profile)}`:""}
+    ${S.profile&&S.profile.coverText?`<h2 class="sech">Your cover letter, rated.</h2>${coverBlock(S.profile,a)}`:""}
     ${learnBlock(a)}
     <h2 class="sech">Fix this first.</h2>
     <a class="tl wide y first" href="#steps"><div class="h">${esc(W.q)}<em>Biggest block</em></div><div class="v s">${esc(W.why[0]||"This is holding you back the most.")}</div><div class="d" style="color:var(--ink)">First move: ${esc(W.acts[0].t)} →</div></a>
@@ -1174,7 +1199,7 @@ function fitHook(){const h=document.querySelector(".home .hook .fit");if(!h)retu
 addEventListener("resize",()=>fitHook());
 /* ---------- events ---------- */
 const ACT={
-  begin:el=>{const k=el.dataset.k;if(k==="arch"&&!(S.profile&&S.profile.done)){S.pending="q-arch";save();go("setup");return}startQuiz(k)},
+  begin:el=>{const k=el.dataset.k;startQuiz(k)},
   toquizzes:(el,e)=>{if(route()==="home"){e.preventDefault();const q=$("#quizzes");if(q)q.scrollIntoView({behavior:"smooth"})}else{e.preventDefault();go("home");setTimeout(()=>{const q=$("#quizzes");if(q)q.scrollIntoView()},50)}},
   authmode:()=>{UI.mode=UI.mode==="signup"?"login":"signup";UI.msg="";render()},
   guest:()=>{S.guest=true;const n=S.pending||"q-arch";S.pending=null;save();startQuiz(n.slice(2))},
@@ -1208,7 +1233,13 @@ document.addEventListener("input",e=>{const t=e.target;
   else if(t.matches("[data-qtext]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i];d.a[t.dataset.pid||q.id]=t.value;save();footSync(k);if(q.kind==="combo"){clearTimeout(UI.revT);UI.revT=setTimeout(()=>{if(route()==="q-"+k&&(t.type==="url"||shownParts(q,d.a).length!==(UI.partsShown||{})[q.id]))render()},700)}}});
 document.addEventListener("input",e=>{if(e.target.matches("[data-slider]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i],v=+e.target.value;d.a[e.target.dataset.pid||q.id]=v;save();$("#sl-n").textContent=v;$("#sl-l").textContent=selfLabel(v);footSync(k)}});
 function footSync(k){const d=S.draft[k],q=QUIZ[k].qs[d.i],ok=qOk(q,d.a),b=$(".qz-foot .go");if(!b)return;const last=qVisible(k,d.a).indexOf(q)===qVisible(k,d.a).length-1;b.disabled=!ok&&!q.optional;b.innerHTML=(!ok&&q.optional?"Skip":last?"Show me the truth":"Next")+"<i>→</i>"}
-document.addEventListener("change",e=>{if(e.target.matches("[data-resume]"))handleResume(e.target.files[0])});
+document.addEventListener("change",e=>{if(e.target.matches("[data-resume]"))handleResume(e.target.files[0]);if(e.target.matches("[data-qfile]"))handleQFile(e.target.files[0],e.target.dataset.qfile,e.target.dataset.pid)});
+async function handleQFile(file,doc,pid){if(!file)return;const k=route().slice(2),d=S.draft[k];UI.fileSt=UI.fileSt||{};
+  if(!/pdf$/i.test(file.type)&&!/\.pdf$/i.test(file.name)){UI.fileSt[pid]={err:"That’s not a PDF. Export it as a PDF and try again."};render();return}
+  UI.fileSt[pid]={busy:true};render();
+  try{const lines=await pdfLines(file);if(lines.length<3)throw new Error("We couldn’t read any text in that file.");
+    if(doc==="cover"){const p=S.profile||(S.profile={});p.cover={name:file.name};p.coverText=lines.join("\n").slice(0,8000)}else{applyResume(parseResume(lines),file.name);S.profile.noResume=false}
+    d.a[pid]="ok";UI.fileSt[pid]={};save()}catch(er){UI.fileSt[pid]={err:er.message||"Couldn’t read that file."}}render()}
 document.addEventListener("dragover",e=>{const d=e.target.closest&&e.target.closest(".drop");if(d){e.preventDefault();d.classList.add("over")}});
 document.addEventListener("dragleave",e=>{const d=e.target.closest&&e.target.closest(".drop");if(d)d.classList.remove("over")});
 document.addEventListener("drop",e=>{const d=e.target.closest&&e.target.closest(".drop");if(d){e.preventDefault();d.classList.remove("over");handleResume(e.dataTransfer.files[0])}});
