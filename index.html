@@ -545,6 +545,37 @@ const STAGE=[null,
   {n:"Focusing",line:"You know the field. Pick one role and everything gets easier."},
   {n:"Building",line:"You know the role. Now build the proof and the people."},
   {n:"Ready",line:"Clear target, real connections. Go apply."}];
+/* helpers */
+/* ---------- readiness: two kinds of student + knowledge checks ---------- */
+const FIELD_SKILLS={brand:["Market research","Campaign planning","Copywriting","Consumer insights"],social:["Content calendars","Short-form video editing","Social analytics","Copywriting"],
+  partner:["Relationship building","Negotiation","CRM tools (like Salesforce)","Pitch decks"],pm:["Writing product specs","User research","Prioritizing features","Working with engineers"],
+  ux:["Figma","User research","Wireframing","Prototyping"],data:["SQL","Excel","Data visualization","Python"],consult:["Excel modeling","Slide decks","Structured problem solving","Client communication"],
+  finance:["Financial modeling","Excel","Valuation","Accounting basics"],swe:["A programming language (like Python or Java)","Git","Data structures","Debugging"],
+  events:["Vendor management","Budgeting","Event logistics","Social promotion"],comms:["Press releases","Media lists","Copywriting","Crisis messaging"],
+  journal:["Interviewing","Fact-checking","AP style","Pitching stories"],people:["Onboarding","HR systems","Employee communications","Confidentiality"],
+  ops:["Process mapping","Excel","Project management","Vendor coordination"],sales:["Cold outreach","CRM tools (like Salesforce)","Objection handling","Prospecting"],
+  program:["Program coordination","Grant writing","Volunteer management","Community outreach"],sustain:["Carbon accounting","ESG reporting","Research","Policy analysis"],
+  research:["Survey design","Data analysis","Report writing","Interviewing"],strategy:["Market sizing","Excel modeling","Slide decks","Competitive analysis"],
+  vc:["Market mapping","Startup due diligence","Financial modeling","Networking"],policy:["Policy memos","Legislative research","Stakeholder outreach","Writing"],
+  visual:["Adobe Creative Suite","Typography","Brand guidelines","Layout"],recruit:["Sourcing candidates","Scheduling interviews","Applicant tracking systems","Outreach"],
+  creator:["Creator outreach","Campaign briefs","Social analytics","Negotiation"],accounting:["Excel","GAAP basics","Reconciliations","Attention to detail"],
+  supply:["Inventory planning","Excel","Vendor management","Forecasting"],health:["Research methods","Data collection","HIPAA basics","Patient communication"],
+  edu:["Lesson planning","Curriculum design","Tutoring","Assessment"],legal:["Legal research","Writing memos","Document review","Attention to detail"],
+  ai:["Python","Machine learning basics","Statistics","Data cleaning"],hardware:["CAD (like SolidWorks)","Prototyping","Testing","Physics"]};
+const SK_FAR={brand:"swe",social:"accounting",partner:"hardware",pm:"legal",ux:"finance",data:"events",consult:"visual",finance:"social",swe:"journal",events:"ai",comms:"supply",journal:"swe",people:"hardware",ops:"creator",sales:"legal",program:"finance",sustain:"social",research:"sales",strategy:"visual",vc:"edu",policy:"swe",visual:"accounting",recruit:"ai",creator:"legal",accounting:"social",supply:"journal",health:"creator",edu:"finance",legal:"social",ai:"events",hardware:"comms"};
+const TITLE_FAR={brand:"accounting",social:"legal",partner:"ai",pm:"health",ux:"supply",data:"edu",consult:"creator",finance:"program",swe:"comms",events:"data",comms:"ai",journal:"accounting",people:"swe",ops:"visual",sales:"research",program:"vc",sustain:"swe",research:"events",strategy:"social",vc:"journal",policy:"creator",visual:"finance",recruit:"hardware",creator:"consult",accounting:"social",supply:"ux",health:"vc",edu:"sales",legal:"brand",ai:"people",hardware:"comms"};
+function goalLine(a){a=a||{};return a.c_mode==="spec"?[a.c_role,a.c_co&&("at "+a.c_co)].filter(Boolean).join(" "):(a["c_line"]||"")}
+function shufStable(arr,seed){return arr.map((x,i)=>({x,k:((i+1)*2654435761+seed)%1000})).sort((p,q)=>p.k-q.k).map(p=>p.x)}
+function skillOpts(a){const d=targetDir(a);if(!d)return[];const real=FIELD_SKILLS[d.id]||[],fake=(FIELD_SKILLS[SK_FAR[d.id]]||[]).filter(x=>!real.includes(x)).slice(0,3);
+  return [...shufStable([...real.map(l=>({v:"r|"+l,l})),...fake.map(l=>({v:"f|"+l,l}))],d.id.length*7),{v:"idk",l:"Not sure"}]}
+function titleOpts(a){const d=targetDir(a);if(!d)return[];const real=(ROLE_TITLES[d.id]||[]).slice(0,2),fake=(ROLE_TITLES[TITLE_FAR[d.id]]||[]).slice(0,2);
+  return [...shufStable([...real.map(l=>({v:"r|"+l,l})),...fake.map(l=>({v:"f|"+l,l}))],d.id.length*3),{v:"idk",l:"Not sure"}]}
+function knowScore(sel){sel=sel||[];if(!sel.length||sel.includes("idk"))return 0;const r=sel.filter(v=>v[0]==="r").length,f=sel.filter(v=>v[0]==="f").length;return clamp(3*(r-1.5*f)/4,0,3)}
+function cosCount(t){return String(t||"").split(/,|\n|;|\band\b/i).map(x=>x.trim()).filter(x=>x.length>1).length}
+const TIMING_V={early:"Posts early: usually Jul–Oct",mid:"Usually posts Aug–Dec",late:"Usually posts Nov–Mar"};
+function timingOk(a){const d=targetDir(a);if(!d||!a.c_open||a.c_open==="idk")return null;return TIMING_V[a.c_open]===postTime(d.id)}
+const shaky=a=>dayScore(a.c_tuesday)<1.5||a.c_src==="guess"||a.c_src==="media";
+const coName=a=>a.c_co||postingCompany(a.c_link)||"that company";
 /* rough hourly intern pay by direction (US, varies a lot by city and company) */
 const PAY_BAND={swe:3,finance:3,consult:3,pm:2,data:2,strategy:2,ux:2,vc:1,sales:1,partner:1,brand:1,social:1,events:1,comms:1,ops:1,people:1,research:1,recruit:1,creator:1,visual:1,journal:0,program:0,policy:0,sustain:1};
 const PAY_L=["under $20/hr","$20–30/hr","$30–45/hr","$45+/hr"];
@@ -553,7 +584,7 @@ function postingCompany(u){u=String(u||"").trim();if(!u)return"";try{const x=new
   else if(/myworkdayjobs\.com$/.test(h))n=h.split(".")[0];else if(/linkedin\.com$|indeed\.com$|handshake|joinhandshake\.com$|glassdoor/.test(h))return"";
   else{const parts=h.split(".");n=parts.length>2&&/^(careers|jobs|apply|boards|job-boards)$/.test(parts[0])?parts[1]:parts[parts.length-2]}
   return n?n.replace(/[-_]+/g," ").replace(/\b\w/g,c=>c.toUpperCase()):""}catch(e){return""}}
-function targetDir(a){const p=S.profile||{},t=String((a&&a.c_line)||"");if(p.target){const d=DIRS.find(x=>x.id===p.target);if(d)return d}
+function targetDir(a){const p=S.profile||{},t=goalLine(a);if(p.target){const d=DIRS.find(x=>x.id===p.target);if(d)return d}
   return DIRS.find(d=>DIR_KW[d.id]&&DIR_KW[d.id].test(t))||null}
 const VERBS=/\b(meet|meeting|write|writ|analy|build|call|plan|review|present|email|design|research|pitch|code|edit|coordinat|manag|report|test|interview|sketch|brainstorm|negotiat|spreadsheet|deck|campaign|launch|track|model)\w*/gi;
 function dayScore(t){t=String(t||"").trim();if(!t||/^(idk|i don.?t know|no idea|not sure)/i.test(t)||t.split(/\s+/).length<4)return 0;const v=new Set((t.match(VERBS)||[]).map(x=>x.toLowerCase().slice(0,5))).size;return v>=3?3:v===2?2.5:v===1?1.5:1}
@@ -561,7 +592,12 @@ function whyScore(t){t=String(t||"").trim().toLowerCase();if(!t||/^(idk|i don.?t
   if(/because|since|so that|that’s why|which is why/.test(t))n+=.75;if(/\b(i (led|built|ran|grew|started|worked|interned|organized|planned|created)|at (my|the) (internship|job|club))/.test(t))n+=.75;if(ROLE_WORDS.test(t))n+=.5;if(/\b(passion|passionate|dream|always wanted|love people|good with people)\b/.test(t))n-=.5;return clamp(Math.round(n*2)/2,0,3)}
 function resumeExp(){const st=(S.profile||{}).resumeStats;if(!st)return null;return st.intern?3:st.roles>=2?2:st.roles===1?1.2:0}
 function readiness(a){const P={dir:[],fit:[],exp:[],net:[],str:[]},add=(k,v)=>{if(v!=null&&!isNaN(v))P[k].push(v)},m=(map,v)=>v==null||Array.isArray(v)?null:map[v];
-  add("dir",a.c_line!=null?lineScore(a.c_line):null);add("dir",m({guess:0,lean:1,pretty:2,locked:3},a.c_sure));add("dir",m({none:1,any:0,few:2,one:3},a.c_targets));
+  add("dir",a.c_mode==="spec"?(a.c_co&&a.c_role?3:1):(a["c_line"]!=null?lineScore(a["c_line"]):null));
+  if(a.c_skills)add("dir",knowScore(a.c_skills));if(a.c_title){const t=a.c_title;add("dir",t.includes("idk")?0:clamp(1.5*t.filter(v=>v[0]==="r").length-1.5*t.filter(v=>v[0]==="f").length,0,3))}
+  if(a.c_hard!=null)add("dir",String(a.c_hard).trim().split(/\s+/).length>=4?2:0);
+  if(a.c_mode==="type"&&a.c_cos3!=null)add("dir",Math.min(3,cosCount(a.c_cos3)));add("str",m({li:2,alumni:3,board:2,idk:0},a.c_cofind));
+  if(a.c_mode==="spec"){add("dir",m({yes:3,rough:1.5,no:0},a.c_team));add("str",a.c_whyco!=null?whyScore(a.c_whyco):null);add("str",m({yes:3,skim:1,no:0},a.c_news));add("net",m({talked:3,find:1.5,no:0},a.c_insider));add("str",m({yes:3,rough:1.5,no:0},a.c_dl))}
+  {const ok=timingOk(a);add("str",ok==null?(a.c_open==="idk"?0:null):ok?3:1)}add("dir",m({guess:0,lean:1,pretty:2,locked:3},a.c_sure));add("dir",m({none:1,any:0,few:2,one:3},a.c_targets));
   add("dir",a.c_tuesday!=null?dayScore(a.c_tuesday):null);add("dir",m({guess:0,media:.5,read:1.5,talked:3,done:3},a.c_src));
   if(a.c_best!=null)add("fit",a.c_best==="none"?0:2);if(a.c_bestwhy)add("fit",a.c_bestwhy.length?3:0);
   if(a.c_city)add("fit",a.c_city.includes("any")&&a.c_city.length===1?1:3);add("fit",m({any:3,some:2.5,no:2},a.c_move));if(a.c_when)add("fit",a.c_when==="unsure"?1:3);
@@ -575,17 +611,17 @@ function readiness(a){const P={dir:[],fit:[],exp:[],net:[],str:[]},add=(k,v)=>{i
   const dims={};DIMS.forEach(({k})=>dims[k]=P[k].length?Math.round(100*P[k].reduce((s,x)=>s+x,0)/(3*P[k].length)):0);
   const score=clamp(Math.round(DIMS.reduce((s,{k})=>s+dims[k]*DIM_W[k],0)),3,99);
   const mass=a.c_month==="all"||a.c_targets==="any"||(a.c_month==="tweak"&&(a.c_apps==="50"||a.c_apps==="11"));
-  let stage=score<25?1:score<45?2:score<65?3:score<82?4:5;if(mass&&stage>2)stage--;if(lineScore(a.c_line)<2&&stage>3)stage=3;if(dims.dir<35&&stage>2)stage=2;
+  let stage=score<25?1:score<45?2:score<65?3:score<82?4:5;if(mass&&stage>2)stage--;if(lineScore(goalLine(a))<2&&stage>3)stage=3;if(dims.dir<35&&stage>2)stage=2;
   return{score,stage,dims,mass}}
 function roleText(){const p=S.profile||{},t=p.target&&DIRS.find(d=>d.id===p.target),a=S.answers.arch||{};
-  if(t)return t.t.toLowerCase();const l=String(a.c_line||"").trim();if(lineScore(l)>=2){const m=l.split(/,|\bbecause\b|\bsince\b|\bat\b/i)[0].trim();if(m.length<46)return m.charAt(0).toLowerCase()+m.slice(1)}return null}
+  if(t)return t.t.toLowerCase();const l=String(goalLine(a)||"").trim();if(lineScore(l)>=2){const m=l.split(/,|\bbecause\b|\bsince\b|\bat\b/i)[0].trim();if(m.length<46)return m.charAt(0).toLowerCase()+m.slice(1)}return null}
 /* what we learned: a plain read-out of their answers */
 const ENV_PAIRS=[["e1","big","Big company","small","Small team"],["e2","clear","Clear structure","chaos","Figure it out"],["e3","team","Around people","solo","Heads-down solo"],["e4","office","In person","remote","Remote"]];
 const BEST_WHY=[["people","The people"],["goals","Clear goals"],["own","Real ownership"],["pace","Fast pace"],["mission","A mission I cared about"],["learn","Learning a ton"]];
 const CITIES=[["nyc","New York"],["sf","SF Bay Area"],["la","Los Angeles"],["chi","Chicago"],["bos","Boston"],["dc","DC"],["remote","Remote"],["any","Anywhere"]];
 const lab=(arr,v)=>(arr.find(x=>x[0]===v)||[])[1]||"";
 function learned(a){if(!a)return[];const out=[],d=targetDir(a);
-  if(a.c_line)out.push(["Going for",a.c_line]);
+  if(goalLine(a))out.push([a.c_mode==="spec"?"Applying to":"Going for",goalLine(a)]);
   if(a.c_link&&String(a.c_link).trim())out.push(["Posting",postingCompany(a.c_link)||"Link added"]);
   const env=a.c_env||{},ev=ENV_PAIRS.map(([k,x,xl,y,yl])=>env[k]===x?xl:env[k]===y?yl:null).filter(Boolean);if(ev.length)out.push(["Works best",ev.join(" · ")]);
   if(a.c_best&&a.c_best!=="none"){const w=(a.c_bestwhy||[]).map(v=>lab(BEST_WHY,v).toLowerCase());out.push(["Best work so far",bestLabel(a.c_best)+(w.length?" because of "+listJoin(w):"")])}
@@ -726,15 +762,29 @@ const QUIZ={
   arch:{n:"01",title:"Where do you actually stand?",short:"Readiness",qs:[
     {id:"q_self",sec:"Gut check",kind:"combo",q:"How ready are you to land an internship right now?",parts:[{id:"c_self",kind:"slider"}],
       react:a=>+a.c_self>=60?"Noted. Let’s see if the answers agree.":"Noted. Let’s see where you really are."},
-    {id:"q_target",sec:"What you want",kind:"combo",q:"What are you going for?",sub:a=>{const x=((S.profile||{}).experience||[])[0];return x&&x.title?`Your resume says ${x.title}${x.company?" at "+x.company:""}. Same direction, or something new?`:"Name the role and the kind of company."},parts:[
-      {id:"c_line",kind:"text",ph:"e.g. Brand marketing at a beauty company, because I love figuring out why people buy things"},
-      {id:"c_sure",kind:"one",l:"How sure are you?",opts:o(["guess","Just a guess"],["lean","Leaning"],["pretty","Pretty sure"],["locked","Locked in"])},
-      {id:"c_targets",kind:"one",l:"How many kinds of roles are you applying to?",opts:o(["none","Haven’t started"],["any","Anything open"],["few","3 to 5"],["one","1 or 2"])},
-      {id:"c_link",kind:"url",optional:true,l:"Looking at a specific posting? Paste the link (optional)",ph:"e.g. jobs.lever.co/spotify/…"}],
-      react:a=>{const n=lineScore(a.c_line);return n>=3?"Clear target. That’s rare.":n===2?"Pretty clear. A reason makes it stronger.":"Fuzzy target. That’s the #1 thing we’ll fix."}},
-    {id:"q_real",sec:"What you want",kind:"combo",q:"Do you know what that job is really like?",parts:[
+    {id:"q_target",sec:"What you want",kind:"combo",q:"What are you going for?",sub:a=>{const x=((S.profile||{}).experience||[])[0];return x&&x.title?`Your resume says ${x.title}${x.company?" at "+x.company:""}.`:""},parts:[
+      {id:"c_mode",kind:"one",l:"Pick one",opts:o(["spec","A specific internship"],["type","A type of role"])},
+      {id:"c_co",kind:"text",short:true,when:a=>a.c_mode==="spec",l:"Which company?",ph:"e.g. Spotify"},
+      {id:"c_role",kind:"text",short:true,when:a=>a.c_mode==="spec",l:"What’s the role called?",ph:"e.g. Brand Marketing Intern"},
+      {id:"c_link",kind:"url",optional:true,when:a=>a.c_mode==="spec",l:"Paste the posting link (optional)",ph:"e.g. jobs.lever.co/spotify/…"},
+      {id:"c_dl",kind:"one",when:a=>a.c_mode==="spec",l:"Do you know the application deadline?",opts:o(["yes","Yes, exact date"],["rough","Roughly"],["no","No idea"])},
+      {id:"c_line",kind:"text",when:a=>a.c_mode==="type",l:"What kind of role? One line, and why.",ph:"e.g. Brand marketing at a beauty company, because I love figuring out why people buy things"},
+      {id:"c_sure",kind:"one",when:a=>a.c_mode==="type",l:"How sure are you?",opts:o(["guess","Just a guess"],["lean","Leaning"],["pretty","Pretty sure"],["locked","Locked in"])},
+      {id:"c_targets",kind:"one",when:a=>a.c_mode==="type",l:"How many kinds of roles are you applying to?",opts:o(["none","Haven’t started"],["any","Anything open"],["few","3 to 5"],["one","1 or 2"])}]},
+    {id:"q_real",sec:"What you want",kind:"combo",q:a=>`How well do you know ${targetDir(a)?targetDir(a).t.toLowerCase():"this job"}?`,parts:[
       {id:"c_tuesday",kind:"text",l:"Describe a normal Tuesday in that job. One line.",ph:"e.g. Morning standup, pull campaign numbers, brief the designer, pitch ideas to my manager"},
-      {id:"c_src",kind:"one",l:"Where does that picture come from?",opts:o(["guess","Honestly a guess"],["media","TV or social media"],["read","I’ve read about it"],["talked","Someone who does it told me"],["done","I’ve done some of it"])}]},
+      {id:"c_src",kind:"one",l:"Where does that picture come from?",opts:o(["guess","Honestly a guess"],["media","TV or social media"],["read","I’ve read about it"],["talked","Someone who does it told me"],["done","I’ve done some of it"])},
+      {id:"c_hard",kind:"text",when:shaky,l:"Quick follow-up: what do you think is the hardest part of that job?",ph:"Your best guess"},
+      {id:"c_skills",kind:"many",when:a=>!!targetDir(a),l:a=>`Which skills do ${targetDir(a).t.toLowerCase()} postings usually ask for? Pick all that apply.`,opts:skillOpts},
+      {id:"c_title",kind:"many",when:a=>!!targetDir(a)&&(shaky(a)||knowScore(a.c_skills)<2),l:"Which job titles would you search for? Pick all that apply.",opts:titleOpts}]},
+    {id:"q_co",sec:"What you want",kind:"combo",q:a=>a.c_mode==="spec"?`Why ${coName(a)}?`:"Where would you apply?",parts:[
+      {id:"c_whyco",kind:"text",when:a=>a.c_mode==="spec",l:a=>`Why ${coName(a)} and not a competitor? One or two lines.`,ph:"e.g. Their Wrapped campaign is the reason I got into marketing, and I want to work on data-driven brand stories"},
+      {id:"c_team",kind:"one",when:a=>a.c_mode==="spec",l:"Do you know what the team you’d join actually works on?",opts:o(["yes","Yes"],["rough","Roughly"],["no","No"])},
+      {id:"c_news",kind:"one",when:a=>a.c_mode==="spec",l:a=>`Have you read anything ${coName(a)} put out in the last month?`,opts:o(["yes","Yes, and I have a take"],["skim","I skimmed their site"],["no","No"])},
+      {id:"c_insider",kind:"one",when:a=>a.c_mode==="spec",l:a=>`Do you know anyone at ${coName(a)}?`,opts:o(["talked","Yes, I’ve talked to them"],["find","I could find someone"],["no","No one"])},
+      {id:"c_cos3",kind:"text",when:a=>a.c_mode==="type",l:"Name 3 companies that hire for this role.",ph:"e.g. Glossier, Spotify, Nike"},
+      {id:"c_cofind",kind:"one",when:a=>a.c_mode==="type"&&a.c_cos3!=null&&cosCount(a.c_cos3)<3,l:"Follow-up: how would you find companies that hire for it?",opts:o(["li","Search LinkedIn Jobs"],["alumni","Ask alumni or my career center"],["board","Job boards like Handshake"],["idk","No idea"])},
+      {id:"c_open",kind:"one",l:"When do applications usually open for this?",opts:o(["early","July–October"],["mid","August–December"],["late","November–March"],["idk","No idea"])}]},
     {id:"q_env",sec:"Your fit",kind:"combo",q:"Where do you do your best work?",parts:[
       {id:"c_exp",kind:"one",l:"Have you done anything related to the role you want?",when:()=>!(S.profile&&S.profile.resumeStats),opts:o(["none","Nothing yet"],["class","Class projects"],["club","Club or part-time job"],["real","Internship in it"])},
       {id:"c_env",kind:"pairs",pairs:ENV_PAIRS},
@@ -850,17 +900,21 @@ function analyzeResume(p){const st=p&&p.resumeStats;if(!st)return null;const goo
 /* ---------- the plan: what to strengthen, weakest first ---------- */
 const APPS_L={"1":"Up to 10","11":"11 to 50","50":"50+"};
 function whyLow(k,a,p){const out=[],an=analyzeResume(p||{}),d=targetDir(a);
-  if(k==="dir"){if(lineScore(a.c_line)<2)out.push("You couldn’t name the job you want in one clear line.");if(a.c_sure==="guess"||a.c_sure==="lean")out.push("You’re not sure about your own target.");if(dayScore(a.c_tuesday)<1.5)out.push("You can’t really describe a normal day in that job.");if(a.c_src==="guess"||a.c_src==="media")out.push("Your picture of the job comes from guesses or social media.");if(a.c_targets==="any")out.push("You’re applying to anything that’s open.")}
+  if(k==="dir"){if(a.c_skills&&a.c_skills.includes("idk"))out.push("You’re not sure what skills the job asks for.");else if(a.c_skills&&knowScore(a.c_skills)<1.5)out.push(`You picked skills that don’t usually show up in ${d?d.t.toLowerCase():"these"} postings.`);
+    if(a.c_title&&(a.c_title.includes("idk")||a.c_title.some(v=>v[0]==="f")))out.push("You’re not sure what the job is called on job posts.");
+    if(a.c_mode==="type"&&a.c_cos3!=null&&cosCount(a.c_cos3)<3)out.push("You couldn’t name 3 companies that hire for it.");if(a.c_mode==="spec"&&a.c_team==="no")out.push(`You don’t know what the team at ${coName(a)} actually works on.`);
+    if(a.c_mode!=="spec"&&lineScore(goalLine(a))<2)out.push("You couldn’t name the job you want in one clear line.");if(a.c_sure==="guess"||a.c_sure==="lean")out.push("You’re not sure about your own target.");if(dayScore(a.c_tuesday)<1.5)out.push("You can’t really describe a normal day in that job.");if(a.c_src==="guess"||a.c_src==="media")out.push("Your picture of the job comes from guesses or social media.");if(a.c_targets==="any")out.push("You’re applying to anything that’s open.")}
   if(k==="fit"){if(a.c_best==="none")out.push("You haven’t found where you do your best work yet.");if(a.c_pay==="idk")out.push("You don’t know what interns in your field get paid.");else if(d&&a.c_pay&&+a.c_pay!==PAY_BAND[d.id])out.push(`You guessed ${PAY_L[+a.c_pay]}. ${d.t} interns usually make ${PAY_L[PAY_BAND[d.id]]}.`);if(a.c_city&&a.c_city.length===1&&a.c_city[0]==="any")out.push("“Anywhere” isn’t a location strategy.");if(a.c_when==="unsure")out.push("You haven’t picked when you want to start.")}
   if(k==="exp"){if(!p||!p.resumeStats)out.push("No resume yet.");(an?an.bad:[]).slice(0,2).forEach(b=>out.push(b.t+"."));if(d&&p&&p.resumeText&&!DIR_KW[d.id].test(p.resumeText))out.push(`Your resume doesn’t mention ${d.t.toLowerCase()} once.`);if(a.c_exp==="none")out.push("Nothing related to your target on paper yet.")}
-  if(k==="net"){if(a.c_people==="0")out.push("You’ve talked to zero people in your field.");if(a.c_chat==="never")out.push("You’ve never had a coffee chat.");if(a.c_ref==="none")out.push("Nobody would refer you yet.")}
-  if(k==="str"){if(a.c_month==="all"||a.c_month==="tweak")out.push("Your plan is to keep mass-applying.");if((a.c_apps==="11"||a.c_apps==="50")&&a.c_reply==="0")out.push(`${APPS_L[a.c_apps]} applications, zero interviews.`);if(a.c_how==="cold")out.push("Most of your applications went in cold.");if(whyScore(a.c_why)<1.5)out.push("Your “why this role?” answer is too generic.");if(a.c_prac==="never"||a.c_prac==="head")out.push("You’ve never said it out loud.")}
+  if(k==="net"){if(a.c_mode==="spec"&&a.c_insider==="no")out.push(`You don’t know anyone at ${coName(a)}.`);if(a.c_people==="0")out.push("You’ve talked to zero people in your field.");if(a.c_chat==="never")out.push("You’ve never had a coffee chat.");if(a.c_ref==="none")out.push("Nobody would refer you yet.")}
+  if(k==="str"){if(timingOk(a)===false&&d)out.push(`${d.t} applications usually open ${postTime(d.id).replace(/^Posts early: usually |^Usually posts /,"")}. You guessed wrong.`);else if(a.c_open==="idk")out.push("You don’t know when applications open.");
+    if(a.c_mode==="spec"){if(a.c_whyco!=null&&whyScore(a.c_whyco)<1.5)out.push(`Your “why ${coName(a)}?” answer is too generic.`);if(a.c_news==="no")out.push(`You haven’t read anything ${coName(a)} put out lately.`);if(a.c_dl==="no")out.push("You don’t know the deadline.")}if(a.c_month==="all"||a.c_month==="tweak")out.push("Your plan is to keep mass-applying.");if((a.c_apps==="11"||a.c_apps==="50")&&a.c_reply==="0")out.push(`${APPS_L[a.c_apps]} applications, zero interviews.`);if(a.c_how==="cold")out.push("Most of your applications went in cold.");if(whyScore(a.c_why)<1.5)out.push("Your “why this role?” answer is too generic.");if(a.c_prac==="never"||a.c_prac==="head")out.push("You’ve never said it out loud.")}
   return out.slice(0,3)}
 const GOOD_L={dir:"You know what you’re going for. Most students don’t.",fit:"You know where you work best, where and for what pay.",exp:"You’ve got real proof on paper.",net:"You already know people in your field.",str:"You’re going after it the smart way."};
 const AREA_ACT={
   dir:r=>[["Take the career match quiz","5 min. Get 3 directions worth testing.","career"],[r?`Write one line: “I want ${r} because…”`:"Pick one role. Write it in one sentence.","Say it out loud until it sounds true."],[`Read 5 job posts for ${r||"that role"}`,"Highlight what keeps repeating."]],
   fit:r=>[["Write your 3 non-negotiables","Team size, city, minimum pay. One line each."],[`Look up real intern pay for ${r||"your target role"}`,"Glassdoor or Levels.fyi. Note the range."],["Ask someone in the role about the culture","“What kind of person struggles there?”"]],
-  net:r=>[[(c=>c?`Find 3 people who work at ${c}`:`Find 3 people working in ${r||"a field you like"}`)(postingCompany((S.answers.arch||{}).c_link)),"LinkedIn. Alumni from your school first."],["Send 2 short messages asking for 15 min","Short and specific beats polished."],["Have one coffee chat","Ask what their week actually looks like."]],
+  net:r=>[[(c=>c?`Find 3 people who work at ${c}`:`Find 3 people working in ${r||"a field you like"}`)((S.answers.arch||{}).c_co||postingCompany((S.answers.arch||{}).c_link)),"LinkedIn. Alumni from your school first."],["Send 2 short messages asking for 15 min","Short and specific beats polished."],["Have one coffee chat","Ask what their week actually looks like."]],
   exp:r=>[[`Rewrite the top of your resume for ${r||"one role"}`,"One role. Not every role."],[`Change your LinkedIn headline to name ${r||"the role you want"}`,"Recruiters search by it."],["Start one small project you can show","Finished beats impressive."]],
   str:r=>[["Stop mass-applying for 2 weeks","Fewer, better applications."],["Rewrite your “why this role?” answer","One thing you did + why it points here."],["Practice it out loud 3 times","Record it once. Fix the ramble."]],
 };
@@ -976,6 +1030,7 @@ function ctl(q,v,a,pid){const opts=typeof q.opts==="function"?q.opts(a):q.opts,P
     return `<div class="tiles${one?" one-col":""}${mini?" mini":""}">${opts.map((x,i)=>`<button class="tile" data-act="${q.kind}" data-v="${esc(x.v)}"${P} aria-pressed="${sel(x.v)}">${mini?"":`<span class="k">${String(i+1).padStart(2,"0")}</span>`}<span>${esc(x.l)}</span></button>`).join("")}</div>`}
   if(q.kind==="slider"){const val=v==null?50:+v;return `<div class="slide"><div class="slide-n"><b id="sl-n">${v==null?"?":val}</b><small>%</small></div><p class="slide-l" id="sl-l">${esc(v==null?"Drag to answer":selfLabel(val))}</p><input type="range" min="0" max="100" step="1" value="${val}" data-slider${P} aria-label="How ready you think you are"><div class="slide-ends"><span>Not at all</span><span>Fully ready</span></div></div>`}
   if(q.kind==="url"){const co=postingCompany(v);return `<input class="in qlink" type="url" inputmode="url" autocomplete="off" id="qz-text${pid?"-"+pid:""}" data-qtext${P} value="${esc(v||"")}" placeholder="${esc(q.ph||"Paste a link")}">${co?`<p class="tiny" style="margin:8px 2px 0">Got it: <b style="color:var(--ink);font-weight:500">${esc(co)}</b></p>`:""}`}
+  if(q.kind==="text"&&q.short)return `<input class="in" id="qz-text${pid?"-"+pid:""}" data-qtext${P} value="${esc(v||"")}" placeholder="${esc(q.ph||"")}" autocomplete="off">`;
   if(q.kind==="text")return `<textarea class="qtext${mini?" sm":""}" id="qz-text${pid?"-"+pid:""}" data-qtext${P} placeholder="${esc(q.ph||"What do you think?")}">${esc(v||"")}</textarea>`;
   if(q.kind==="pairs"){const cur=v||{};return `<div class="pairs">${q.pairs.map(([pk,a1,l1,b1,l2])=>`<div class="pair"><button class="tile" data-act="pair" data-p="${pk}" data-v="${a1}"${P} aria-pressed="${cur[pk]===a1}"><span>${esc(l1)}</span></button><span>or</span><button class="tile" data-act="pair" data-p="${pk}" data-v="${b1}"${P} aria-pressed="${cur[pk]===b1}"><span>${esc(l2)}</span></button></div>`).join("")}</div>`}
   if(q.kind==="rate"){const cur=v||{};return `<div class="rate">${taskList(q,a).map(t=>`<div class="rate-row"><b>${esc(QT[t][1])}</b><div class="rate-b">${[["love","Love it"],["maybe","Maybe"],["no","No"]].map(([x,l])=>`<button data-act="rate" data-t="${t}" data-v="${x}" aria-pressed="${cur[t]===x}">${l}</button>`).join("")}</div></div>`).join("")}</div>`}
@@ -989,7 +1044,7 @@ function vQuiz(k){const Q=QUIZ[k],d=S.draft[k];if(!d)return startQuiz(k),"";if(d
   const body=q.kind==="combo"?sp.map((x,pi)=>`<div class="part${pi>=prevN?" pop":""}">${x.l?`<p class="plabel">${esc(V(x.l))}${x.kind==="many"&&x.max?` <span>${(a[x.id]||[]).length}/${x.max}</span>`:""}</p>`:""}${ctl(x,a[x.id],a,x.id)}</div>`).join(""):ctl(q,a[q.id],a,null);
   const cnt=q.kind==="many"&&q.max?`<span class="cnt">${(a[q.id]||[]).length} of ${q.max}</span>`:"";
   return shell(`<div class="qbar">${vis.map((x,i)=>`<i class="${i<=idx?"on":""}"></i>`).join("")}</div><main class="screen qz-body anim-in" data-q="${q.id}">
-      <div class="qhead"><h1 class="qq">${esc(q.q)}</h1>${q.sub?`<p class="qsub">${esc(V(q.sub))}</p>`:""}</div>
+      <div class="qhead"><h1 class="qq">${esc(V(q.q))}</h1>${q.sub?`<p class="qsub">${esc(V(q.sub))}</p>`:""}</div>
       ${body}</main>
     <div class="qfoot qz-foot"><div class="in">${cnt}<button class="go" data-act="qnext" ${!ok&&!q.optional?"disabled":""}>${!ok&&q.optional?"Skip":last?"Show me the truth":"Next"}<i>→</i></button></div></div>`,
     {top:`<button class="circ" data-act="qback" aria-label="Back">←</button><span class="chipc">${idx+1}/${N} · ${left} min left</span><button class="circ" data-act="qexit" aria-label="Close">×</button>`}).replace(WORD,"")}
