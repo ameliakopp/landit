@@ -411,6 +411,8 @@ body:has(.qz-body) .top{max-width:580px;padding-top:20px}
 .pairs{gap:12px}
 @media (min-width:700px){.qz-body .qhead{margin:64px 0 44px}}
 .qtext.sm{min-height:124px;line-height:1.5}
+.gap-top{white-space:normal;text-align:center;font-weight:500;font-size:clamp(30px,7.6vw,44px);line-height:1.12;letter-spacing:-.035em;margin:22px auto 26px;max-width:16ch;text-wrap:balance}
+.gap{margin-bottom:34px}
 </style>
 </head>
 <body>
@@ -781,9 +783,9 @@ function planFor(R){const p=S.profile||{},a=S.answers.arch||{},r=roleText(),an=a
   const all=fix.flatMap(x=>x.acts),dn=S.stepsDone||{};
   return {fix,keep,strengths,all,done:all.filter(z=>dn[z.key]).length,next:all.find(z=>!dn[z.key])}}
 function gapLine(self,score){const g=self-score;
-  if(g>=15)return{t:"You think you’re ready. You’re not, yet."};
-  if(g<=-10)return{t:"You’re more ready than you think."};
-  return{t:"You see yourself clearly. Now fix the weak spots."}}
+  if(g>=15)return{t:"You think you’re ready… You’re not."};
+  if(g<=-10)return{t:"You think you’re not ready… You are."};
+  return{t:"You know exactly where you stand."}}
 /* ---------- views ---------- */
 const MARK=`<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,WORD=`<a class="word" href="#home">${MARK}clocked</a>`;
 const amb=`<div class="amb" aria-hidden="true"><i></i><i></i><i></i></div>`;
@@ -878,9 +880,8 @@ function vLoading(k){return shell(`<main class="screen center"><div class="orb b
 function archR0(){const a=S.answers.arch;if(!a)return null;const R=readiness(a);R.weak=DIMS.slice().sort((x,y)=>R.dims[x.k]-R.dims[y.k])[0];return R}
 function vResArch(){const R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,self=a.c_self!=null?+a.c_self:null,G=self!=null?gapLine(self,R.score):null,pl=planFor(R),W=pl.fix[0];
   return shell(`<main class="screen anim-in">
-    <p class="kick" style="text-align:center;margin-top:8px">The truth</p>
-    ${self!=null?`<div class="gap"><div><span>You think</span><b>${self}<small>%</small></b></div><div class="gap-mid">→</div><div class="real"><span>Reality</span><b>${R.score}<small>%</small></b></div></div>
-      <p class="gap-t">${esc(G.t)}</p>`:ring(R.score,"ready")}
+    ${self!=null?`<h1 class="gap-top">${esc(G.t).replace("… ","…<br>")}</h1>
+      <div class="gap"><div><span>You think</span><b>${self}<small>%</small></b></div><div class="gap-mid">→</div><div class="real"><span>Reality</span><b>${R.score}<small>%</small></b></div></div>`:`<p class="kick" style="text-align:center;margin-top:8px">Your readiness</p>${ring(R.score,"ready")}`}
     <h2 class="sech">Where you are.</h2>
     <div class="gcard stagecard">${stageTrack(R.stage)}<p><b>${STAGE[R.stage].n}.</b> ${esc(STAGE[R.stage].line)}</p></div>
     <h2 class="sech">Your 5 checks.</h2>
