@@ -1,4 +1,4 @@
-# CLOCKED
+# Hirable (formerly CLOCKED, formerly Landit)
 
 The internship quiz built on one idea: **the biggest block is you.** Most students think they're ready to apply before they are.
 

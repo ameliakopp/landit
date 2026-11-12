@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>CLOCKED</title>
+<title>Hirable</title>
 <meta name="theme-color" content="#0A0A0B">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="CLOCKED">
+<meta name="apple-mobile-web-app-title" content="Hirable">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="The internship quiz that tells you the truth. Get your archetype, your clarity score, and the careers you're actually built for.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -482,7 +482,7 @@ body:has(.qz-body) .top{padding-top:calc(20px + env(safe-area-inset-top))!import
 <div id="app"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
-/* ================= CLOCKED ================= */
+/* ================= Hirable ================= */
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
@@ -1039,7 +1039,7 @@ function loadSteps(k,a){const p=S.profile||{},out=[],nm=p.first?p.first+"’s":"
     out.push([`Matching you against ${DIRS.length} fields`,"Finding your best fits"]);out.push(["Pulling roles hiring right now","Real internship titles"]);out.push(["Writing your coffee chat plan","Your next move"])}
   return out.slice(0,6)}
 /* ---------- views ---------- */
-const MARK=`<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,WORD=`<a class="word" href="#about">${MARK}clocked</a>`;
+const MARK=`<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,WORD=`<a class="word" href="#about">${MARK}hirable</a>`;
 const amb=`<div class="amb" aria-hidden="true"><i></i><i></i><i></i></div>`;
 function ring(val,label){const r=90,c=2*Math.PI*r,off=c*(1-val/100);
   return `<div class="ring"><div class="glow"></div><svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A45"/><stop offset=".6" stop-color="#F0508A"/><stop offset="1" stop-color="#8F6BFF"/></linearGradient></defs><circle class="trk" cx="100" cy="100" r="${r}"/><circle class="val" cx="100" cy="100" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" style="--full:${c.toFixed(1)}"/></svg>
@@ -1253,7 +1253,7 @@ function helpUI(){if(!UI.help)return `<button class="help-fab" data-act="help" a
 async function helpSend(){const h=UI.help;h.msg=($("#help-msg").value||"").trim();h.email=($("#help-email").value||"").trim();if(!h.msg){h.err="Write a quick message first.";render();return}
   h.busy=true;h.err="";render();let ok=false;
   if(sb){try{const {error}=await sb.from("feedback").insert({kind:h.type||"other",message:h.msg,email:h.email||null,page:route(),user_id:AUTH.user?AUTH.user.id:null,agent:navigator.userAgent.slice(0,200)});ok=!error}catch(e){}}
-  h.busy=false;if(ok){h.sent=true;render();return}location.href="mailto:ameliamkopp@gmail.com?subject="+encodeURIComponent("CLOCKED feedback")+"&body="+encodeURIComponent(h.msg);h.sent=true;render()}
+  h.busy=false;if(ok){h.sent=true;render();return}location.href="mailto:ameliamkopp@gmail.com?subject="+encodeURIComponent("Hirable feedback")+"&body="+encodeURIComponent(h.msg);h.sent=true;render()}
 
 /* ---------- render ---------- */
 function render(){const r=route();let html;
