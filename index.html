@@ -470,6 +470,12 @@ body:has(.qz-body) .top{padding-top:calc(20px + env(safe-area-inset-top))!import
 .lst .ok2{position:absolute;inset:0;border-radius:50%;background:rgba(120,230,170,.2);color:#9BF0C2;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;opacity:0;transform:scale(.4);animation:okin .35s cubic-bezier(.2,1.6,.4,1) calc(var(--d) + 820ms) forwards}
 @keyframes gone{to{opacity:0}}
 @keyframes okin{to{opacity:1;transform:none}}
+.about .t1{max-width:18ch}
+.about .t2{max-width:38ch;margin-bottom:28px}
+.ab3{display:flex;flex-direction:column;gap:12px;width:100%;max-width:440px;text-align:left}
+.ab3>div{display:grid;grid-template-columns:auto 1fr;column-gap:14px;row-gap:2px;padding:16px 18px;border-radius:22px;background:var(--glass);border:1px solid var(--edge)}
+.ab3 span{grid-row:1/3;font-size:13px;color:var(--faint);font-variant-numeric:tabular-nums;padding-top:3px}
+.ab3 b{font-weight:600;font-size:17px;letter-spacing:-.02em}.ab3 em{font-style:normal;font-size:15px;color:var(--mute)}
 </style>
 </head>
 <body>
@@ -1033,7 +1039,7 @@ function loadSteps(k,a){const p=S.profile||{},out=[],nm=p.first?p.first+"’s":"
     out.push([`Matching you against ${DIRS.length} fields`,"Finding your best fits"]);out.push(["Pulling roles hiring right now","Real internship titles"]);out.push(["Writing your coffee chat plan","Your next move"])}
   return out.slice(0,6)}
 /* ---------- views ---------- */
-const MARK=`<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,WORD=`<a class="word" href="#home">${MARK}clocked</a>`;
+const MARK=`<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,WORD=`<a class="word" href="#about">${MARK}clocked</a>`;
 const amb=`<div class="amb" aria-hidden="true"><i></i><i></i><i></i></div>`;
 function ring(val,label){const r=90,c=2*Math.PI*r,off=c*(1-val/100);
   return `<div class="ring"><div class="glow"></div><svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A45"/><stop offset=".6" stop-color="#F0508A"/><stop offset="1" stop-color="#8F6BFF"/></linearGradient></defs><circle class="trk" cx="100" cy="100" r="${r}"/><circle class="val" cx="100" cy="100" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" style="--full:${c.toFixed(1)}"/></svg>
@@ -1055,6 +1061,18 @@ function vHome(){const ra=S.results.arch,rc=S.results.career;
       <button class="door" data-act="begin" data-k="career"><span><b>I’m not sure yet</b></span><i>→</i></button>
     </div>
     <p class="tiny foot-note">A free tool for students</p>
+  </main>`)}
+function vAbout(){return shell(`<main class="screen center about anim-in">
+    <div class="orb sm" aria-hidden="true"></div>
+    <p class="kick">About</p>
+    <h1 class="t1">Hirable is for anyone,<br><b>at any stage</b> of their career.</h1>
+    <p class="t2">Just starting out or years in. It’s a free quiz built with career experts and data on what companies are actually hiring for. It tells you three things:</p>
+    <div class="ab3">
+      <div><span>01</span><b>Are you a good candidate?</b><em>For the job you want, honestly.</em></div>
+      <div><span>02</span><b>What’s holding you back?</b><em>The gaps you can’t see yourself.</em></div>
+      <div><span>03</span><b>Where to spend your time.</b><em>The few things that actually move the needle.</em></div>
+    </div>
+    <div class="stack" style="margin-top:32px"><a class="btn" href="#home">Take the quiz</a><p class="tiny" style="margin:6px 0 0">Free. Takes about 5 minutes.</p></div>
   </main>`)}
 function vJoin(){if(AUTH.user)return go("me"),"";const up=UI.mode==="signup";
   return shell(`<main class="screen center anim-in">
@@ -1244,7 +1262,7 @@ function render(){const r=route();let html;
   else if(r==="join")html=vJoin();else if(r==="setup")html=vSetup();
   else if(r==="q-arch"||r==="q-career")html=vQuiz(r.slice(2));
   else if(r==="r-arch")html=vResArch();else if(r==="r-career")html=vResCareer();
-  else if(r==="me")html=vMe();else if(r==="steps")html=vSteps();else html=vHome();
+  else if(r==="me")html=vMe();else if(r==="steps")html=vSteps();else if(r==="about")html=vAbout();else html=vHome();
   const vk=UI.loading?"load":r+(r.startsWith("q-")&&S.draft[r.slice(2)]?":"+S.draft[r.slice(2)].i:"");document.body.classList.toggle("still",UI.lastView===vk);UI.lastView=vk;
   const ae=document.activeElement,keep=ae&&ae.id&&/^(pf-|qz-text|au-|help-|paste)/.test(ae.id)?[ae.id,ae.selectionStart]:null;
   $("#app").innerHTML=html+((r==="home"&&!UI.loading)||UI.help?helpUI():"")+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:"");
