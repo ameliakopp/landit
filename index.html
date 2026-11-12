@@ -1058,7 +1058,7 @@ function loadSteps(k,a){const p=S.profile||{},out=[],nm=p.first?p.first+"’s":"
     out.push([`Matching you against ${DIRS.length} fields`,"Finding your best fits"]);out.push(["Pulling roles hiring right now","Real internship titles"]);out.push(["Writing your coffee chat plan","Your next move"])}
   return out.slice(0,6)}
 /* ---------- views ---------- */
-const MARK=`<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,WORD=`<a class="word" href="#about">${MARK}hirable</a>`;
+const MARK=`<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8.2 12.1l2.7 2.8 4.9-5.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,WORD=`<a class="word" href="#about">${MARK}hirable</a>`;
 const amb=`<div class="amb" aria-hidden="true"><i></i><i></i><i></i></div>`;
 function ring(val,label){const r=90,c=2*Math.PI*r,off=c*(1-val/100);
   return `<div class="ring"><div class="glow"></div><svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A45"/><stop offset=".6" stop-color="#F0508A"/><stop offset="1" stop-color="#8F6BFF"/></linearGradient></defs><circle class="trk" cx="100" cy="100" r="${r}"/><circle class="val" cx="100" cy="100" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" style="--full:${c.toFixed(1)}"/></svg>
