@@ -413,6 +413,11 @@ body:has(.qz-body) .top{max-width:580px;padding-top:20px}
 .qtext.sm{min-height:124px;line-height:1.5}
 .gap-top{white-space:normal;text-align:center;font-weight:500;font-size:clamp(30px,7.6vw,44px);line-height:1.12;letter-spacing:-.035em;margin:22px auto 26px;max-width:16ch;text-wrap:balance}
 .gap{margin-bottom:34px}
+/* iPhone notch / status bar: keep the top bar below it */
+.top{padding-top:calc(18px + env(safe-area-inset-top))!important}
+body:has(.qz-body) .top{padding-top:calc(20px + env(safe-area-inset-top))!important}
+.help-fab{bottom:calc(16px + env(safe-area-inset-bottom))}
+.top{padding-left:max(clamp(18px,3vw,36px),env(safe-area-inset-left));padding-right:max(clamp(18px,3vw,36px),env(safe-area-inset-right))}
 </style>
 </head>
 <body>
