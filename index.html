@@ -821,6 +821,7 @@ html,body{background:#F4F3F1;color:#151515}
 .pbar em.hit{background:#151515;border-color:#151515}
 .stp-m{flex-wrap:wrap}.stp-m b{font-size:15px;font-weight:800;color:#151515}
 .stp-v{margin-left:auto;display:flex;align-items:center;gap:6px}
+.bk2 .rt2.stile{background:var(--bg);border-color:transparent;animation:fade .5s var(--ease) both}.stile .t2-p b{font-weight:700}
 </style>
 </head>
 <body>
@@ -1696,11 +1697,8 @@ function vSteps(){const R=archR0();if(!R)return go("home"),"";const dn=S.stepsDo
   return shell(`<main class="screen anim-in stp">
     <h1 class="stp-h">Next steps</h1>
     <div class="stp-tabs"><span class="on">To work on <i>${areas.filter(x=>x.v<75).length}</i></span><span>Done <i>${done}/${tot}</i></span></div>
-    <div class="stp-list">${areas.map((x,i)=>{const acts=areaActs(x.k,R),d=acts.filter(z=>dn[z.key]).length,[w,c]=verdict(x.v);
-      const pr=Math.round(x.v+(100-x.v)*(acts.length?d/acts.length:0)),left=acts.length-d;
-      return `<a class="stp-c" href="#area-${x.k}" style="--bg:${STK_BG[x.k]};--p:${pr}%;animation-delay:${i*70}ms"><span class="stp-t"><span class="stp-row"><b>${esc(x.n)}</b><span class="stp-go">›</span></span>
-        <span class="pbar"><i></i>${acts.map((_,j)=>`<em style="left:${Math.round(x.v+(100-x.v)*(j+1)/acts.length)}%" class="${j<d?"hit":""}"></em>`).join("")}</span>
-        <span class="stp-m"><b>${pr}%</b> there<em>·</em>${left?`${left} step${left>1?"s":""} left`:"All done ✓"}<span class="stp-v"><i class="dot ${c}"></i>${w}</span></span></span></a>`}).join("")}</div>
+    <div class="bk2">${areas.map((x,i)=>{const acts=areaActs(x.k,R),d=acts.filter(z=>dn[z.key]).length,pr=Math.round(x.v+(100-x.v)*(acts.length?d/acts.length:0)),[w,c]=verdict(pr),left=acts.length-d;
+      return `<a class="rt rt2 stile" href="#area-${x.k}" style="--bg:${STK_BG[x.k]};animation-delay:${i*70}ms"><div class="t2-h"><b>${esc(x.n)}</b></div><div class="t2-r"><div><span class="t2-n">${pr}<small>%</small></span><span class="vd ${c}">${w}</span></div><span class="dnw">${donut(pr,c)}<i>${d}/${acts.length}</i></span></div><p class="t2-p"><b>${left?`${left} step${left>1?"s":""} left`:"All done ✓"}</b>${left?` · Next: ${esc(acts.find(z=>!dn[z.key]).t)}`:""}</p></a>`}).join("")}</div>
     <button class="txt" data-act="begin" data-k="arch" style="margin-top:22px">Retake the quiz to see your new score</button>
   </main>`,{tabs:"steps"})}
 function vMe(){const p=S.profile||{},R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,pl=planFor(R),self=a.c_self!=null?+a.c_self:null,rc=S.results.career,c1=rc&&DIRS.find(d=>d.id===rc.top[0].id),ab=applyBy(a),days=ab?Math.round((new Date(ab)-new Date(TODAY))/DAY):null;
