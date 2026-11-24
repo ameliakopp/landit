@@ -900,14 +900,29 @@ p,li,.sub,label,input,textarea,button{letter-spacing:0}
 .fchip.c1{left:auto!important;right:calc(100% - 6px)!important;top:12%!important}
 .fchip.c2{right:auto!important;left:calc(100% - 6px)!important;top:40%!important}
 .fchip.c3{left:auto!important;right:calc(100% - 6px)!important;top:68%!important}
-@media (max-width:1139px){.fchip.c2{left:auto!important;right:calc(100% - 6px)!important;top:40%!important;--dx:-40px}}
-@media (min-width:1140px) and (max-width:1199px){.fchip.c2{left:auto!important;right:calc(100% - 6px)!important;top:92%!important;--dx:-40px}}
 .mtags{flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:12px 10px;height:auto!important;width:auto!important;max-width:340px}
 .mtags span{position:static!important}
 .mtags .g1{order:1;flex-basis:100%;max-width:max-content;margin-left:auto;margin-right:12px}
 .mtags .g2{order:2;margin-top:4px}.mtags .g3{order:3;margin-top:14px}
 .mtags[class]{display:none}
 @media (max-width:760px){.mtags[class]{display:flex}}
+/* phone: rounder body, thin light rim, black bezel, notch */
+.hp-wrap{aspect-ratio:71.5/146.7!important}
+.pf{border-radius:15.5% / 7.6%;background:linear-gradient(160deg,#F7F6F2,#E4E1DA);box-shadow:inset 0 0 0 1.5px rgba(21,38,31,.08),0 40px 70px -30px rgba(21,38,31,.35);filter:none!important}
+.pf::before{content:"";position:absolute;inset:1.4% / 0.7%;inset:0.7% 1.4%;border-radius:14.4% / 7%;background:#0E0F0E}
+.pf-img{display:none}
+.pf-scr{left:4.4%!important;right:4.4%!important;width:auto!important;top:2.15%!important;bottom:2.15%!important;height:auto!important;border-radius:11.5% / 5.4%!important;background:linear-gradient(180deg,#E3EED7 0%,#F1F6EA 22%,#FFFFFF 42%)!important}
+.pf-in{height:838px!important;padding-top:64px!important}
+.pf-cam{top:0!important;width:150px!important;height:32px!important;margin-left:-75px!important;border-radius:0 0 20px 20px!important;background:#0E0F0E!important;box-shadow:none!important}
+.pf-ns .ns-row{margin:0 -18px!important;padding:4px 0 0 45px!important;gap:12px}
+.pf-ns .ns-c{flex:0 0 300px!important;max-width:none;height:330px!important}
+.pf-ns .ns-c b{font-size:34px}
+/* bubbles where they were circled */
+.fchip.c1{left:74%!important;right:auto!important;top:13%!important;--dx:40px}
+.fchip.c2{right:80%!important;left:auto!important;top:53%!important;--dx:-40px}
+.fchip.c3{left:56%!important;right:auto!important;top:93%!important;--dx:40px}
+.pf-ns .ns-row{scroll-snap-type:none!important;scroll-padding:0}
+.pf-ns .ns-c{height:432px!important}
 </style>
 </head>
 <body>
@@ -1634,8 +1649,7 @@ function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden=
     <div class="hp-wrap" aria-hidden="true"><span class="fchip c1 t1c">Am I ready?</span><span class="fchip c2 t2c">What’s stopping me?</span><span class="fchip c3 t3c">What do I fix first?</span><div class="pf"><div class="pf-scr"><div class="pf-in">
         <span class="pf-cam"></span>
         <div class="ns pf-ns">${board("Amelia",49,[{k:"net",n:"Networking Ability",pr:12},{k:"str",n:"Application Strategy",pr:53},{k:"art",n:"Artifacts",pr:54},{k:"cla",n:"Career Clarity",pr:73}],1)}</div>
-        <div class="hs-tabs" style="grid-template-columns:1fr 1fr"><span class="on">Dashboard</span><span>Profile</span><i class="pf-home"></i></div>
-      </div></div><img class="pf-img" src="img/phone-frame.png" alt=""></div></div>
+      </div></div></div></div>
   </main></div>`}
 function vJoin(){if(AUTH.user)return go("me"),"";const up=UI.mode==="signup";
   return shell(`<main class="screen center anim-in">
