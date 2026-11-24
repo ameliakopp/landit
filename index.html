@@ -896,6 +896,18 @@ p,li,.sub,label,input,textarea,button{letter-spacing:0}
 .pf-ns .ns-c{aspect-ratio:auto;height:230px}
 .pf-ns .ns-c b{font-size:30px;margin-bottom:16px}
 .fchip.c3{top:88%!important}
+/* chips sit beside the phone, never over its text */
+.fchip.c1{left:auto!important;right:calc(100% - 6px)!important;top:12%!important}
+.fchip.c2{right:auto!important;left:calc(100% - 6px)!important;top:40%!important}
+.fchip.c3{left:auto!important;right:calc(100% - 6px)!important;top:68%!important}
+@media (max-width:1139px){.fchip.c2{left:auto!important;right:calc(100% - 6px)!important;top:40%!important;--dx:-40px}}
+@media (min-width:1140px) and (max-width:1199px){.fchip.c2{left:auto!important;right:calc(100% - 6px)!important;top:92%!important;--dx:-40px}}
+.mtags{flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:12px 10px;height:auto!important;width:auto!important;max-width:340px}
+.mtags span{position:static!important}
+.mtags .g1{order:1;flex-basis:100%;max-width:max-content;margin-left:auto;margin-right:12px}
+.mtags .g2{order:2;margin-top:4px}.mtags .g3{order:3;margin-top:14px}
+.mtags[class]{display:none}
+@media (max-width:760px){.mtags[class]{display:flex}}
 </style>
 </head>
 <body>
