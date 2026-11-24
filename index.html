@@ -822,6 +822,23 @@ html,body{background:#F4F3F1;color:#151515}
 .stp-m{flex-wrap:wrap}.stp-m b{font-size:15px;font-weight:800;color:#151515}
 .stp-v{margin-left:auto;display:flex;align-items:center;gap:6px}
 .bk2 .rt2.stile{background:var(--bg);border-color:transparent;animation:fade .5s var(--ease) both}.stile .t2-p b{font-weight:700}
+/* next steps: super simple */
+.ns{padding-top:16px}
+.ns-d{margin:6px 0 0;display:flex;flex-direction:column;gap:0}.ns-d b{font-size:24px;font-weight:800;letter-spacing:-.02em}.ns-d span{font-size:20px;font-weight:500;color:var(--mute)}
+.ns-big{text-align:center;font-weight:300;font-size:clamp(88px,26vw,120px);letter-spacing:-.06em;line-height:1;margin:26px 0 4px;font-variant-numeric:tabular-nums}.ns-big small{font-size:.4em;color:var(--faint)}
+.ns-l{text-align:center;margin:0 0 18px;font-size:15px;font-weight:600;color:var(--mute)}
+.ns-bar{position:relative;height:16px;border-radius:999px;background:repeating-linear-gradient(90deg,rgba(21,21,21,.1) 0 3px,transparent 3px 8px);margin-bottom:40px}
+.ns-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:#151515;animation:pgrow 1.2s var(--ease) both}
+.ns-bar em{position:absolute;top:24px;transform:translateX(-50%);font-style:normal;font-size:11px;font-weight:700;letter-spacing:.06em;color:#fff;background:#F07A6A;padding:3px 9px;border-radius:999px}
+.ns-h{margin:0 0 14px;font-size:22px;font-weight:800;letter-spacing:-.02em}
+.ns-row{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -24px;padding:4px 24px 18px;scrollbar-width:none}.ns-row::-webkit-scrollbar{display:none}
+.ns-c{flex:0 0 72%;max-width:300px;scroll-snap-align:start;aspect-ratio:1/1.05;border-radius:30px;background:#FBEBD6;color:#151515;padding:20px;display:flex;flex-direction:column;justify-content:space-between;position:relative;animation:fade .5s var(--ease) both}
+.ns-c b{font-size:34px;font-weight:600;line-height:1.02;letter-spacing:-.03em;margin-top:auto;margin-bottom:22px}
+.ns-go{position:absolute;right:18px;top:18px;width:40px;height:40px;border-radius:50%;border:1.5px solid #151515;display:grid;place-items:center;font-size:17px}
+.ns-f{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ns-n{font-size:14px;font-weight:600;background:rgba(255,255,255,.6);padding:7px 12px;border-radius:999px}
+.ns-mini{flex:1;max-width:90px;height:4px;border-radius:2px;background:rgba(21,21,21,.15);overflow:hidden}.ns-mini i{display:block;height:100%;background:#151515;border-radius:2px}
+@media (min-width:700px){.ns-c{flex-basis:46%}}
 </style>
 </head>
 <body>
@@ -1692,14 +1709,16 @@ net:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(5 60 60)
 const STK_BG={cla:"#EEF3FA",art:"#FBF2E3",str:"#FBEDE6",net:"#F6ECF8"};
 function areaActs(k,R){const pl=planFor(R),f=pl.fix.find(x=>x.k===k);if(f)return f.acts;const a=S.answers.arch,p=S.profile||{},r=roleText();
   return (k==="art"&&analyzeResume(p)?[...analyzeResume(p).bad.filter(b=>b.fix).map(b=>[b.fix,b.d]),...AREA_ACT[k](r)]:AREA_ACT[k](r)).slice(0,3).map(z=>({t:z[0],sub:z[1],quiz:z[2]||null,key:k+":"+z[0]}))}
-function vSteps(){const R=archR0();if(!R)return go("home"),"";const dn=S.stepsDone||{},areas=DIMS.map(d=>({...d,v:R.dims[d.k]})).sort((x,y)=>x.v-y.v);
-  const tot=areas.reduce((n,x)=>n+areaActs(x.k,R).length,0),done=areas.reduce((n,x)=>n+areaActs(x.k,R).filter(z=>dn[z.key]).length,0);
-  return shell(`<main class="screen anim-in stp">
-    <h1 class="stp-h">Next steps</h1>
-    <div class="stp-tabs"><span class="on">To work on <i>${areas.filter(x=>x.v<75).length}</i></span><span>Done <i>${done}/${tot}</i></span></div>
-    <div class="bk2">${areas.map((x,i)=>{const acts=areaActs(x.k,R),d=acts.filter(z=>dn[z.key]).length,pr=Math.round(x.v+(100-x.v)*(acts.length?d/acts.length:0)),[w,c]=verdict(pr),left=acts.length-d;
-      return `<a class="rt rt2 stile" href="#area-${x.k}" style="--bg:${STK_BG[x.k]};animation-delay:${i*70}ms"><div class="t2-h"><b>${esc(x.n)}</b></div><div class="t2-r"><div><span class="t2-n">${pr}<small>%</small></span><span class="vd ${c}">${w}</span></div><span class="dnw">${donut(pr,c)}<i>${d}/${acts.length}</i></span></div><p class="t2-p"><b>${left?`${left} step${left>1?"s":""} left`:"All done ✓"}</b>${left?` · Next: ${esc(acts.find(z=>!dn[z.key]).t)}`:""}</p></a>`}).join("")}</div>
-    <button class="txt" data-act="begin" data-k="arch" style="margin-top:22px">Retake the quiz to see your new score</button>
+function vSteps(){const R=archR0();if(!R)return go("home"),"";const dn=S.stepsDone||{},p=S.profile||{};
+  const areas=DIMS.map(d=>{const acts=areaActs(d.k,R),done=acts.filter(z=>dn[z.key]).length,v=R.dims[d.k];return{...d,acts,done,pr:Math.round(v+(100-v)*(acts.length?done/acts.length:0))}}).sort((x,y)=>x.pr-y.pr);
+  const all=Math.round(areas.reduce((n,x)=>n+x.pr*DIM_W[x.k],0)),now=new Date(),day=now.toLocaleDateString("en-US",{weekday:"long"}),date=now.toLocaleDateString("en-US",{day:"numeric",month:"long"});
+  return shell(`<main class="screen anim-in ns">
+    <p class="ns-d"><b>${day}</b><span>${date}</span></p>
+    <div class="ns-big">${all}<small>%</small></div>
+    <p class="ns-l">${p.first?esc(p.first)+"’s":"Your"} progress to hirable</p>
+    <div class="ns-bar"><i style="width:${all}%"></i><em style="left:${all}%">Now</em></div>
+    <h2 class="ns-h">Work on (${areas.length})</h2>
+    <div class="ns-row">${areas.map((x,i)=>`<a class="ns-c" href="#area-${x.k}" style="animation-delay:${i*70}ms"><span class="ns-go">↗</span><b>${esc(x.n).replace(" ","<br>")}</b><span class="ns-f"><span class="ns-n">${x.done}/${x.acts.length} done</span><span class="ns-mini"><i style="width:${x.pr}%"></i></span></span></a>`).join("")}</div>
   </main>`,{tabs:"steps"})}
 function vMe(){const p=S.profile||{},R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,pl=planFor(R),self=a.c_self!=null?+a.c_self:null,rc=S.results.career,c1=rc&&DIRS.find(d=>d.id===rc.top[0].id),ab=applyBy(a),days=ab?Math.round((new Date(ab)-new Date(TODAY))/DAY):null;
   return shell(`<main class="screen anim-in">
