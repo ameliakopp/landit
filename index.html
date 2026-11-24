@@ -980,6 +980,14 @@ main.pf2{align-items:center;text-align:center;padding-top:28px}
   main.pf2 .stack{align-self:flex-start!important;margin-left:0!important;margin-right:0!important;width:auto}
   .pf-rows .alt{min-width:0}.pf-rows .alt em{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
 }
+/* area page: summary line, gap -> fix pairs, win chips */
+.ar-sum{display:flex;align-items:flex-end;gap:18px;margin:18px 0 10px}.ar-sum p{margin:0 0 10px;font-size:18px;font-weight:600;line-height:1.35;color:#15261F;max-width:34ch}
+.gp{border:1px solid var(--edge);border-radius:22px;padding:16px;margin-bottom:12px;background:#fff;display:flex;flex-direction:column;gap:12px}
+.gp-p{display:flex;gap:12px;align-items:flex-start}.gp-p b{display:block;font-weight:600;font-size:16.5px;line-height:1.35}.gp-p span{display:block;color:var(--mute);font-size:14.5px;margin-top:3px}
+.gp .step{margin:0;border:0;background:#F3F6EF;border-radius:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.okchip{padding:8px 13px;border-radius:999px;background:#F2F2EF;font-size:14.5px;font-weight:500}
+@media (min-width:900px){main.ar .ar-main{flex:2 1 0}main.ar .ar-side{flex:1 1 0}.ar-sum p{font-size:22px;max-width:40ch}}
+.gp-p>i{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:13.5px;font-weight:700;margin-top:1px;background:#F0F0EC;color:#15261F}
 </style>
 </head>
 <body>
@@ -1553,49 +1561,55 @@ function analyzeResume(p){const st=p&&p.resumeStats;if(!st)return null;const goo
 const APPS_L={"1":"Up to 10","11":"11 to 50","51":"51 to 100","101":"101 to 200","200":"200+","50":"50+"};
 const manyApps=a=>["11","51","101","200","50"].includes(a.c_apps);
 /* ---------- the 5 checks: gaps and wins per area, from the student's own answers ---------- */
-/* gaps = [plain problem, why it matters]; listed worst first, vArea shows the top 3 */
-function areaGaps(k,a,p){a=liNorm(a||{});p=p||{};const G=[],Y=[],W=[],d=targetDir(a),an=analyzeResume(p),st=p.resumeStats,co=coName(a),fld=d?d.t.toLowerCase():"your field",q=(t,n)=>"“"+String(t||"").slice(0,n).trim()+(String(t||"").length>n?"…":"")+"”";
-  const g=(t,y)=>{G.push(t);Y.push(y||"")},w=t=>W.push(t);
+/* each gap = plain problem + why it matters + ITS OWN fix [title, sub, quiz?]. Listed worst first; pages show the top 3.
+   wins = short chips (2-5 words) */
+function areaGaps(k,a,p){a=liNorm(a||{});p=p||{};const G=[],Y=[],F=[],W=[],d=targetDir(a),an=analyzeResume(p),st=p.resumeStats,co=coName(a),fld=d?d.t.toLowerCase():"your field",r=roleText()||fld,q=(t,n)=>"“"+String(t||"").slice(0,n).trim()+(String(t||"").length>n?"…":"")+"”";
+  const g=(t,y,f)=>{G.push(t);Y.push(y||"");F.push(f||null)},w=t=>W.push(t);
   if(k==="cla"){
-    if(a.c_mode==="spec"){if(linkOk(a.c_link))w(`You have a specific posting: ${goalLine(a)}.`)}
-    else{const n=lineScore(a["c_line"]);if(n>=2)w(`You can say what you want: “${String(a["c_line"]).slice(0,70)}”.`);else g("You can’t say what job you want yet.",`You wrote ${q(a["c_line"]||"nothing",50)}. If you can’t say it, a recruiter can’t picture you in it.`)}
-    if(a.c_targets==="any")g("You’re applying to everything.","Recruiters can tell when an application isn’t for them.");else if(a.c_targets==="one")w("You’re focused on 1 or 2 kinds of roles.");
-    if(a.c_sure==="guess"||a.c_sure==="lean")g("You’re not sure this is the right direction.","It shows in interviews. Test it with one real conversation first.");else if(a.c_sure)w("You’re confident in your direction.");
-    if(a.c_src==="guess"||a.c_src==="media")g("You haven’t heard about the job from someone who does it.",`Your picture comes from ${a.c_src==="guess"?"a guess":"TV or social media"}. The real job might be different.`);else if(a.c_src==="talked"||a.c_src==="done")w("You know the job from someone who does it, or from doing it.");
-    if(a.c_tuesday!=null){if(dayScore(a.c_tuesday)<1.5)g("You can’t picture a normal day in the job.","Interviewers ask this. A vague answer reads as “hasn’t looked into it.”");else w("You can describe what the job actually looks like day to day.")}
-    if(a.c_skills){if(a.c_skills.includes("idk"))g("You don’t know which skills the job needs.","So your resume can’t show them.");else{const f=a.c_skills.filter(v=>v[0]==="f").map(v=>v.slice(2)),r=a.c_skills.filter(v=>v[0]==="r").length;if(f.length)g(`Some skills you picked aren’t what ${fld} jobs ask for.`,`${listJoin(f.map(x=>"“"+x+"”"))} rarely show up in those postings.`);if(r>=3)w(`You know the skills ${fld} postings ask for.`)}}
-    if(a.c_title&&(a.c_title.includes("idk")||a.c_title.some(v=>v[0]==="f")))g("You might be searching for the wrong job title.","Companies use specific names for the role. Search those.");
-    if(a.c_mode==="type"){if(a.c_cos3!=null&&!cosCount(a.c_cos3))g("You can’t name a company you’d want to work at.","Without targets, you end up applying everywhere.");else if(a.c_cowhy!=null){if(whyScore(a.c_cowhy)<1.5)g("You can’t say why you picked those companies.",`You wrote ${q(a.c_cowhy,40)}. They will ask.`);else w(`You know why you want ${a.c_cos3}.`)}}
-    if(a.c_mode==="spec"&&a.c_team==="no")g(`You don’t know what the team at ${co} does.`,"That’s the first thing they’ll expect you to know.");
-    if(a.c_best==="none")g("You don’t know where you do your best work yet.","That’s the answer to “tell me about yourself.”");
-    if(a.c_pay==="idk")g("You don’t know what this job pays.","You’ll be guessing when they ask.");else if(d&&a.c_pay&&+a.c_pay!==PAY_BAND[d.id])g("Your pay guess is off.",`You guessed ${PAY_L[+a.c_pay]}. ${d.t} interns usually make ${PAY_L[PAY_BAND[d.id]]}.`);
-    if(a.c_when==="unsure")g("You haven’t picked when to start.","Dates decide which postings to watch.")}
+    if(a.c_mode==="spec"){if(linkOk(a.c_link))w("A specific posting")}
+    else{const n=lineScore(a["c_line"]);if(n>=2)w("Clear goal");else g("You can’t say what job you want yet.",`You wrote ${q(a["c_line"]||"nothing",50)}. If you can’t say it, a recruiter can’t picture you in it.`,["Write one line: “I want to do ___ at ___.”","Say it out loud until it sounds true."])}
+    if(a.c_targets==="any")g("You’re applying to everything.","Recruiters can tell when an application isn’t for them.",["Pick 1 or 2 kinds of roles","Only apply to those for the next month."]);else if(a.c_targets==="one")w("Focused on 1–2 roles");
+    if(a.c_sure==="guess"||a.c_sure==="lean")g("You’re not sure this is the right direction.","It shows in interviews. Test it with one real conversation first.",S.results.career?["Talk to one person who does this job","Ask what they like least about it."]:["Take the career match quiz","5 min. See if this direction fits you.","career"]);else if(a.c_sure)w("Confident in your direction");
+    if(a.c_src==="guess"||a.c_src==="media")g("You haven’t heard about the job from someone who does it.",`Your picture comes from ${a.c_src==="guess"?"a guess":"TV or social media"}. The real job might be different.`,[`Watch or read one “day in the life” of ${r}`,"Better: ask someone who does it."]);else if(a.c_src==="talked"||a.c_src==="done")w("Know the real job");
+    if(a.c_tuesday!=null){if(dayScore(a.c_tuesday)<1.5)g("You can’t picture a normal day in the job.","Interviewers ask this. A vague answer reads as “hasn’t looked into it.”",[`Read 5 job posts for ${r}`,"List the tasks that keep repeating."]);else w("Know the day-to-day")}
+    if(a.c_skills){if(a.c_skills.includes("idk"))g("You don’t know which skills the job needs.","So your resume can’t show them.",[`Highlight the skills in 5 ${r} job posts`,"The ones that repeat are the ones that matter."]);else{const f=a.c_skills.filter(v=>v[0]==="f").map(v=>v.slice(2)),n=a.c_skills.filter(v=>v[0]==="r").length;if(f.length)g(`Some skills you picked aren’t what ${fld} jobs ask for.`,`${listJoin(f.map(x=>"“"+x+"”"))} rarely show up in those postings.`,[`Highlight the skills in 5 ${r} job posts`,"Lead with the ones that repeat."]);if(n>=3)w("Know the skills")}}
+    if(a.c_title&&(a.c_title.includes("idk")||a.c_title.some(v=>v[0]==="f")))g("You might be searching for the wrong job title.","Companies use specific names for the role. Search those.",["Write down the exact titles from 3 postings","Search by those from now on."]);
+    if(a.c_mode==="type"){if(a.c_cos3!=null&&!cosCount(a.c_cos3))g("You can’t name a company you’d want to work at.","Without targets, you end up applying everywhere.",["Name 3 companies you’d actually want","Brands you use or admire count."]);else if(a.c_cowhy!=null){if(whyScore(a.c_cowhy)<1.5)g("You can’t say why you picked those companies.",`You wrote ${q(a.c_cowhy,40)}. They will ask.`,["Write one specific reason for each company","Something they made or did that you noticed."]);else w("Know your target companies")}}
+    if(a.c_mode==="spec"&&a.c_team==="no")g(`You don’t know what the team at ${co} does.`,"That’s the first thing they’ll expect you to know.",[`Find 2 things the ${co} team shipped this year`,"Their site, LinkedIn posts or news."]);
+    if(a.c_best==="none")g("You don’t know where you do your best work yet.","That’s the answer to “tell me about yourself.”",["Write down 1 time you did great work","What were you doing? Who with?"]);
+    if(a.c_pay==="idk")g("You don’t know what this job pays.","You’ll be guessing when they ask.",[`Look up ${r} intern pay`,"Glassdoor or Levels. Write down the range."]);else if(d&&a.c_pay&&+a.c_pay!==PAY_BAND[d.id])g("Your pay guess is off.",`You guessed ${PAY_L[+a.c_pay]}. ${d.t} interns usually make ${PAY_L[PAY_BAND[d.id]]}.`,[`Note the real range: ${PAY_L[PAY_BAND[d.id]]}`,"Use it when they ask."]);
+    if(a.c_when==="unsure")g("You haven’t picked when to start.","Dates decide which postings to watch.",["Pick a start: summer, fall or spring","Then you know which deadlines matter."])}
   if(k==="art"){
-    if(!st){g(a.c_resfile==="none"||p.noResume?"You don’t have a resume yet.":"We didn’t get a resume to check.",a.c_resfile==="none"||p.noResume?"That’s the first thing to fix. Every application asks for one.":"Upload it in Profile to get it checked.")}
-    else{an.good.forEach(x=>w("Resume: "+x.t.charAt(0).toLowerCase()+x.t.slice(1)+"."));
-      if(d&&!DIR_KW[d.id].test(p.resumeText||""))g(`Your resume never mentions ${fld}.`,"Recruiters skim for it. If it’s not there, they won’t connect you to the role.");else if(d)w(`Your resume mentions ${fld}.`);
-      an.bad.forEach(x=>g("Resume: "+x.t.charAt(0).toLowerCase()+x.t.slice(1)+".",x.d));
-      if(a.c_mode==="spec")g(`Your resume isn’t tailored to ${co} yet.`,"The top third should match the posting.")}
-    if(a.c_lihead==="none")g("You don’t have a LinkedIn.","Recruiters look you up. Nothing there looks like a gap.");else if(a.c_lihead==="student")g("Your LinkedIn headline just says “Student at…”.","Make it name the role you want, so recruiters find you.");else if(a.c_lihead==="kinda")g("Your LinkedIn headline is vague.","Make it name the exact role you want.");else if(a.c_lihead==="yes")w("Your LinkedIn headline says what you’re going for.");
-    if(a.c_liprof==="neither")g("Your LinkedIn has no photo or About section.","Profiles without a photo get far fewer views.");else if(a.c_liprof==="one")g("Your LinkedIn is missing a photo or an About section.","Both take 10 minutes and make you look real.");else if(a.c_liprof==="both")w("Your LinkedIn has a photo and an About section.");
-    if(a.c_liconn==="0")g("Under 100 LinkedIn connections.","Start with classmates and alumni. It makes you easier to find.");else if(a.c_liconn==="500")w("500+ LinkedIn connections.");
-    if(a.c_lipost==="never")g("You’re invisible on LinkedIn.","You never post or comment, so nobody sees your name.");else if(a.c_lipost==="weekly"||a.c_lipost==="monthly")w("You’re active on LinkedIn.");
-    {const cv=analyzeCover(p,a);if(cv){cv.bad.forEach(x=>g("Cover letter: "+x.t.charAt(0).toLowerCase()+x.t.slice(1)+".",x.d));cv.good.slice(0,2).forEach(x=>w("Cover letter: "+x.t.charAt(0).toLowerCase()+x.t.slice(1)+"."))}else if(a.c_covfile==="none")g(`No cover letter for ${co}.`,"For a specific role, it’s where you say why them.")}}
+    if(!st){const none=a.c_resfile==="none"||p.noResume;g(none?"You don’t have a resume yet.":"We didn’t get a resume to check.",none?"That’s the first thing to fix. Every application asks for one.":"Upload it in Profile to get it checked.",none?["Make a one-page resume","Then upload it in Profile."]:["Upload your resume in Profile","We’ll check it in seconds."])}
+    else{an.good.forEach(x=>w(x.t.charAt(0).toUpperCase()+x.t.slice(1)));
+      if(d&&!DIR_KW[d.id].test(p.resumeText||""))g(`Your resume never mentions ${fld}.`,"Recruiters skim for it. If it’s not there, they won’t connect you to the role.",[`Add “${d.t}” to your resume’s top line`,"And to one bullet."]);else if(d)w(`Mentions ${fld}`);
+      an.bad.forEach(x=>g("Resume: "+x.t.charAt(0).toLowerCase()+x.t.slice(1)+".",x.d,[x.fix||"Fix this on your resume",x.fix?x.d:"Then upload it again."]));
+      if(a.c_mode==="spec")g(`Your resume isn’t tailored to ${co} yet.`,"The top third should match the posting.",[`Rewrite your resume’s top third for ${co}`,"Use words from the posting."])}
+    if(a.c_lihead==="none")g("You don’t have a LinkedIn.","Recruiters look you up. Nothing there looks like a gap.",["Make a LinkedIn","Photo, headline, your resume roles. 20 minutes."]);else if(a.c_lihead==="student")g("Your LinkedIn headline just says “Student at…”.","Make it name the role you want, so recruiters find you.",[`Change your headline to name ${r}`,"e.g. “Aspiring brand marketer | NYU ’27”."]);else if(a.c_lihead==="kinda")g("Your LinkedIn headline is vague.","Make it name the exact role you want.",[`Change your headline to name ${r}`,"Recruiters search by it."]);else if(a.c_lihead==="yes")w("Clear LinkedIn headline");
+    if(a.c_liprof==="neither")g("Your LinkedIn has no photo or About section.","Profiles without a photo get far fewer views.",["Add a photo and 3 lines of About","Who you are, what you want."]);else if(a.c_liprof==="one")g("Your LinkedIn is missing a photo or an About section.","Both take 10 minutes and make you look real.",["Add the missing photo or About","10 minutes."]);else if(a.c_liprof==="both")w("LinkedIn photo + About");
+    if(a.c_liconn==="0")g("Under 100 LinkedIn connections.","It makes you harder to find.",["Connect with 20 classmates and alumni","Easy yeses first."]);else if(a.c_liconn==="500")w("500+ connections");
+    if(a.c_lipost==="never")g("You’re invisible on LinkedIn.","You never post or comment, so nobody sees your name.",["Comment on 3 posts this week","From people in your field."]);else if(a.c_lipost==="weekly"||a.c_lipost==="monthly")w("Active on LinkedIn");
+    {const cv=analyzeCover(p,a);if(cv){cv.bad.forEach(x=>g("Cover letter: "+x.t.charAt(0).toLowerCase()+x.t.slice(1)+".",x.d,["Fix your cover letter: "+x.t.charAt(0).toLowerCase()+x.t.slice(1),x.d]));cv.good.slice(0,2).forEach(x=>w("Cover letter: "+x.t.charAt(0).toLowerCase()+x.t.slice(1)))}else if(a.c_covfile==="none")g(`No cover letter for ${co}.`,"For a specific role, it’s where you say why them.",[`Write a short cover letter for ${co}`,"3 paragraphs: why them, what you did, why you."])}}
   if(k==="str"){const mass=a.c_month==="all"||a.c_month==="tweak",none=manyApps(a)&&a.c_reply==="0";
-    if(none)g(`You’ve sent ${APPS_L[a.c_apps]} applications and gotten 0 interviews.`,"Sending more won’t fix it. Fewer, targeted ones will.");
-    else if(mass)g("Your plan is to keep sending lots of applications.","More of the same gets more of the same. Fewer, targeted ones work better.");
-    else if(a.c_month==="people")w("You plan to talk to people first, then apply. That’s how most internships get filled.");
-    if(a.c_how==="cold")g("Nobody at these companies knows your name.","Applications with a referral get looked at first.");else if(a.c_how==="ref")w("Your applications go through referrals.");
-    if(a.c_why!=null){if(whyScore(a.c_why)<1.5)g("Your “why this job?” answer sounds like everyone else’s.",`You said ${q(a.c_why,40)}. Recruiters hear that all day.`);else w("Your “why this job?” answer is specific and real.")}
-    {const ok=timingOk(a);if(ok===false&&d)g("You might be applying at the wrong time.",`${d.t} applications usually open ${postTime(d.id).replace(/^Posts early: usually |^Usually posts /,"")}.`);else if(a.c_open==="idk")g("You might be applying too late.","Many internships open months before they start.");else if(ok)w("You know when applications open.")}
-    if(a.c_mode==="spec"){if(a.c_whyco!=null&&whyScore(a.c_whyco)<1.5)g(`Your “why ${co}?” answer is too generic.`,"Name something they did that you actually noticed.");if(a.c_news==="no")g(`You haven’t read anything ${co} put out lately.`,"It’s the easiest way to sound like you care.");else if(a.c_news==="yes")w(`You’re following what ${co} is doing.`)}
-    if(a.c_cofind==="no")g("You haven’t checked what your target companies are hiring for.","You might be aiming at roles they don’t have.")}
+    if(none)g(`You’ve sent ${APPS_L[a.c_apps]} applications and gotten 0 interviews.`,"Sending more won’t fix it. Fewer, targeted ones will.",["Stop mass-applying for 2 weeks","Send 3 tailored applications instead."]);
+    else if(mass)g("Your plan is to keep sending lots of applications.","More of the same gets more of the same. Fewer, targeted ones work better.",["Pick your 5 best-fit postings","Tailor each one. Skip the rest."]);
+    else if(a.c_month==="people")w("Talk first, then apply");
+    if(a.c_how==="cold")g("Nobody at these companies knows your name.","Applications with a referral get looked at first.",["Before you apply, message 1 person there","Ask a question, not for a job."]);else if(a.c_how==="ref")w("Applying through referrals");
+    if(a.c_why!=null){if(whyScore(a.c_why)<1.5)g("Your “why this job?” answer sounds like everyone else’s.",`You said ${q(a.c_why,40)}. Recruiters hear that all day.`,["Rewrite your “why this job?” answer","One thing you did + why it points here."]);else w("Strong “why this job”")}
+    {const ok=timingOk(a);if(ok===false&&d)g("You might be applying at the wrong time.",`${d.t} applications usually open ${postTime(d.id).replace(/^Posts early: usually |^Usually posts /,"")}.`,["Set a reminder for when applications open",`${d.t}: ${postTime(d.id).replace(/^Posts early: usually |^Usually posts /,"")}.`]);else if(a.c_open==="idk")g("You might be applying too late.","Many internships open months before they start.",[d?`Look up when ${fld} roles open`:"Look up when your target roles open","Then set a reminder a week before."]);else if(ok)w("Know when apps open")}
+    if(a.c_mode==="spec"){if(a.c_whyco!=null&&whyScore(a.c_whyco)<1.5)g(`Your “why ${co}?” answer is too generic.`,"Name something they did that you actually noticed.",[`Rewrite “why ${co}?” with one specific thing`,"A launch, a campaign, a value you share."]);if(a.c_news==="no")g(`You haven’t read anything ${co} put out lately.`,"It’s the easiest way to sound like you care.",[`Read 2 recent things from ${co}`,"Their blog, LinkedIn or news."]);else if(a.c_news==="yes")w(`Following ${co}`)}
+    if(a.c_cofind==="no")g("You haven’t checked what your target companies are hiring for.","You might be aiming at roles they don’t have.",["Check the careers page of 3 target companies","Note which roles they post."])}
   if(k==="net"){
-    if(a.c_mode==="spec"){if(a.c_insider==="no")g(`You don’t know anyone at ${co}.`,"One person inside can get your application read.");else if(a.c_insider==="talked")w(`You’ve talked to someone at ${co}.`)}
-    if(a.c_ref==="none")g("Nobody would refer you yet.","Referrals are the fastest way past the pile.");else if(a.c_ref==="maybe")g("You’re not sure anyone would refer you.","Ask the people you know. Most say yes if you ask clearly.");else if(a.c_ref==="yes")w("Someone would refer you.");
-    if(a.c_people==="0")g("You haven’t talked to anyone in your field lately.","Zero conversations in 3 months means nobody knows you’re looking.");else if(a.c_people==="1")g("You’ve only talked to 1 person in your field lately.","A few more conversations and someone will think of you when a role opens.");else if(a.c_people==="3"||a.c_people==="6")w("You’re talking to people in your field.");
-    if(a.c_chat==="never")g("You’ve never had a coffee chat.","It’s a 15-minute call. It’s how most people get referred.");else if(a.c_chat==="once")g("You’ve only had one coffee chat.","One is a start. Three is when they start turning into referrals.");else if(a.c_chat==="few"||a.c_chat==="lots")w("You’ve done coffee chats before.")}
-  return{gaps:G,why:Y,wins:W}}
+    if(a.c_mode==="spec"){if(a.c_insider==="no")g(`You don’t know anyone at ${co}.`,"One person inside can get your application read.",[`Find 3 people at ${co} on LinkedIn`,"Alumni from your school first."]);else if(a.c_insider==="talked")w(`Talked to someone at ${co}`)}
+    if(a.c_ref==="none")g("Nobody would refer you yet.","Referrals are the fastest way past the pile.",["Ask one person you know for a referral","Or for one intro to someone who could."]);else if(a.c_ref==="maybe")g("You’re not sure anyone would refer you.","Ask the people you know. Most say yes if you ask clearly.",["Ask one person directly for a referral","Name the role and send your resume."]);else if(a.c_ref==="yes")w("Someone would refer you");
+    if(a.c_people==="0")g("You haven’t talked to anyone in your field lately.","Zero conversations in 3 months means nobody knows you’re looking.",[`Message 2 people working in ${r}`,"Short and specific. Ask for 15 minutes."]);else if(a.c_people==="1")g("You’ve only talked to 1 person in your field lately.","A few more and someone will think of you when a role opens.",["Message 2 more people this week","Ask the first person who else to talk to."]);else if(a.c_people==="3"||a.c_people==="6")w("Talking to people");
+    if(a.c_chat==="never")g("You’ve never had a coffee chat.","It’s a 15-minute call. It’s how most people get referred.",["Have one coffee chat","Ask what their week actually looks like."]);else if(a.c_chat==="once")g("You’ve only had one coffee chat.","One is a start. Three is when they turn into referrals.",["Book 2 more coffee chats","Follow up with the first person too."]);else if(a.c_chat==="few"||a.c_chat==="lots")w("Coffee chats done")}
+  return{gaps:G,why:Y,fixes:F,wins:W}}
+/* top 3 gaps, each with its matching fix as a tickable step */
+function areaPairs(k,a,p){const G=areaGaps(k,a,p),seen={};const out=[];G.gaps.forEach((t,i)=>{if(out.length>=3)return;const f=G.fixes[i]||["Work on this",""];if(seen[f[0]])return;seen[f[0]]=1;out.push({gap:t,why:G.why[i],fix:{t:f[0],sub:f[1]||"",quiz:f[2]||null,key:k+":"+f[0]}})});return{pairs:out,wins:G.wins}}
+const AREA_LEAD={cla:["You know what you want.","You mostly know what you want.","You don’t know what you want yet."],art:["Your resume and LinkedIn back you up.","Your resume and LinkedIn need some work.","Your resume and LinkedIn are holding you back."],
+  str:["You’re applying the smart way.","Your approach is close.","The way you’re applying isn’t working yet."],net:["You know people who can get you in.","You know a few people. Not enough yet.","Nobody in your field knows you yet."]};
+function areaLine(k,v,n){return AREA_LEAD[k][v>=75?0:v>=45?1:2]+" "+(n===0?"Nothing to fix here.":n===1?"One thing to fix.":`${n} things to fix.`)}
 function whyLow(k,a,p){return areaGaps(k,a,p).gaps.slice(0,3)}
 const GOOD_L={cla:"You know what you want and what the job really is.",art:"Your resume, cover letter and LinkedIn back you up.",net:"You already know people in your field.",str:"You’re going after it the smart way."};
 const AREA_ACT={
@@ -1607,10 +1621,7 @@ const AREA_ACT={
 function planFor(R){const p=S.profile||{},a=S.answers.arch||{},r=roleText(),an=analyzeResume(p);
   const areas=DIMS.map(d=>({...d,score:R.dims[d.k]})).sort((x,y)=>x.score-y.score);
   const fix=areas.filter(x=>x.score<75),keep=areas.filter(x=>x.score>=75);if(!fix.length&&areas.length)fix.push(areas[0]);
-  fix.forEach(x=>{x.why=whyLow(x.k,a,p);let acts=AREA_ACT[x.k](r);
-    if(x.k==="art"){const rf=an?an.bad.filter(b=>b.fix).map(b=>[b.fix,b.d]):[];if(!p.resumeStats)rf.unshift(["Make a one-page resume","Use our template, then upload it here."]);acts=[...rf,...acts]}
-    if(x.k==="cla"&&S.results.career)acts=acts.filter(z=>z[2]!=="career");
-    x.acts=acts.slice(0,3).map(z=>({t:z[0],sub:z[1],quiz:z[2]||null,key:x.k+":"+z[0]}))});
+  fix.forEach(x=>{x.why=whyLow(x.k,a,p);x.acts=areaActs(x.k,R)});
   const strengths=[...keep.map(x=>({t:x.q.replace(/\?$/,"")+": yes",d:GOOD_L[x.k]})),...(an?an.good.slice(0,3):[])];
   const all=fix.flatMap(x=>x.acts),dn=S.stepsDone||{};
   return {fix,keep,strengths,all,done:all.filter(z=>dn[z.key]).length,next:all.find(z=>!dn[z.key])}}
@@ -1860,17 +1871,16 @@ function vBreakOld(){const R=archR0();if(!R)return go("home"),"";const a=S.answe
       return `<a class="rt rt2" href="#area-${d.k}"><div class="t2-h"><b>${esc(d.n)}</b></div><div class="t2-r"><div><span class="t2-n">${v}<small>%</small></span></div><span class="dnw">${donut(v,c)}</span></div></a>`}).join("")}</div>
     <a class="btn bk-cta" href="#steps">See my next steps</a>
   </main>`,{tabs:"me"})}
-function vArea(k){const R=archR0(),d=DIMS.find(x=>x.k===k);if(!R||!d)return go("breakdown"),"";const a=S.answers.arch,p=S.profile||{},v=R.dims[k],[w,c]=verdict(v),G=areaGaps(k,a,p),r=roleText(),dn=S.stepsDone||{};
-  const acts=(k==="art"&&analyzeResume(p)?[...analyzeResume(p).bad.filter(b=>b.fix).map(b=>[b.fix,b.d]),...AREA_ACT[k](r)]:AREA_ACT[k](r)).slice(0,3).map(z=>({t:z[0],sub:z[1],quiz:z[2]||null,key:k+":"+z[0]}));
+function vArea(k){const R=archR0(),d=DIMS.find(x=>x.k===k);if(!R||!d)return go("me"),"";const a=S.answers.arch,p=S.profile||{},v=R.dims[k],A=areaPairs(k,a,p);
   return shell(`<main class="screen anim-in ar">
     <a class="txt" href="#me" style="align-self:flex-start;padding-left:0">← Back</a>
-    <h1 class="stp-h ar-h" style="text-align:center;font-size:38px;margin:14px 0 4px">${esc(d.n)}</h1><p class="ar-q ar-qq">${esc(d.q)}</p>
-    <div class="ar-top"><div class="bk-v big">${v}<small>%</small></div><span class="vd ${c}">${w}</span></div>
-    <div class="bar2" style="margin-bottom:8px"><i class="${c}" style="width:${Math.max(3,v)}%"></i></div>
-    <div class="ar-cols"><section class="ar-col">${G.gaps.length?`<h2 class="sech">What’s holding you back</h2><div class="gcard">${G.gaps.slice(0,3).map((t,i)=>`<div class="swi" style="padding:14px 16px">${ICON_NO}<div><b>${esc(t)}</b>${G.why[i]?`<span>${esc(G.why[i])}</span>`:""}</div></div>`).join("")}</div>`:`<h2 class="sech">Nothing holding you back</h2><p class="sub">This is a strength. Keep it that way.</p>`}</section>
-    ${G.wins.length?`<section class="ar-col">`+`<h2 class="sech">What’s working</h2><div class="gcard">${G.wins.slice(0,3).map(t=>`<div class="swi" style="padding:14px 16px">${ICON_OK}<div><b>${esc(t)}</b></div></div>`).join("")}</div></section>`:""}
-    ${G.gaps.length?`<section class="ar-col"><h2 class="sech">Do this next</h2><div class="steps">${actRows(acts)}</div></section>`:""}</div>
-    
+    <h1 class="stp-h ar-h" style="text-align:center;font-size:38px;margin:14px 0 4px">${esc(d.n)}</h1>
+    <div class="ar-sum"><div class="bk-v big">${v}<small>%</small></div><p>${esc(areaLine(k,v,A.pairs.length))}</p></div>
+    <div class="bar2" style="margin-bottom:8px"><i style="width:${Math.max(3,v)}%"></i></div>
+    <div class="ar-cols">
+      <section class="ar-col ar-main">${A.pairs.length?`<h2 class="sech">Fix this</h2>${A.pairs.map(x=>`<div class="gp"><div class="gp-p">${ICON_NO}<div><b>${esc(x.gap)}</b>${x.why?`<span>${esc(x.why)}</span>`:""}</div></div>${actRows([x.fix])}</div>`).join("")}`:`<h2 class="sech">Nothing to fix</h2><p class="sub">This is a strength. Keep it that way.</p>`}</section>
+      ${A.wins.length?`<section class="ar-col ar-side"><h2 class="sech">What’s working</h2><div class="chips">${A.wins.slice(0,6).map(t=>`<span class="okchip">✓ ${esc(t)}</span>`).join("")}</div></section>`:""}
+    </div>
   </main>`,{tabs:"me"})}
 function verdict(v){return v>=75?["Yes","y"]:v>=50?["Almost","a"]:v>=25?["Not yet","n"]:["Not at all","x"]}
 function areaRows(R,a){const p=S.profile||{};return `<div class="areas">${DIMS.map(d=>{const v=R.dims[d.k],[w,c]=verdict(v),why=v>=75?GOOD_L[d.k]:(whyLow(d.k,a,p)[0]||d.d);return `<div class="arow"><div class="arow-t"><b>${esc(d.q)}</b><span class="vd ${c}">${w}</span></div><div class="bar2"><i class="${c}" style="width:${Math.max(3,v)}%"></i></div><p>${esc(why)}</p></div>`}).join("")}</div>`}
@@ -1884,8 +1894,7 @@ art:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(7 60 60)
 str:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(-6 60 60)"><circle cx="56" cy="64" r="42" fill="#fff"/><circle cx="56" cy="64" r="36" fill="#E3EED7" stroke="#15261F" stroke-width="3"/><circle cx="56" cy="64" r="24" fill="#fff" stroke="#15261F" stroke-width="3"/><circle cx="56" cy="64" r="11" fill="#5E8F4A" stroke="#15261F" stroke-width="3"/><path d="M56 64 L96 24" stroke="#15261F" stroke-width="4" stroke-linecap="round"/><path d="M90 18 l10 -2 -2 10 -10 2z" fill="#E4EFD8" stroke="#15261F" stroke-width="2.5" stroke-linejoin="round"/></g></svg>`,
 net:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(5 60 60)"><path d="M22 34h52a10 10 0 0 1 10 10v22a10 10 0 0 1-10 10H46l-14 12v-12h-10a10 10 0 0 1-10-10V44a10 10 0 0 1 10-10z" fill="#fff"/><path d="M24 38h48a8 8 0 0 1 8 8v18a8 8 0 0 1-8 8H46l-11 9v-9H24a8 8 0 0 1-8-8V46a8 8 0 0 1 8-8z" fill="#E4EFD8" stroke="#15261F" stroke-width="3" stroke-linejoin="round"/><circle cx="36" cy="55" r="3.5" fill="#15261F"/><circle cx="48" cy="55" r="3.5" fill="#15261F"/><circle cx="60" cy="55" r="3.5" fill="#15261F"/></g><g transform="rotate(-8 82 82)"><path d="M66 70h34a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8h-4v8l-10-8H66a8 8 0 0 1-8-8V78a8 8 0 0 1 8-8z" fill="#CDEBD9" stroke="#15261F" stroke-width="3" stroke-linejoin="round"/><path d="M74 84l6 6 12-12" stroke="#15261F" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg>`};
 const STK_BG={cla:"#F1F6EA",art:"#F1F6EA",str:"#F1F6EA",net:"#EEF4E6"};
-function areaActs(k,R){const pl=planFor(R),f=pl.fix.find(x=>x.k===k);if(f)return f.acts;const a=S.answers.arch,p=S.profile||{},r=roleText();
-  return (k==="art"&&analyzeResume(p)?[...analyzeResume(p).bad.filter(b=>b.fix).map(b=>[b.fix,b.d]),...AREA_ACT[k](r)]:AREA_ACT[k](r)).slice(0,3).map(z=>({t:z[0],sub:z[1],quiz:z[2]||null,key:k+":"+z[0]}))}
+function areaActs(k,R){return areaPairs(k,S.answers.arch||{},S.profile||{}).pairs.map(x=>x.fix)}
 function board(name,all,areas,demo){const now=demo?new Date("2026-11-24T12:00:00"):new Date(),day=now.toLocaleDateString("en-US",{weekday:"long"}),date=now.toLocaleDateString("en-US",{day:"numeric",month:"long"});
   return `<p class="ns-d"><b>${day}</b><span>${date}</span></p>
     <div class="ns-big">${all}<small>%</small></div>
