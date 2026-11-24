@@ -932,6 +932,15 @@ body.has-devbar{padding-top:34px}
 .pf-ns .ns-c{flex:0 0 316px!important;height:338px!important}
 .pf-in .hs-tabs{height:74px;padding-bottom:10px;font-size:14px}
 .fchip.c3{top:97.5%!important}
+/* dashboard on desktop: everything visible, full width, left aligned */
+@media (min-width:900px){
+  main.ns:not(.pf-ns){max-width:1200px!important;width:100%;padding-left:48px;padding-right:48px;align-items:stretch}
+  main.ns .ns-big,main.ns .ns-l{text-align:left}
+  main.ns .ns-big{margin-top:18px}
+  main.ns .ns-row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;overflow:visible;margin:0;padding:4px 0 24px;scroll-snap-type:none}
+  main.ns .ns-c{flex:none;max-width:none;width:auto;aspect-ratio:1/1.05}
+  main.ns .ns-c b{font-size:clamp(26px,2.6vw,36px)}
+}
 </style>
 </head>
 <body>
