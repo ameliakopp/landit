@@ -926,6 +926,7 @@ p,li,.sub,label,input,textarea,button{letter-spacing:0}
 .devbar{position:fixed;left:0;right:0;top:0;z-index:9999;display:flex;gap:6px;align-items:center;overflow-x:auto;white-space:nowrap;scrollbar-width:none;height:34px;padding:0 10px;background:#15261F;color:#fff;font:12px/1 system-ui,sans-serif}
 .devbar::-webkit-scrollbar{display:none}.devbar b{color:#A9D18C;margin-right:4px}.devbar a{color:#fff;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.1);flex:none}.devbar a.on{background:#A9D18C;color:#15261F}
 body.has-devbar{padding-top:34px}
+.devskip{position:fixed;right:12px;bottom:110px;z-index:9998;padding:9px 14px;border-radius:999px;background:#15261F;color:#fff;font:600 13px/1 system-ui,sans-serif;box-shadow:0 8px 20px -8px rgba(0,0,0,.4)}
 </style>
 </head>
 <body>
@@ -948,16 +949,20 @@ let S=(()=>{try{const s=JSON.parse(localStorage.getItem(STORE));if(s&&s.v==="clo
 
 /* =====================================================================
    DEV ONLY: skip a quiz and preview its result screen.
-   Works only on localhost / 127.0.0.1 / file:// — never on the live site.
-     ?skipQuiz=true                         readiness result, sample 1
+   On by default on localhost / 127.0.0.1 / file://.
+   On the live site it's off for everyone. Turn it on for YOUR browser only:
+     https://ameliakopp.github.io/landit/?devmode=on    (…?devmode=off to turn off)
+   Then a dev strip with sample links appears at the top, and quiz screens
+   get a "Skip to results" button. Or use the URL directly:
      ?skipQuiz=true&quiz=arch&result=3      readiness sample 3
      ?skipQuiz=true&quiz=career&result=2    career sample 2
    Preview data lives in memory only: nothing is saved to localStorage or
-   the cloud. Remove ?skipQuiz from the URL and reload to get your real data.
+   the cloud. Leave the ?skipQuiz URL to get your real data back.
    ===================================================================== */
-const DEV_HOST=location.protocol==="file:"||/^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])$/.test(location.hostname);
 const DEV_Q=new URLSearchParams(location.search);
-const DEV_PREVIEW=DEV_HOST&&DEV_Q.get("skipQuiz")==="true";
+const DEV_ON=(()=>{const k="hirable.dev";try{if(DEV_Q.get("devmode")==="on")localStorage.setItem(k,"1");if(DEV_Q.get("devmode")==="off")localStorage.removeItem(k)}catch(e){}
+  if(location.protocol==="file:"||/^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])$/.test(location.hostname))return true;try{return localStorage.getItem(k)==="1"}catch(e){return false}})();
+const DEV_PREVIEW=DEV_ON&&DEV_Q.get("skipQuiz")==="true";
 if(DEV_PREVIEW)S=fresh();
 function save(){if(DEV_PREVIEW)return;try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}cloudSave()}
 const UI={msg:"",busy:false,mode:"signup",help:null,toast:null,parse:null};
@@ -1893,7 +1898,7 @@ function render(){const r=route();let html;
   else if(r==="me")html=vMe();else if(r==="steps")html=vSteps();else if(r==="about")html=vAbout();else if(r==="breakdown")html=vBreak();else if(r.startsWith("area-"))html=vArea(r.slice(5));else html=vHome();
   const vk=UI.loading?"load":r+(r.startsWith("q-")&&S.draft[r.slice(2)]?":"+S.draft[r.slice(2)].i:"");document.body.classList.toggle("still",UI.lastView===vk);UI.lastView=vk;
   const ae=document.activeElement,keep=ae&&ae.id&&/^(pf-|qz-text|au-|help-|paste)/.test(ae.id)?[ae.id,ae.selectionStart]:null;
-  $("#app").innerHTML=html+((r==="home"&&!UI.loading)||UI.help?helpUI():"")+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:"");
+  $("#app").innerHTML=html+devSkipBtn(r)+((r==="home"&&!UI.loading)||UI.help?helpUI():"")+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:"");
   fitHook();
   const np=[...document.querySelectorAll(".part.pop")].pop();if(np&&!keep)setTimeout(()=>np.scrollIntoView({behavior:"smooth",block:"nearest"}),60);
   if(keep){const el=document.getElementById(keep[0]);if(el){el.focus();try{el.setSelectionRange(keep[1],keep[1])}catch(e){}}}}
@@ -2006,16 +2011,18 @@ const DEV_SAMPLES={
       rate1:{caption:"maybe",sheet:"no",pitch:"love",screen:"maybe",event:"love",interview:"love",code:"no",coach:"love"},rate2_t:["ceo","market","vibe","film","edit","why"],rate2:{ceo:"love",market:"love",vibe:"maybe",film:"maybe",edit:"no",why:"maybe"},
       rate3_t:["collab","launch","poster","survey"],rate3:{collab:"love",launch:"love",poster:"maybe",survey:"no"},qval:["people","money"],q_val1:"people",qind:["media","sports"],qnot:["stem"],q_tried:["sales"],q_people:"3"}}}};
 /* fills S the same way finishing the quiz does, then opens the result screen */
-function devSkipQuiz(){if(!DEV_PREVIEW)return;
+function devSkipQuiz(){if(!DEV_ON)return;
   const k=DEV_Q.get("quiz")==="career"?"career":"arch",n=DEV_Q.get("result")||"1",sm=(DEV_SAMPLES[k]||{})[n];
-  if(!sm){console.warn(`[dev] no sample "${n}" for quiz "${k}". Options: ${Object.keys(DEV_SAMPLES[k]).join(", ")}`);return}
-  const a=JSON.parse(JSON.stringify(sm.answers));S.answers[k]=a;S.draft[k]={i:0,a:{},stack:[]};
-  if(k==="arch"){S.profile=JSON.parse(JSON.stringify(sm.profile));const R=readiness(a);S.results.arch={score:R.score,stage:R.stage,dims:R.dims,at:new Date().toISOString().slice(0,10)};S.stepsDone={}}
-  else{const m=careerResult(flatPairs(a));S.results.career={top:m.map(x=>({id:x.d.id,pct:x.pct,loves:x.loves,likes:x.likes,rb:x.rb})),at:new Date().toISOString().slice(0,10)}}
-  if(!location.hash)location.hash="r-"+k;
-  const bar=document.createElement("div");bar.className="devbar";
-  bar.innerHTML=`<b>DEV PREVIEW</b> ${["arch","career"].map(q=>Object.entries(DEV_SAMPLES[q]).map(([i,x])=>`<a href="?skipQuiz=true&quiz=${q}&result=${i}#r-${q}" class="${q===k&&i===n?"on":""}">${q==="arch"?"Ready":"Career"} ${i}: ${esc(x.label)}</a>`).join("")).join("")}`;
+  if(DEV_PREVIEW){if(!sm)console.warn(`[dev] no sample "${n}" for quiz "${k}". Options: ${Object.keys(DEV_SAMPLES[k]).join(", ")}`);else{
+    const a=JSON.parse(JSON.stringify(sm.answers));S.answers[k]=a;S.draft[k]={i:0,a:{},stack:[]};
+    if(k==="arch"){S.profile=JSON.parse(JSON.stringify(sm.profile));const R=readiness(a);S.results.arch={score:R.score,stage:R.stage,dims:R.dims,at:new Date().toISOString().slice(0,10)};S.stepsDone={}}
+    else{const m=careerResult(flatPairs(a));S.results.career={top:m.map(x=>({id:x.d.id,pct:x.pct,loves:x.loves,likes:x.likes,rb:x.rb})),at:new Date().toISOString().slice(0,10)}}
+    if(!location.hash)location.hash="r-"+k}}
+  const base=location.pathname,bar=document.createElement("div");bar.className="devbar";
+  bar.innerHTML=`<b>DEV</b> ${["arch","career"].map(q=>Object.entries(DEV_SAMPLES[q]).map(([i,x])=>`<a href="${base}?skipQuiz=true&quiz=${q}&result=${i}#r-${q}" class="${DEV_PREVIEW&&q===k&&i===n?"on":""}">${q==="arch"?"Ready":"Career"} ${i}: ${esc(x.label)}</a>`).join("")).join("")}<a href="${base}#home">Real data</a><a href="${base}?devmode=off#home">Turn off</a>`;
   document.body.appendChild(bar);document.body.classList.add("has-devbar")}
+/* "Skip to results" button on quiz screens, dev mode only */
+function devSkipBtn(r){if(!DEV_ON||!r.startsWith("q-"))return"";const k=r.slice(2);return `<a class="devskip" href="${location.pathname}?skipQuiz=true&quiz=${k}&result=1#r-${k}">Skip to results ⏭</a>`}
 devSkipQuiz();
 render();
 </script>
