@@ -941,6 +941,15 @@ body.has-devbar{padding-top:34px}
   main.ns .ns-c{flex:none;max-width:none;width:auto;aspect-ratio:1/1.05}
   main.ns .ns-c b{font-size:clamp(26px,2.6vw,36px)}
 }
+.ar-cols{display:flex;flex-direction:column}.ar-col{display:flex;flex-direction:column}
+@media (min-width:900px){
+  main.ar{max-width:1200px!important;width:100%;padding-left:48px;padding-right:48px}
+  main.ar .ar-h{text-align:left!important;font-size:48px!important}
+  main.ar .ar-qq{text-align:left}
+  main.ar .ar-cols{display:flex;flex-direction:row;gap:28px;align-items:flex-start;margin-top:8px}
+  main.ar .ar-col{flex:1 1 0;min-width:0}
+  main.ar .ar-col .sech{margin-top:28px}
+}
 </style>
 </head>
 <body>
@@ -1801,14 +1810,14 @@ function vBreakOld(){const R=archR0();if(!R)return go("home"),"";const a=S.answe
   </main>`,{tabs:"me"})}
 function vArea(k){const R=archR0(),d=DIMS.find(x=>x.k===k);if(!R||!d)return go("breakdown"),"";const a=S.answers.arch,p=S.profile||{},v=R.dims[k],[w,c]=verdict(v),G=areaGaps(k,a,p),r=roleText(),dn=S.stepsDone||{};
   const acts=(k==="art"&&analyzeResume(p)?[...analyzeResume(p).bad.filter(b=>b.fix).map(b=>[b.fix,b.d]),...AREA_ACT[k](r)]:AREA_ACT[k](r)).slice(0,3).map(z=>({t:z[0],sub:z[1],quiz:z[2]||null,key:k+":"+z[0]}));
-  return shell(`<main class="screen anim-in">
+  return shell(`<main class="screen anim-in ar">
     <a class="txt" href="#me" style="align-self:flex-start;padding-left:0">← Back</a>
-    <h1 class="stp-h" style="text-align:center;font-size:38px;margin:14px 0 4px">${esc(d.n)}</h1><p class="ar-q">${esc(d.q)}</p>
+    <h1 class="stp-h ar-h" style="text-align:center;font-size:38px;margin:14px 0 4px">${esc(d.n)}</h1><p class="ar-q ar-qq">${esc(d.q)}</p>
     <div class="ar-top"><div class="bk-v big">${v}<small>%</small></div><span class="vd ${c}">${w}</span></div>
     <div class="bar2" style="margin-bottom:8px"><i class="${c}" style="width:${Math.max(3,v)}%"></i></div>
-    ${G.gaps.length?`<h2 class="sech">The gaps.</h2><div class="gcard">${G.gaps.map(t=>`<div class="swi" style="padding:14px 16px">${ICON_NO}<div><b>${esc(t)}</b></div></div>`).join("")}</div>`:`<h2 class="sech">No gaps here.</h2><p class="sub">This is a strength. Keep it that way.</p>`}
-    ${G.wins.length?`<h2 class="sech">What’s working.</h2><div class="gcard">${G.wins.map(t=>`<div class="swi" style="padding:14px 16px">${ICON_OK}<div><b>${esc(t)}</b></div></div>`).join("")}</div>`:""}
-    ${G.gaps.length?`<h2 class="sech">How to fix it.</h2><div class="steps">${actRows(acts)}</div>`:""}
+    <div class="ar-cols"><section class="ar-col">${G.gaps.length?`<h2 class="sech">The gaps.</h2><div class="gcard">${G.gaps.map(t=>`<div class="swi" style="padding:14px 16px">${ICON_NO}<div><b>${esc(t)}</b></div></div>`).join("")}</div>`:`<h2 class="sech">No gaps here.</h2><p class="sub">This is a strength. Keep it that way.</p>`}</section>
+    ${G.wins.length?`<section class="ar-col">`+`<h2 class="sech">What’s working.</h2><div class="gcard">${G.wins.map(t=>`<div class="swi" style="padding:14px 16px">${ICON_OK}<div><b>${esc(t)}</b></div></div>`).join("")}</div></section>`:""}
+    ${G.gaps.length?`<section class="ar-col"><h2 class="sech">How to fix it.</h2><div class="steps">${actRows(acts)}</div></section>`:""}</div>
     
   </main>`,{tabs:"me"})}
 function verdict(v){return v>=75?["Yes","y"]:v>=50?["Almost","a"]:v>=25?["Not yet","n"]:["Not at all","x"]}
