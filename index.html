@@ -812,6 +812,15 @@ html,body{background:#F4F3F1;color:#151515}
 .sub,.t2,.tl .d,.step small,.swi span,.why li,.t2-p,.ar-p,.qsub,.plabel,.cap,.kick{font-weight:500}
 .step b,.swi b{font-weight:600}
 .sech{font-family:var(--sans)!important;font-weight:800!important;letter-spacing:-.03em!important;font-size:24px!important}
+.stp-c{padding:18px 18px 16px}
+.stp-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pbar{position:relative;display:block;height:14px;border-radius:999px;background:rgba(255,255,255,.8);box-shadow:inset 0 0 0 1px rgba(21,21,21,.05);overflow:visible;margin:4px 0 2px}
+.pbar>i{position:absolute;left:0;top:0;bottom:0;width:var(--p);border-radius:999px;background:linear-gradient(90deg,#F2B7DD,#FF8A6A 70%,#FFB46B);box-shadow:0 4px 12px -4px rgba(255,106,61,.6);animation:pgrow 1.2s var(--ease) both}
+@keyframes pgrow{from{width:0}}
+.pbar em{position:absolute;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#fff;border:2px solid rgba(21,21,21,.18)}
+.pbar em.hit{background:#151515;border-color:#151515}
+.stp-m{flex-wrap:wrap}.stp-m b{font-size:15px;font-weight:800;color:#151515}
+.stp-v{margin-left:auto;display:flex;align-items:center;gap:6px}
 </style>
 </head>
 <body>
@@ -1660,7 +1669,6 @@ function vArea(k){const R=archR0(),d=DIMS.find(x=>x.k===k);if(!R||!d)return go("
   const acts=(k==="art"&&analyzeResume(p)?[...analyzeResume(p).bad.filter(b=>b.fix).map(b=>[b.fix,b.d]),...AREA_ACT[k](r)]:AREA_ACT[k](r)).slice(0,3).map(z=>({t:z[0],sub:z[1],quiz:z[2]||null,key:k+":"+z[0]}));
   return shell(`<main class="screen anim-in">
     <a class="txt" href="#steps" style="align-self:flex-start;padding-left:0">← Next steps</a>
-    <div class="ar-hero" style="--bg:${STK_BG[k]}">${STICK[k]}</div>
     <h1 class="stp-h" style="text-align:center;font-size:38px;margin:14px 0 4px">${esc(d.n)}</h1><p class="ar-q">${esc(d.q)}</p>
     <div class="ar-top"><div class="bk-v big">${v}<small>%</small></div><span class="vd ${c}">${w}</span></div>
     <div class="bar2" style="margin-bottom:8px"><i class="${c}" style="width:${Math.max(3,v)}%"></i></div>
@@ -1689,7 +1697,10 @@ function vSteps(){const R=archR0();if(!R)return go("home"),"";const dn=S.stepsDo
     <h1 class="stp-h">Next steps</h1>
     <div class="stp-tabs"><span class="on">To work on <i>${areas.filter(x=>x.v<75).length}</i></span><span>Done <i>${done}/${tot}</i></span></div>
     <div class="stp-list">${areas.map((x,i)=>{const acts=areaActs(x.k,R),d=acts.filter(z=>dn[z.key]).length,[w,c]=verdict(x.v);
-      return `<a class="stp-c" href="#area-${x.k}" style="--bg:${STK_BG[x.k]};animation-delay:${i*70}ms"><span class="stp-art">${STICK[x.k]}</span><span class="stp-t"><b>${esc(x.n)}</b><span class="stp-m"><i class="dot ${c}"></i>${w}<em>·</em>${d}/${acts.length} done</span></span><span class="stp-go">›</span></a>`}).join("")}</div>
+      const pr=Math.round(x.v+(100-x.v)*(acts.length?d/acts.length:0)),left=acts.length-d;
+      return `<a class="stp-c" href="#area-${x.k}" style="--bg:${STK_BG[x.k]};--p:${pr}%;animation-delay:${i*70}ms"><span class="stp-t"><span class="stp-row"><b>${esc(x.n)}</b><span class="stp-go">›</span></span>
+        <span class="pbar"><i></i>${acts.map((_,j)=>`<em style="left:${Math.round(x.v+(100-x.v)*(j+1)/acts.length)}%" class="${j<d?"hit":""}"></em>`).join("")}</span>
+        <span class="stp-m"><b>${pr}%</b> there<em>·</em>${left?`${left} step${left>1?"s":""} left`:"All done ✓"}<span class="stp-v"><i class="dot ${c}"></i>${w}</span></span></span></a>`}).join("")}</div>
     <button class="txt" data-act="begin" data-k="arch" style="margin-top:22px">Retake the quiz to see your new score</button>
   </main>`,{tabs:"steps"})}
 function vMe(){const p=S.profile||{},R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,pl=planFor(R),self=a.c_self!=null?+a.c_self:null,rc=S.results.career,c1=rc&&DIRS.find(d=>d.id===rc.top[0].id),ab=applyBy(a),days=ab?Math.round((new Date(ab)-new Date(TODAY))/DAY):null;
