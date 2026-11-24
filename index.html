@@ -1022,6 +1022,12 @@ main.pf2{align-items:center;text-align:center;padding-top:28px}
 @media (min-width:900px){.cr-top{justify-content:space-between}}
 .cr-next .step .go2{flex:none;white-space:nowrap}
 @media (min-width:761px){.ab-main{max-width:1280px!important;column-gap:clamp(90px,11vw,200px)!important}}
+/* selected option: no pop, a quick shine sweep on the one you just tapped */
+[aria-pressed="true"],.still [aria-pressed="true"]{animation:none!important}
+.shine{position:relative;overflow:hidden}
+.shine::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:50%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-18deg);animation:shine .7s var(--ease) forwards;pointer-events:none}
+@keyframes shine{to{left:130%}}
+@media (prefers-reduced-motion:reduce){.shine::after{display:none}}
 </style>
 </head>
 <body>
@@ -2021,10 +2027,12 @@ function render(){const r=route();let html;
   else if(r==="r-arch")html=vResArch();else if(r==="r-career")html=vResCareer();else if(r==="r-career2")html=vResCareer2();else if(r==="r-career3")html=vResCareer3();
   else if(r==="me")html=vMe();else if(r==="steps")html=vSteps();else if(r==="about")html=vAbout();else if(r==="breakdown")html=vBreak();else if(r.startsWith("area-"))html=vArea(r.slice(5));else html=vHome();
   const vk=UI.loading?"load":r+(r.startsWith("q-")&&S.draft[r.slice(2)]?":"+S.draft[r.slice(2)].i:"");document.body.classList.toggle("still",UI.lastView===vk);UI.lastView=vk;
+  const same=UI.lastView===vk&&document.body.classList.contains("still"),y0=window.scrollY;
   const ae=document.activeElement,keep=ae&&ae.id&&/^(pf-|qz-text|au-|help-|paste)/.test(ae.id)?[ae.id,ae.selectionStart]:null;
   $("#app").innerHTML=html+devSkipBtn(r)+((r==="home"&&!UI.loading)||UI.help?helpUI():"")+(UI.toast?`<div class="toast" role="status">${esc(UI.toast)}</div>`:"");
   fitHook();
-  const np=[...document.querySelectorAll(".part.pop")].pop();if(np&&!keep)setTimeout(()=>np.scrollIntoView({behavior:"smooth",block:"nearest"}),60);
+  if(same&&window.scrollY!==y0)window.scrollTo(0,y0);
+  if(UI.shine){const t=document.querySelector(UI.shine);UI.shine=null;if(t&&t.getAttribute("aria-pressed")==="true")t.classList.add("shine")}
   if(keep){const el=document.getElementById(keep[0]);if(el){el.focus();try{el.setSelectionRange(keep[1],keep[1])}catch(e){}}}}
 
 function fitHP(){const w=document.querySelector(".pf-scr");if(w)w.style.setProperty("--k",w.getBoundingClientRect().width/390)}
@@ -2067,7 +2075,8 @@ const ACT={
   help:()=>{UI.help={};render()},helpx:(el,e)=>{if(el.classList.contains("modal-bg")&&e.target!==el)return;UI.help=null;render()},
   helptype:el=>{UI.help.type=el.dataset.v;UI.help.msg=($("#help-msg")||{}).value||"";render()},helpsend:()=>helpSend(),
 };
-document.addEventListener("click",e=>{const el=e.target.closest("[data-act]");if(!el)return;const f=ACT[el.dataset.act];if(f){if(el.tagName==="A"&&el.dataset.act!=="toquizzes")e.preventDefault();f(el,e)}});
+document.addEventListener("click",e=>{const el=e.target.closest("[data-act]");if(!el)return;
+  if(el.dataset.v!=null&&/^(one|many|pair|rate)/.test(el.dataset.act))UI.shine=`[data-act="${el.dataset.act}"]${el.dataset.pid?`[data-pid="${CSS.escape(el.dataset.pid)}"]`:""}${el.dataset.t?`[data-t="${CSS.escape(el.dataset.t)}"]`:""}${el.dataset.p?`[data-p="${CSS.escape(el.dataset.p)}"]`:""}[data-v="${CSS.escape(el.dataset.v)}"]`;const f=ACT[el.dataset.act];if(f){if(el.tagName==="A"&&el.dataset.act!=="toquizzes")e.preventDefault();f(el,e)}});
 document.addEventListener("submit",e=>{if(e.target.matches("[data-auth]")){e.preventDefault();emailAuth(e.target)}});
 document.addEventListener("input",e=>{const t=e.target;
   if(t.dataset.pf){S.profile=S.profile||{};S.profile[t.dataset.pf]=t.value;save()}
