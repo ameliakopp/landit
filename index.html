@@ -1018,6 +1018,9 @@ main.pf2{align-items:center;text-align:center;padding-top:28px}
 @media (max-width:899px){.cr1 .cr-stack .txt{align-self:center}}
 .whycard{border:1px solid var(--edge);border-radius:22px;padding:8px 18px;background:#fff}.whycard .sech{margin:14px 0 6px!important}.whycard .swi{padding:9px 0}
 @media (min-width:900px){main.cr1 .cr-side{padding-top:0!important}}
+.cr-top{display:flex;align-items:center;justify-content:center;position:relative;width:100%}.cr-retake{position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:13.5px;padding:6px 0}
+@media (min-width:900px){.cr-top{justify-content:space-between}}
+.cr-next .step .go2{flex:none;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -1957,24 +1960,23 @@ function cPager(n){return `<div class="cpager">${[1,2,3].map(i=>`<i class="${i==
 function vResCareer(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1,pick}=C,dn=S.stepsDone||{},f1=m1.d.t.toLowerCase(),tgt=pick&&(DIRS.find(d=>d.id===pick)||m1.d);
   const steps=R.M.slice(0,2).map(x=>({key:"chat:"+x.d.id,t:`Talk to 1 person in ${x.d.t.toLowerCase()}`,sub:`Search LinkedIn for “${x.titles[0].replace(/ Intern$| Summer Analyst$/,"")}” + your school.`}));
   return shell(`<main class="screen anim-in crx cr1">
-    ${cPager(1)}
+    <div class="cr-top">${cPager(1)}<button class="txt cr-retake" data-act="begin" data-k="career">Retake quiz</button></div>
     <div class="cr-hero"><div class="cr-txt">
     <p class="kick" style="text-align:center;margin-top:8px">Your top match</p>
     <h1 class="gap-top" style="margin-top:6px">You’re built for<br>${esc(f1)}.</h1>
 </div>
     ${ring(m1.pct,"match")}</div>
     <div class="cr-cols">
-      <section class="cr-sec cr-next"><h2 class="sech">Do this next</h2>
-        <div class="steps">${steps.map(s=>`<div class="step${dn[s.key]?" done":""}"><button class="ck" data-act="tick" data-k="${esc(s.key)}" aria-label="Mark done" aria-pressed="${!!dn[s.key]}">${dn[s.key]?"✓":""}</button><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.sub)}</small></div></div>`).join("")}</div>
-        <a class="txt cr-msg" href="#r-career3">Need a message to send? Copy ours →</a>
-        ${tgt?`<button class="btn" data-act="begin" data-k="arch">Am I ready for ${esc(tgt.t.toLowerCase())}? Get my score</button>`:`<button class="btn" data-act="pickdir" data-v="${m1.d.id}">Make ${esc(f1)} my target</button>`}
-      </section>
       <section class="cr-sec cr-side">
         <h2 class="sech">Why ${esc(f1)}</h2><div class="whycard">${[...R.love.slice(0,2).map(t=>"You’d love to "+t.charAt(0).toLowerCase()+t.slice(1)),...R.env.slice(0,3).map(t=>"You thrive in: "+t.charAt(0).toLowerCase()+t.slice(1))].map(t=>`<div class="swi"><i class="ok">✓</i><div><b>${esc(t)}</b></div></div>`).join("")||`<p class="sub">${esc(cWhy(m1))}</p>`}</div>
         <p class="cr-also">Also worth a look: ${R.M.slice(1,3).map(x=>`<b>${esc(x.d.t)}</b> ${x.pct}%`).join(" · ")}</p>
       </section>
+      <section class="cr-sec cr-next"><h2 class="sech">Do this next</h2>
+        <div class="steps">${steps.map((s,i)=>`<div class="step${dn[s.key]?" done":""}"><button class="ck" data-act="tick" data-k="${esc(s.key)}" aria-label="Mark done" aria-pressed="${!!dn[s.key]}">${dn[s.key]?"✓":""}</button><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.sub)}</small></div>${i===0?`<button class="go2" data-act="copymsg">Copy message</button>`:""}</div>`).join("")}</div>
+        <p id="chatmsg" hidden>${esc(chatMsg(m1.d.t))}</p>
+        ${tgt?`<button class="btn" data-act="begin" data-k="arch">Check if I’m ready →</button>`:`<button class="btn" data-act="pickdir" data-v="${m1.d.id}">Make this my target →</button>`}
+      </section>
     </div>
-    <div class="stack cr-stack" style="margin:26px auto 0"><button class="txt" data-act="begin" data-k="career">Retake</button></div>
   </main>`,{tabs:"me"})}
 function vResCareer2(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1}=C;
   return shell(`<main class="screen anim-in crx">
