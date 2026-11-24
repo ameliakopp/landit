@@ -1028,6 +1028,16 @@ main.pf2{align-items:center;text-align:center;padding-top:28px}
 .shine::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:50%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-18deg);animation:shine .7s var(--ease) forwards;pointer-events:none}
 @keyframes shine{to{left:130%}}
 @media (prefers-reduced-motion:reduce){.shine::after{display:none}}
+/* step 2 intro */
+main.nx{max-width:560px;padding-top:28px}
+.nx-h{margin:6px 0 22px;font:600 clamp(34px,8vw,48px)/1.06 "Inter Tight",system-ui,sans-serif;letter-spacing:-.035em}.nx-h span{color:#5E8F4A}
+.nx-done{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:18px;background:#EEF4E6}.nx-done i{flex:none;width:28px;height:28px;border-radius:50%;background:#15261F;color:#fff;display:grid;place-items:center;font-style:normal;font-size:14px}
+.nx-done b{display:block;font-weight:600}.nx-done span{color:var(--mute);font-size:14.5px}
+.nx-p{margin:22px 0 18px;font-size:17px;line-height:1.55}
+.nx-list{display:flex;flex-direction:column;gap:10px}.nx-list div{padding:16px;border:1px solid var(--edge);border-radius:18px}.nx-list b{display:block;font-weight:600;margin-bottom:3px}.nx-list span{color:var(--mute);font-size:15px}
+.nx-go{margin-top:26px}
+@media (min-width:900px){main.nx{padding-top:56px}}
+.nx-go{align-items:stretch!important;width:100%}.nx-go .btn{width:100%}.nx-go .txt{align-self:center}
 </style>
 </head>
 <body>
@@ -1981,9 +1991,22 @@ function vResCareer(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1,
       <section class="cr-sec cr-next"><h2 class="sech">Do this next</h2>
         <div class="steps">${steps.map((s,i)=>`<div class="step${dn[s.key]?" done":""}"><button class="ck" data-act="tick" data-k="${esc(s.key)}" aria-label="Mark done" aria-pressed="${!!dn[s.key]}">${dn[s.key]?"✓":""}</button><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.sub)}</small></div>${i===0?`<button class="go2" data-act="copymsg">Copy message</button>`:""}</div>`).join("")}</div>
         <p id="chatmsg" hidden>${esc(chatMsg(m1.d.t))}</p>
-        ${tgt?`<button class="btn" data-act="begin" data-k="arch">Check if I’m ready →</button>`:`<button class="btn" data-act="pickdir" data-v="${m1.d.id}">Make this my target →</button>`}
+        ${tgt?`<a class="btn" href="#next">Check if I’m ready →</a>`:`<button class="btn" data-act="pickdir" data-v="${m1.d.id}">Make this my target →</button>`}
       </section>
     </div>
+  </main>`,{tabs:"me"})}
+/* the pause between the career quiz and the readiness quiz */
+function vNext(){const rc=S.results.career,p=S.profile||{},t=p.target&&DIRS.find(d=>d.id===p.target)||(rc&&DIRS.find(d=>d.id===rc.top[0].id));const f=t?t.t.toLowerCase():"your field";
+  return shell(`<main class="screen anim-in nx">
+    <p class="kick">Step 2 of 2</p>
+    <h1 class="nx-h">You know where to aim.<br><span>Now, are you ready?</span></h1>
+    <div class="nx-done"><i>✓</i><div><b>Career quiz done</b><span>You’re built for ${esc(f)}.</span></div></div>
+    <p class="nx-p">Knowing what fits you is half of it. The other half is whether a recruiter would pick you <b>today</b>. The next quiz checks that, for ${esc(f)}.</p>
+    <div class="nx-list">
+      <div><b>What you’ll do</b><span>Answer ${QUIZ.arch.qs.length} short questions and add your resume if you have one. About 5 minutes.</span></div>
+      <div><b>What you’ll get</b><span>Your hirable score, what’s holding you back, and the exact steps to fix it.</span></div>
+    </div>
+    <div class="stack nx-go"><button class="btn" data-act="begin" data-k="arch">Start the readiness quiz →</button><a class="txt" href="#r-career">Not yet, back to my match</a></div>
   </main>`,{tabs:"me"})}
 function vResCareer2(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1}=C;
   return shell(`<main class="screen anim-in crx">
@@ -2004,7 +2027,7 @@ function vResCareer3(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1
     <p class="sub" style="text-align:center;max-width:36ch;margin:0 auto 22px">${R.untested.length?`You haven’t tested ${esc(listJoin(R.untested.map(x=>x.d.t.toLowerCase())))} yet. `:""}3 real conversations will give you more clarity than 50 applications.</p>
     <div class="cr-cols"><div class="steps cr-sec">${chats.map(s=>`<div class="step${dn[s.key]?" done":""}"><button class="ck" data-act="tick" data-k="${esc(s.key)}" aria-label="Mark done" aria-pressed="${!!dn[s.key]}">${dn[s.key]?"✓":""}</button><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.sub)}</small></div></div>`).join("")}</div>
     <div class="gcard msgcard"><p class="tiny" style="margin:0 0 8px">Copy this message</p><p id="chatmsg">${esc(chatMsg(m1.d.t))}</p><button class="btn glass" data-act="copymsg">Copy message</button></div></div>
-    <div class="stack cr-stack" style="margin:28px auto 0">${pick?`<button class="btn" data-act="begin" data-k="arch">Am I ready for ${esc((DIRS.find(d=>d.id===pick)||m1.d).t.toLowerCase())}? Get my score</button>`:`<button class="btn" data-act="pickdir" data-v="${m1.d.id}">Make ${esc(m1.d.t.toLowerCase())} my target</button>`}
+    <div class="stack cr-stack" style="margin:28px auto 0">${pick?`<a class="btn" href="#next">Am I ready for ${esc((DIRS.find(d=>d.id===pick)||m1.d).t.toLowerCase())}? →</a>`:`<button class="btn" data-act="pickdir" data-v="${m1.d.id}">Make ${esc(m1.d.t.toLowerCase())} my target</button>`}
       <a class="txt" href="#r-career2">← Back</a></div>
   </main>`,{tabs:"me"})}
 function helpUI(){if(!UI.help)return `<button class="help-fab" data-act="help" aria-label="Help and feedback">?</button>`;const h=UI.help;
@@ -2025,7 +2048,7 @@ function render(){const r=route();let html;
   else if(r==="join")html=vJoin();else if(r==="setup")html=vSetup();
   else if(r==="q-arch"||r==="q-career")html=vQuiz(r.slice(2));
   else if(r==="r-arch")html=vResArch();else if(r==="r-career")html=vResCareer();else if(r==="r-career2")html=vResCareer2();else if(r==="r-career3")html=vResCareer3();
-  else if(r==="me")html=vMe();else if(r==="steps")html=vSteps();else if(r==="about")html=vAbout();else if(r==="breakdown")html=vBreak();else if(r.startsWith("area-"))html=vArea(r.slice(5));else html=vHome();
+  else if(r==="next")html=vNext();else if(r==="me")html=vMe();else if(r==="steps")html=vSteps();else if(r==="about")html=vAbout();else if(r==="breakdown")html=vBreak();else if(r.startsWith("area-"))html=vArea(r.slice(5));else html=vHome();
   const vk=UI.loading?"load":r+(r.startsWith("q-")&&S.draft[r.slice(2)]?":"+S.draft[r.slice(2)].i:"");document.body.classList.toggle("still",UI.lastView===vk);UI.lastView=vk;
   const same=UI.lastView===vk&&document.body.classList.contains("still"),y0=window.scrollY;
   const ae=document.activeElement,keep=ae&&ae.id&&/^(pf-|qz-text|au-|help-|paste)/.test(ae.id)?[ae.id,ae.selectionStart]:null;
