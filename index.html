@@ -923,6 +923,9 @@ p,li,.sub,label,input,textarea,button{letter-spacing:0}
 .fchip.c3{left:56%!important;right:auto!important;top:93%!important;--dx:40px}
 .pf-ns .ns-row{scroll-snap-type:none!important;scroll-padding:0}
 .pf-ns .ns-c{height:432px!important}
+.devbar{position:fixed;left:0;right:0;top:0;z-index:9999;display:flex;gap:6px;align-items:center;overflow-x:auto;white-space:nowrap;scrollbar-width:none;height:34px;padding:0 10px;background:#15261F;color:#fff;font:12px/1 system-ui,sans-serif}
+.devbar::-webkit-scrollbar{display:none}.devbar b{color:#A9D18C;margin-right:4px}.devbar a{color:#fff;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.1);flex:none}.devbar a.on{background:#A9D18C;color:#15261F}
+body.has-devbar{padding-top:34px}
 </style>
 </head>
 <body>
@@ -942,7 +945,21 @@ const SCRIB=`<svg class="scrib" viewBox="0 0 200 100" preserveAspectRatio="none"
 const STORE="clocked.v1";
 function fresh(){return {v:"clocked1",profile:null,answers:{},results:{},draft:{}}}
 let S=(()=>{try{const s=JSON.parse(localStorage.getItem(STORE));if(s&&s.v==="clocked1")return s}catch(e){}return fresh()})();
-function save(){try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}cloudSave()}
+
+/* =====================================================================
+   DEV ONLY: skip a quiz and preview its result screen.
+   Works only on localhost / 127.0.0.1 / file:// — never on the live site.
+     ?skipQuiz=true                         readiness result, sample 1
+     ?skipQuiz=true&quiz=arch&result=3      readiness sample 3
+     ?skipQuiz=true&quiz=career&result=2    career sample 2
+   Preview data lives in memory only: nothing is saved to localStorage or
+   the cloud. Remove ?skipQuiz from the URL and reload to get your real data.
+   ===================================================================== */
+const DEV_HOST=location.protocol==="file:"||/^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])$/.test(location.hostname);
+const DEV_Q=new URLSearchParams(location.search);
+const DEV_PREVIEW=DEV_HOST&&DEV_Q.get("skipQuiz")==="true";
+if(DEV_PREVIEW)S=fresh();
+function save(){if(DEV_PREVIEW)return;try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}cloudSave()}
 const UI={msg:"",busy:false,mode:"signup",help:null,toast:null,parse:null};
 function toast(t){UI.toast=t;render();clearTimeout(toast.t);toast.t=setTimeout(()=>{UI.toast=null;render()},2600)}
 
@@ -951,10 +968,10 @@ const SUPABASE_URL="https://bzumycapvgqkejenexpq.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6dW15Y2Fwdmdxa2VqZW5leHBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwNDIxMTgsImV4cCI6MjEwODYxODExOH0.OgqQUbg5Iy7QBbF9MTdaxJdYGHOR9AfqCQDJvffdggw";
 const sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
 const AUTH={user:null};
-function cloudSave(){if(!sb||!AUTH.user)return;clearTimeout(cloudSave.t);cloudSave.t=setTimeout(async()=>{
+function cloudSave(){if(DEV_PREVIEW||!sb||!AUTH.user)return;clearTimeout(cloudSave.t);cloudSave.t=setTimeout(async()=>{
   const p=S.profile||{},row={id:AUTH.user.id,first_name:p.first||null,company:(p.experience&&p.experience[0]&&p.experience[0].company)||null,state:S,updated_at:new Date().toISOString()};
   const {error}=await sb.from("students").upsert(row);if(error)console.warn("Cloud save failed:",error.message)},700)}
-async function cloudLoad(){const {data,error}=await sb.from("students").select("state").eq("id",AUTH.user.id).maybeSingle();
+async function cloudLoad(){if(DEV_PREVIEW)return;const {data,error}=await sb.from("students").select("state").eq("id",AUTH.user.id).maybeSingle();
   if(error){console.warn("Cloud load failed:",error.message);return}
   if(data&&data.state&&data.state.v==="clocked1"){S=data.state;try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}}else cloudSave()}
 function metaProfile(u){const m=(u&&u.user_metadata)||{},name=m.full_name||m.name||[m.given_name,m.family_name].filter(Boolean).join(" ")||"";
@@ -1941,6 +1958,65 @@ document.addEventListener("drop",e=>{const d=e.target.closest&&e.target.closest(
 document.addEventListener("keydown",e=>{if(!route().startsWith("q-")||/TEXTAREA|INPUT/.test(document.activeElement.tagName))return;if(e.key==="Enter"){const b=$(".qz-foot .go");if(b&&!b.disabled)b.click()}
   const n="abcdef".indexOf(e.key.toLowerCase());if(n>=0){const t=document.querySelectorAll(".tiles .tile")[n];if(t)t.click()}});
 if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+/* =====================================================================
+   DEV SAMPLE ANSWERS: edit these to change what the previews show.
+   Keys are question ids from QUIZ.arch / QUIZ.career.
+   Each readiness sample also carries a fake profile (stands in for the
+   uploaded resume, which feeds the Artifacts score).
+   ===================================================================== */
+const DEV_SAMPLES={
+  arch:{
+    /* 1: low score, "You're not ready to apply." (mass-applying, no network) */
+    1:{label:"Not ready (low)",
+      profile:{first:"Maya",name:"Maya Chen",done:true,experience:[{title:"Brand Marketing Intern",company:"Glossier"}],skills:["Excel","Canva"],resumeText:"marketing",
+        resumeStats:{bullets:6,nums:2,weak:1,weakEx:"Responsible for social posts",pages:1,hasLi:false,roles:1,intern:true,lead:false,skills:2}},
+      answers:{c_self:85,c_mode:"type",c_line:"Brand marketing at a beauty company",c_sure:"pretty",c_targets:"few",c_resfile:"ok",c_why:"I love marketing",c_tuesday:"Meetings",c_src:"media",
+        c_skills:["r|Copywriting","f|Sales quotas"],c_cos3:"Glossier",c_cowhy:"cool",c_open:"idk",c_env:{},c_best:"xp0",c_city:["nyc"],c_move:"any",c_when:"summer",c_pay:"0",
+        c_apps:"51",c_reply:"0",c_how:"cold",c_people:"0",c_chat:"never",c_ref:"none",c_lilink:"none",c_month:"tweak"}},
+    /* 2: middle, still "not ready" but closer (some network, a narrower plan) */
+    2:{label:"Almost (middle)",
+      profile:{first:"Jordan",name:"Jordan Lee",done:true,experience:[{title:"Marketing Intern",company:"Local startup"},{title:"Social Media Lead",company:"Campus club"}],skills:["Excel","Canva","Figma"],resumeText:"brand marketing social media campaigns",
+        resumeStats:{bullets:9,nums:5,weak:1,weakEx:"Helped with events",pages:1,hasLi:true,roles:2,intern:true,lead:true,skills:3}},
+      answers:{c_self:70,c_mode:"type",c_line:"Brand marketing at a consumer company, working on campaigns",c_sure:"pretty",c_targets:"few",c_resfile:"ok",c_why:"I ran our club's Instagram and grew it, and I like seeing what makes people care about a brand",
+        c_tuesday:"Planning a campaign, writing briefs, checking how posts did",c_src:"read",c_skills:["r|Copywriting","r|Campaign planning","f|Sales quotas"],c_cos3:"Glossier, Liquid Death, Duolingo",c_cowhy:"Their social voice is funny and people actually share it",
+        c_open:"idk",c_env:{},c_best:"xp0",c_city:["nyc","la"],c_move:"some",c_when:"summer",c_pay:"1",c_apps:"11",c_reply:"1",c_how:"fair",c_people:"1",c_chat:"once",c_ref:"maybe",
+        c_lilink:"https://linkedin.com/in/sample",c_lihead:"kinda",c_liprof:"one",c_liconn:"100",c_lipost:"rare",c_month:"narrow"}},
+    /* 3: high, "You're ready to apply." (clear target, real network) */
+    3:{label:"Ready (high)",
+      profile:{first:"Sam",name:"Sam Rivera",done:true,experience:[{title:"Brand Marketing Intern",company:"Glossier"},{title:"Marketing Coordinator",company:"Agency"},{title:"President",company:"Marketing Club"}],skills:["Excel","Figma","Google Analytics","Canva"],resumeText:"brand marketing campaigns grew engagement 40% launched",
+        resumeStats:{bullets:12,nums:9,weak:0,weakEx:"",pages:1,hasLi:true,roles:3,intern:true,lead:true,skills:4}},
+      answers:{c_self:75,c_mode:"type",c_line:"Brand marketing at a beauty company, owning social campaigns",c_sure:"locked",c_targets:"one",c_resfile:"ok",c_why:"I interned in brand marketing, grew engagement 40%, and want to own campaigns end to end",
+        c_tuesday:"Briefing creatives, reviewing campaign numbers, meeting with the social team",c_src:"done",c_skills:["r|Copywriting","r|Campaign planning","r|Brand strategy"],c_cos3:"Glossier, Rare Beauty, Summer Fridays",c_cowhy:"I've studied their launches and know the people on their brand teams",
+        c_open:"idk",c_env:{},c_best:"xp0",c_city:["nyc"],c_move:"any",c_when:"summer",c_pay:"1",c_apps:"3",c_reply:"3",c_how:"ref",c_people:"6",c_chat:"lots",c_ref:"yes",
+        c_lilink:"https://linkedin.com/in/sample",c_lihead:"yes",c_liprof:"both",c_liconn:"500",c_lipost:"monthly",c_month:"people"}}},
+  career:{
+    /* 1: creative (brand / content) */
+    1:{label:"Creative",answers:{c_kgood:"one",c_kenv:"some",c_kwork:"2",qskill:["research","writing","social"],c_skmore:["Market research","Copywriting"],c_skown:"Video editing",q_top:"research",qfor:["edit"],sat:["make","fig"],q_8h:"fig",area:["comm"],
+      pairs1:{t1:"people",t2:"numbers",t3:"plan"},c_setup:["startup","collective"],known:["smart","voice"],pairs2:{t5:"steady",t6:"front",t7:"depth",t8:"clear"},
+      rate1:{caption:"love",sheet:"love",pitch:"maybe",screen:"love",event:"maybe",interview:"maybe",code:"no",coach:"maybe"},rate2_t:["film","edit","why","vibe","ceo","market"],rate2:{film:"maybe",edit:"maybe",why:"maybe",vibe:"love",ceo:"maybe",market:"maybe"},
+      rate3_t:["collab","poster","launch","survey"],rate3:{collab:"maybe",poster:"love",launch:"maybe",survey:"love"},qval:["creative","learn"],q_val1:"creative",qind:["fashion","media"],qnot:["sales"],q_tried:["brand"],q_people:"0"}},
+    /* 2: analyst (data / numbers) */
+    2:{label:"Analyst",answers:{c_kgood:"three",c_kenv:"yes",c_kwork:"4",qskill:["numbers","code","detail"],c_skmore:["Excel","SQL","Data analysis"],c_skown:"",q_top:"numbers",qfor:["fix"],sat:["fig"],q_8h:"fig",area:["stem"],
+      pairs1:{t1:"solo",t2:"numbers",t3:"plan"},c_setup:["big"],known:["smart"],pairs2:{t5:"steady",t6:"back",t7:"depth",t8:"clear"},
+      rate1:{caption:"no",sheet:"love",pitch:"no",screen:"maybe",event:"no",interview:"maybe",code:"love",coach:"no"},rate2_t:["model","debug","reconcile","audit","why","market"],rate2:{model:"love",debug:"love",reconcile:"maybe",audit:"maybe",why:"love",market:"maybe"},
+      rate3_t:["survey","users","poster","launch"],rate3:{survey:"love",users:"maybe",poster:"no",launch:"maybe"},qval:["money","learn"],q_val1:"money",qind:["tech","finance"],qnot:["sales"],q_tried:["data"],q_people:"1"}},
+    /* 3: connector (people / sales / partnerships) */
+    3:{label:"Connector",answers:{c_kgood:"one",c_kenv:"some",c_kwork:"2",qskill:["talking","persuade","sell","events"],c_skmore:["Networking","Pitching","Sponsorships"],c_skown:"",q_top:"talking",qfor:["advice"],sat:["make"],q_8h:"make",area:["biz"],
+      pairs1:{t1:"people",t2:"words",t3:"live"},c_setup:["startup","agency"],known:["voice"],pairs2:{t5:"fast",t6:"front",t7:"breadth",t8:"blank"},
+      rate1:{caption:"maybe",sheet:"no",pitch:"love",screen:"maybe",event:"love",interview:"love",code:"no",coach:"love"},rate2_t:["ceo","market","vibe","film","edit","why"],rate2:{ceo:"love",market:"love",vibe:"maybe",film:"maybe",edit:"no",why:"maybe"},
+      rate3_t:["collab","launch","poster","survey"],rate3:{collab:"love",launch:"love",poster:"maybe",survey:"no"},qval:["people","money"],q_val1:"people",qind:["media","sports"],qnot:["stem"],q_tried:["sales"],q_people:"3"}}}};
+/* fills S the same way finishing the quiz does, then opens the result screen */
+function devSkipQuiz(){if(!DEV_PREVIEW)return;
+  const k=DEV_Q.get("quiz")==="career"?"career":"arch",n=DEV_Q.get("result")||"1",sm=(DEV_SAMPLES[k]||{})[n];
+  if(!sm){console.warn(`[dev] no sample "${n}" for quiz "${k}". Options: ${Object.keys(DEV_SAMPLES[k]).join(", ")}`);return}
+  const a=JSON.parse(JSON.stringify(sm.answers));S.answers[k]=a;S.draft[k]={i:0,a:{},stack:[]};
+  if(k==="arch"){S.profile=JSON.parse(JSON.stringify(sm.profile));const R=readiness(a);S.results.arch={score:R.score,stage:R.stage,dims:R.dims,at:new Date().toISOString().slice(0,10)};S.stepsDone={}}
+  else{const m=careerResult(flatPairs(a));S.results.career={top:m.map(x=>({id:x.d.id,pct:x.pct,loves:x.loves,likes:x.likes,rb:x.rb})),at:new Date().toISOString().slice(0,10)}}
+  if(!location.hash)location.hash="r-"+k;
+  const bar=document.createElement("div");bar.className="devbar";
+  bar.innerHTML=`<b>DEV PREVIEW</b> ${["arch","career"].map(q=>Object.entries(DEV_SAMPLES[q]).map(([i,x])=>`<a href="?skipQuiz=true&quiz=${q}&result=${i}#r-${q}" class="${q===k&&i===n?"on":""}">${q==="arch"?"Ready":"Career"} ${i}: ${esc(x.label)}</a>`).join("")).join("")}`;
+  document.body.appendChild(bar);document.body.classList.add("has-devbar")}
+devSkipQuiz();
 render();
 </script>
 </body>
