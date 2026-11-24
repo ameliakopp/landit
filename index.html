@@ -988,6 +988,29 @@ main.pf2{align-items:center;text-align:center;padding-top:28px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}.okchip{padding:8px 13px;border-radius:999px;background:#F2F2EF;font-size:14.5px;font-weight:500}
 @media (min-width:900px){main.ar .ar-main{flex:2 1 0}main.ar .ar-side{flex:1 1 0}.ar-sum p{font-size:22px;max-width:40ch}}
 .gp-p>i{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:13.5px;font-weight:700;margin-top:1px;background:#F0F0EC;color:#15261F}
+/* career results + score: desktop like the dashboard */
+.cr-hero,.cr-cols,.cr-txt,.cr-sec{display:contents}
+@media (min-width:900px){
+  main.crx,main.dsk-score{max-width:1200px!important;width:100%;padding-left:48px;padding-right:48px;align-items:stretch}
+  main.crx .gap-top,main.crx .sub,main.crx .kick,main.dsk-score .gap-top{text-align:left!important;margin-left:0!important;margin-right:0!important}
+  main.crx .pager,main.crx .cpager{justify-content:flex-start}
+  main.crx .cr-hero{display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center}
+  main.crx .cr-txt{display:flex;flex-direction:column}
+  main.crx .cr-hero .ring{margin:0}
+  main.crx .cr-cols{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;margin-top:8px}
+  main.crx .cr-cols>.seat,main.crx .cr-cols>.hirecard{margin:0;height:100%}
+  main.crx .cr-sec{display:flex;flex-direction:column}
+  main.crx .cr-cols .sw{grid-template-columns:1fr 1fr}
+  main.crx .cr-cols>.msgcard{margin:0}
+  main.crx .cr-stack,main.dsk-score .t2btn{align-self:flex-start!important;margin-left:0!important;margin-right:0!important;width:auto}
+  main.crx .cr-stack{flex-direction:row;align-items:center;gap:18px}main.crx .cr-stack .btn{width:auto;padding-left:36px;padding-right:36px}
+  main.dsk-score{align-items:flex-start;justify-content:center}
+  main.dsk-score .gap-top{font-size:clamp(56px,6vw,88px)!important}
+  main.dsk-score .gap{justify-content:flex-start;margin-left:0}
+  main.dsk-score .t2btn{padding-left:44px;padding-right:44px;margin-top:40px}
+}
+@media (min-width:900px){main.crx .cr-sec .qcards{display:flex!important;flex-direction:column;gap:10px}}
+@media (min-width:900px){main.crx .cr-stack .btn,main.crx .cr-stack .txt{white-space:nowrap;flex:none}}
 </style>
 </head>
 <body>
@@ -1111,7 +1134,7 @@ const ROLE_WORDS=/market|analy|product|design|ux|engineer|software|develop|finan
 function lineScore(t){t=String(t||"").trim().toLowerCase();if(!t||/^(idk|i don.?t know|not sure|no idea|anything|whatever|unsure|nothing)/.test(t))return 0;
   const w=t.split(/\s+/).length;let n=w>=3?1:0;if(ROLE_WORDS.test(t))n++;if(w>=7&&/because|since|so that|\bi (love|like|enjoy)|\bat (a|an)\b|compan|startup|brand|agency|team|industry|\bin (tech|media|fashion|finance|health|sports)/.test(t))n++;
   if(/something in|maybe|kind of|sort of|anything|\bor\b|not sure/.test(t))n--;return clamp(n,0,3)}
-const DIMS=[{k:"cla",n:"Career Clarity",q:"Do you know what to apply for?",fix:"Get clear on what you’re going for",d:"Knowing the job, what it takes and where it fits you"},{k:"art",n:"Artifacts",q:"Do your resume, cover letter and LinkedIn back you up?",fix:"Make your resume, cover letter and LinkedIn prove it",d:"Your resume, cover letter and LinkedIn"},{k:"str",n:"Application Strategy",q:"Are you applying the smart way?",fix:"Apply smarter, not more",d:"Targeted applications, timing and a strong “why”"},{k:"net",n:"Networking Ability",q:"Do you know people who can get you in?",fix:"Meet people in your field",d:"People who can tell you about the job or refer you"}];
+const DIMS=[{k:"cla",n:"Career Clarity",q:"Do you know what to apply for?",fix:"Get clear on what you’re going for",d:"Knowing the job, what it takes and where it fits you"},{k:"art",n:"Resume & LinkedIn",q:"Do your resume, cover letter and LinkedIn back you up?",fix:"Make your resume, cover letter and LinkedIn prove it",d:"Your resume, cover letter and LinkedIn"},{k:"str",n:"Application Strategy",q:"Are you applying the smart way?",fix:"Apply smarter, not more",d:"Targeted applications, timing and a strong “why”"},{k:"net",n:"Networking Ability",q:"Do you know people who can get you in?",fix:"Meet people in your field",d:"People who can tell you about the job or refer you"}];
 const DIM_W={cla:.3,art:.3,str:.2,net:.2};
 const STAGE=[null,
   {n:"Exploring",line:"You don’t have a target yet. That’s the first thing to fix, not your resume."},
@@ -1735,7 +1758,7 @@ function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden=
     </div>
     <div class="hp-wrap" aria-hidden="true"><span class="fchip c1 t1c">Am I ready?</span><span class="fchip c2 t2c">What’s stopping me?</span><span class="fchip c3 t3c">What do I fix first?</span><div class="pf"><div class="pf-scr"><div class="pf-in">
         <span class="pf-cam"></span>
-        <div class="ns pf-ns">${board("Amelia",49,[{k:"net",n:"Networking Ability",pr:12},{k:"str",n:"Application Strategy",pr:53},{k:"art",n:"Artifacts",pr:54},{k:"cla",n:"Career Clarity",pr:73}],1)}</div>
+        <div class="ns pf-ns">${board("Amelia",49,[{k:"net",n:"Networking Ability",pr:12},{k:"str",n:"Application Strategy",pr:53},{k:"art",n:"Resume & LinkedIn",pr:54},{k:"cla",n:"Career Clarity",pr:73}],1)}</div>
         <div class="hs-tabs" style="grid-template-columns:1fr 1fr"><span class="on">Dashboard</span><span>Profile</span><i class="pf-home"></i></div>
       </div></div></div></div>
   </main></div>`}
@@ -1852,7 +1875,7 @@ function vLoading(k){const q=UI.said||[],p=S.profile||{},T=Math.max(4,q.length)*
 function archR0(){const a=S.answers.arch;if(!a)return null;const R=readiness(a);R.weak=DIMS.slice().sort((x,y)=>R.dims[x.k]-R.dims[y.k])[0];return R}
 function vResArch(){const R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,self=a.c_self!=null?+a.c_self:null,
   H=R.score<65?"You’re not ready<br>to apply.":"You’re ready<br>to apply.";
-  return shell(`<main class="screen center truth2 anim-in">
+  return shell(`<main class="screen center truth2 anim-in dsk-score">
     <h1 class="gap-top">${H}</h1>
     ${self!=null?`<div class="gap"><div><span>You think</span><b>${self}<small>%</small></b></div><div class="gap-mid">→</div><div class="real"><span>Reality</span><b>${R.score}<small>%</small></b></div></div>`:`${ring(R.score,"hirable")}`}
     <a class="btn t2btn" href="#me">See why →</a>
@@ -1925,41 +1948,42 @@ function careerCtx(){const a=S.answers.career;if(!a)return null;const R=careerRe
 const cWhy=x=>[x.loves.length?"You’d love to "+listJoin(x.loves)+".":"",x.rb?"Your resume backs it up.":""].filter(Boolean).join(" ")||(x.likes.length?"You’re into "+listJoin(x.likes)+".":"Worth a test run.");
 function cPager(n){return `<div class="cpager">${[1,2,3].map(i=>`<i class="${i===n?"on":""}"></i>`).join("")}</div>`}
 function vResCareer(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1}=C,fields=R.M.slice(0,UI.more?6:3);
-  return shell(`<main class="screen anim-in">
+  return shell(`<main class="screen anim-in crx">
     ${cPager(1)}
+    <div class="cr-hero"><div class="cr-txt">
     <p class="kick" style="text-align:center;margin-top:8px">Your top match</p>
     <h1 class="gap-top" style="margin-top:6px">You’re built for<br>${esc(m1.d.t.toLowerCase())}.</h1>
-    ${ring(m1.pct,"match")}
-    <p class="sub" style="text-align:center;max-width:34ch;margin:0 auto">${esc(cWhy(m1))}</p>
-    <div class="seat"><span class="seat-k">Your seat on a ${esc(m1.d.t.toLowerCase())} team</span><b>${esc(R.seat.seat)}</b><p>Because ${esc(R.seat.why)}.</p></div>
-    <div class="hirecard"><div class="hc-top"><span>How hirable you are right now</span><b>${R.hire}<small>/100</small></b></div>${dotbar(R.hire,30)}</div>
-    <h2 class="sech">Your best qualities.</h2>
-    <div class="qcards">${(R.qual.length?R.qual:[{t:"Still figuring it out",d:"That’s okay. The coffee chats will show you."}]).map(q=>`<div class="qcard2"><b>${esc(q.t)}</b><span>${esc(q.d)}</span></div>`).join("")}</div>
-    <h2 class="sech">Fields to look into.</h2>
+    <p class="sub cr-why" style="text-align:center;max-width:34ch;margin:0 auto">${esc(cWhy(m1))}</p></div>
+    ${ring(m1.pct,"match")}</div>
+    <div class="cr-cols"><div class="seat"><span class="seat-k">Your seat on a ${esc(m1.d.t.toLowerCase())} team</span><b>${esc(R.seat.seat)}</b><p>Because ${esc(R.seat.why)}.</p></div>
+    <div class="hirecard"><div class="hc-top"><span>How hirable you are right now</span><b>${R.hire}<small>/100</small></b></div>${dotbar(R.hire,30)}</div></div>
+    <div class="cr-cols"><section class="cr-sec"><h2 class="sech">Your best qualities.</h2>
+    <div class="qcards">${(R.qual.length?R.qual:[{t:"Still figuring it out",d:"That’s okay. The coffee chats will show you."}]).map(q=>`<div class="qcard2"><b>${esc(q.t)}</b><span>${esc(q.d)}</span></div>`).join("")}</div></section>
+    <section class="cr-sec"><h2 class="sech">Fields to look into.</h2>
     <div class="qcards">${fields.map((x,i)=>`<div class="qcard2 fcard"><div class="fc-top"><b>${esc(x.d.t)}</b><em>${x.pct}%</em></div></div>`).join("")}</div>
-    ${UI.more?"":`<button class="txt" data-act="more" style="align-self:flex-start">Show 3 more</button>`}
-    <div class="stack" style="margin:30px auto 0"><a class="btn" href="#r-career2">Why ${esc(m1.d.t.toLowerCase())}? →</a><button class="txt" data-act="begin" data-k="career">Retake</button></div>
+    ${UI.more?"":`<button class="txt" data-act="more" style="align-self:flex-start">Show 3 more</button>`}</section></div>
+    <div class="stack cr-stack" style="margin:30px auto 0"><a class="btn" href="#r-career2">Why ${esc(m1.d.t.toLowerCase())}? →</a><button class="txt" data-act="begin" data-k="career">Retake</button></div>
   </main>`,{tabs:"me"})}
 function vResCareer2(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1}=C;
-  return shell(`<main class="screen anim-in">
+  return shell(`<main class="screen anim-in crx">
     ${cPager(2)}
     <h1 class="gap-top" style="margin-top:14px">Why ${esc(m1.d.t.toLowerCase())}?</h1>
     <p class="sub" style="text-align:center;max-width:34ch;margin:0 auto 6px">It fits how you work and what gives you energy.</p>
-    ${R.env.length?`<h2 class="sech">Where you thrive.</h2><div class="gcard">${R.env.map(e=>`<div class="swi" style="padding:14px 16px"><i class="ok">✓</i><div><b>${esc(e)}</b></div></div>`).join("")}</div>`:""}
-    ${R.love.length||R.drain.length?`<h2 class="sech">What gives you energy.</h2><div class="sw">
+    <div class="cr-cols">${R.env.length?`<section class="cr-sec"><h2 class="sech">Where you thrive.</h2><div class="gcard">${R.env.map(e=>`<div class="swi" style="padding:14px 16px"><i class="ok">✓</i><div><b>${esc(e)}</b></div></div>`).join("")}</div></section>`:""}
+    ${R.love.length||R.drain.length?`<section class="cr-sec"><h2 class="sech">What gives you energy.</h2><div class="sw">
       <div class="sw-col"><h3>Energizes you</h3>${R.love.map(t=>`<div class="swi"><i class="ok">+</i><div><b>${esc(t)}</b></div></div>`).join("")||`<p class="tiny">Nothing stood out yet.</p>`}</div>
-      <div class="sw-col"><h3>Drains you</h3>${R.drain.map(t=>`<div class="swi"><i class="no">–</i><div><b>${esc(t)}</b></div></div>`).join("")||`<p class="tiny">Nothing you hated. Nice.</p>`}</div></div>`:""}
-    <div class="stack" style="margin:30px auto 0"><a class="btn" href="#r-career3">Your next steps →</a><a class="txt" href="#r-career">← Back</a></div>
+      <div class="sw-col"><h3>Drains you</h3>${R.drain.map(t=>`<div class="swi"><i class="no">–</i><div><b>${esc(t)}</b></div></div>`).join("")||`<p class="tiny">Nothing you hated. Nice.</p>`}</div></div></section>`:""}</div>
+    <div class="stack cr-stack" style="margin:30px auto 0"><a class="btn" href="#r-career3">Your next steps →</a><a class="txt" href="#r-career">← Back</a></div>
   </main>`,{tabs:"me"})}
 function vResCareer3(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1,pick}=C,dn=S.stepsDone||{};
   const chats=R.M.slice(0,3).map(x=>({key:"chat:"+x.d.id,t:`Talk to 1 person in ${x.d.t.toLowerCase()}`,sub:`Search LinkedIn for “${x.titles[0].replace(/ Intern$| Summer Analyst$/,"")}” + your school.`}));
-  return shell(`<main class="screen anim-in">
+  return shell(`<main class="screen anim-in crx">
     ${cPager(3)}
     <h1 class="gap-top" style="margin-top:14px">Your next move:<br>3 coffee chats.</h1>
     <p class="sub" style="text-align:center;max-width:36ch;margin:0 auto 22px">${R.untested.length?`You haven’t tested ${esc(listJoin(R.untested.map(x=>x.d.t.toLowerCase())))} yet. `:""}3 real conversations will give you more clarity than 50 applications.</p>
-    <div class="steps">${chats.map(s=>`<div class="step${dn[s.key]?" done":""}"><button class="ck" data-act="tick" data-k="${esc(s.key)}" aria-label="Mark done" aria-pressed="${!!dn[s.key]}">${dn[s.key]?"✓":""}</button><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.sub)}</small></div></div>`).join("")}</div>
-    <div class="gcard msgcard"><p class="tiny" style="margin:0 0 8px">Copy this message</p><p id="chatmsg">${esc(chatMsg(m1.d.t))}</p><button class="btn glass" data-act="copymsg">Copy message</button></div>
-    <div class="stack" style="margin:28px auto 0">${pick?`<button class="btn" data-act="begin" data-k="arch">Am I ready for ${esc((DIRS.find(d=>d.id===pick)||m1.d).t.toLowerCase())}? Get my score</button>`:`<button class="btn" data-act="pickdir" data-v="${m1.d.id}">Make ${esc(m1.d.t.toLowerCase())} my target</button>`}
+    <div class="cr-cols"><div class="steps cr-sec">${chats.map(s=>`<div class="step${dn[s.key]?" done":""}"><button class="ck" data-act="tick" data-k="${esc(s.key)}" aria-label="Mark done" aria-pressed="${!!dn[s.key]}">${dn[s.key]?"✓":""}</button><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.sub)}</small></div></div>`).join("")}</div>
+    <div class="gcard msgcard"><p class="tiny" style="margin:0 0 8px">Copy this message</p><p id="chatmsg">${esc(chatMsg(m1.d.t))}</p><button class="btn glass" data-act="copymsg">Copy message</button></div></div>
+    <div class="stack cr-stack" style="margin:28px auto 0">${pick?`<button class="btn" data-act="begin" data-k="arch">Am I ready for ${esc((DIRS.find(d=>d.id===pick)||m1.d).t.toLowerCase())}? Get my score</button>`:`<button class="btn" data-act="pickdir" data-v="${m1.d.id}">Make ${esc(m1.d.t.toLowerCase())} my target</button>`}
       <a class="txt" href="#r-career2">← Back</a></div>
   </main>`,{tabs:"me"})}
 function helpUI(){if(!UI.help)return `<button class="help-fab" data-act="help" aria-label="Help and feedback">?</button>`;const h=UI.help;
@@ -2053,7 +2077,7 @@ if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostnam
    DEV SAMPLE ANSWERS: edit these to change what the previews show.
    Keys are question ids from QUIZ.arch / QUIZ.career.
    Each readiness sample also carries a fake profile (stands in for the
-   uploaded resume, which feeds the Artifacts score).
+   uploaded resume, which feeds the Resume & LinkedIn score).
    ===================================================================== */
 const DEV_SAMPLES={
   arch:{
