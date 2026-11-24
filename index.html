@@ -854,6 +854,12 @@ body{font-family:"Figtree",system-ui,-apple-system,sans-serif;font-size:16.5px;l
 :root{--mute:rgba(21,38,31,.72);--faint:rgba(21,38,31,.5)}
 .t1,.gap-top,.qq,.ttl,.sech,.verdict,.ab-h,.home .hook,.ph-h,.ph-t,.hs-t,.seat b,.ns-big,.ns-c b,.ns-h,.ns-d b,.stp-h,.slide-n,.gap b,.word,.hs-word,h1,h2,h3{font-family:"Inter Tight",system-ui,sans-serif!important}
 p,li,.sub,label,input,textarea,button{letter-spacing:0}
+/* less green: neutral surfaces, green only for the orb + soft glow */
+.amb::before,.ab-glow{opacity:.28!important}
+.stage1,.vd,.ns-n,.ab-tags span,.bz,.t1c,.t2c,.t3c{background:#F2F2EF!important;color:#15261F!important}
+.ns-c{background:#F4F4F1}
+.rt.rt2,.bk2 .rt{min-height:0}
+.bk2 .t2-r{margin-top:14px}
 </style>
 </head>
 <body>
@@ -1583,7 +1589,7 @@ function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden=
         <div class="hs-n"><b>49<small>%</small></b><span class="stage1 sm">Scattered</span></div>
         ${dotbar(49,32)}
         <p class="hs-hint">Tap a tile to see why.</p>
-        <div class="bk2">${[["Career Clarity", 73, "a", "Almost", "You said you’re only guessing toward this direction."], ["Artifacts", 54, "a", "Almost", "Resume: 2 pages long. Recruiters won’t flip."], ["Application Strategy", 53, "a", "Almost", "Your plan for next month is to keep mass-applying."], ["Networking Ability", 0, "x", "Not at all", "You’ve talked to zero people in your field."]].map(([n,v,c,w,l])=>`<div class="rt"><div class="t2-h"><b>${n}</b></div><div class="t2-r"><div><span class="t2-n">${v}<small>%</small></span><span class="vd ${c}">${w}</span></div>${donut(v,c)}</div><p class="t2-p">${l}</p></div>`).join("")}</div>
+        <div class="bk2">${[["Career Clarity", 73, "a", "Almost", "You said you’re only guessing toward this direction."], ["Artifacts", 54, "a", "Almost", "Resume: 2 pages long. Recruiters won’t flip."], ["Application Strategy", 53, "a", "Almost", "Your plan for next month is to keep mass-applying."], ["Networking Ability", 0, "x", "Not at all", "You’ve talked to zero people in your field."]].map(([n,v,c,w,l])=>`<div class="rt"><div class="t2-h"><b>${n}</b></div><div class="t2-r"><div><span class="t2-n">${v}<small>%</small></span></div>${donut(v,c)}</div></div>`).join("")}</div>
         <div class="hs-btn">See my next steps</div>
         <div class="hs-tabs"><span class="on">Dashboard</span><span>Next steps</span><span>Profile</span><i class="pf-home"></i></div>
       </div></div><img class="pf-img" src="img/phone-frame.png" alt=""></div></div>
@@ -1685,8 +1691,8 @@ function vResArch(){const R=archR0();if(!R)return go("home"),"";const a=S.answer
     ${self!=null?`<div class="gap"><div><span>You think</span><b>${self}<small>%</small></b></div><div class="gap-mid">→</div><div class="real"><span>Reality</span><b>${R.score}<small>%</small></b></div></div>`:`${ring(R.score,"hirable")}`}
     <a class="btn t2btn" href="#breakdown">See why →</a>
   </main>`)}
-const VCOL={y:"#3F6E34",a:"#7FAE62",n:"#9DBF7E",x:"#C9DDB0"};
-function dotbar(v,n){n=n||34;const on=Math.round(n*v/100),c=["#D7E8C3","#A9D18C","#8DBA6E","#A9D18C","#E4F1CF"];return `<div class="dbar">${Array.from({length:n},(_,i)=>`<i style="${i<on?`background:${c[Math.min(c.length-1,Math.floor(i/n*c.length))]}`:""}"${i===on-1?' class="me"':""}></i>`).join("")}</div>`}
+const VCOL={y:"#15261F",a:"#15261F",n:"#15261F",x:"#15261F"};
+function dotbar(v,n){n=n||34;const on=Math.round(n*v/100),c=["#15261F"];return `<div class="dbar">${Array.from({length:n},(_,i)=>`<i style="${i<on?`background:${c[Math.min(c.length-1,Math.floor(i/n*c.length))]}`:""}"${i===on-1?' class="me"':""}></i>`).join("")}</div>`}
 function donut(v,c){const r=15,C=2*Math.PI*r;return `<svg class="dn" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="${r}" fill="none" stroke="rgba(21,38,31,.08)" stroke-width="5"/><circle cx="20" cy="20" r="${r}" fill="none" stroke="${VCOL[c]}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${(C*v/100).toFixed(1)} ${C.toFixed(1)}"${v?"":" opacity=\"0\""} transform="rotate(-90 20 20)"/></svg>`}
 function readyHead(name,score,stage){return `<h1 class="ttl rd-t">${esc(name?name+"’s":"Your")} career readiness</h1>
   <div class="rd-top"><b>${score}<small>%</small></b><span class="stage1 sm">${esc(STAGE[stage].n)}</span></div>${dotbar(score)}`}
@@ -1695,7 +1701,7 @@ function vBreak(){const R=archR0();if(!R)return go("home"),"";const a=S.answers.
     ${readyHead(p.first,R.score,R.stage)}
     <p class="rd-hint">Tap a tile to see why.</p>
     <div class="bk2">${DIMS.map(d=>{const v=R.dims[d.k],[w,c]=verdict(v),G=areaGaps(d.k,a,p),line=G.gaps[0]||G.wins[0]||d.d;
-      return `<a class="rt rt2" href="#area-${d.k}"><div class="t2-h"><b>${esc(d.n)}</b></div><div class="t2-r"><div><span class="t2-n">${v}<small>%</small></span><span class="vd ${c}">${w}</span></div><span class="dnw">${donut(v,c)}<i>${v}%</i></span></div><p class="t2-p">${esc(line)}</p></a>`}).join("")}</div>
+      return `<a class="rt rt2" href="#area-${d.k}"><div class="t2-h"><b>${esc(d.n)}</b></div><div class="t2-r"><div><span class="t2-n">${v}<small>%</small></span></div><span class="dnw">${donut(v,c)}</span></div></a>`}).join("")}</div>
     <a class="btn bk-cta" href="#steps">See my next steps</a>
   </main>`,{tabs:"me"})}
 function vArea(k){const R=archR0(),d=DIMS.find(x=>x.k===k);if(!R||!d)return go("breakdown"),"";const a=S.answers.arch,p=S.profile||{},v=R.dims[k],[w,c]=verdict(v),G=areaGaps(k,a,p),r=roleText(),dn=S.stepsDone||{};
