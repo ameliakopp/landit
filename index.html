@@ -950,6 +950,15 @@ body.has-devbar{padding-top:34px}
   main.ar .ar-col{flex:1 1 0;min-width:0}
   main.ar .ar-col .sech{margin-top:28px}
 }
+/* profile: minimal */
+main.pf2{align-items:center;text-align:center;padding-top:28px}
+.pf-av{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer}
+.pf-av span,.pf-av img{width:112px;height:112px;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:#EAF2E0;font:600 44px/1 "Inter Tight",system-ui,sans-serif;color:#15261F}
+.pf-av em{font-style:normal;font-size:14px;font-weight:600;color:#3F6E34}
+.pf-name{margin:18px 0 2px;font:600 32px/1.1 "Inter Tight",system-ui,sans-serif;letter-spacing:-.03em}
+.pf-sub{margin:0;color:var(--mute);font-size:15.5px}
+.pf-rows{width:100%;max-width:460px;margin-top:24px;text-align:left}
+.pf-acts{display:flex;gap:10px;margin-top:14px;width:100%;max-width:460px}.pf-btn{flex:1;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1714,7 +1723,27 @@ function vJoin(){if(AUTH.user)return go("me"),"";const up=UI.mode==="signup";
 function resumeBlock(p){const an=analyzeResume(p);if(!an)return"";
   return `<div class="sw"><div class="sw-col"><h3>Strengths</h3>${an.good.length?an.good.map(x=>`<div class="swi">${ICON_OK}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join(""):`<p class="tiny">None yet. That’s what we’ll build.</p>`}</div>
     <div class="sw-col"><h3>Weaknesses</h3>${an.bad.length?an.bad.map(x=>`<div class="swi">${ICON_NO}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join(""):`<p class="tiny">Nothing obvious. Nice.</p>`}</div></div>`}
-function vSetup(){const p=S.profile||(S.profile={}),P=UI.parse||{},xp=p.experience||[],first=!p.done,edit=UI.edit||(!p.resume&&!first);
+function vProfile(){const p=S.profile||(S.profile={}),P=UI.parse||{},xp=p.experience||[],R=S.answers.arch&&archR0(),role=R&&roleText(),ini=esc((p.first||p.name||"?").charAt(0).toUpperCase());
+  const rows=[R&&["Hirable score",R.score+"%"],role&&["Aiming for",role.charAt(0).toUpperCase()+role.slice(1)],["Resume",p.resume?p.resume.name:"Not added"]].filter(Boolean);
+  return shell(`<main class="screen anim-in pf2">
+    <label class="pf-av" aria-label="${p.avatar?"Change":"Add"} profile photo"><input type="file" accept="image/*" data-avatar hidden>${p.avatar?`<img src="${esc(p.avatar)}" alt="">`:`<span>${ini}</span>`}<em>${p.avatar?"Change photo":"+ Add photo"}</em></label>
+    <h1 class="pf-name">${esc(p.name||p.first||"You")}</h1>
+    ${p.school||p.grad?`<p class="pf-sub">${esc([p.school,p.grad&&"Class of "+p.grad].filter(Boolean).join(" · "))}</p>`:""}
+    <div class="gcard pf-rows">${rows.map(([k,v])=>`<div class="alt"><span>${k}</span><em>${esc(v)}</em></div>`).join("")}</div>
+    <div class="pf-acts"><label class="btn glass pf-btn"><input type="file" accept="application/pdf,.pdf" data-resume hidden>${P.busy?"Reading…":p.resume?"Replace resume":"Add resume"}</label><button class="btn glass pf-btn" data-act="edit2">${UI.edit?"Done":"Edit details"}</button></div>
+    ${P.err?`<p class="msg err">${esc(P.err)}</p>`:""}
+    ${UI.edit?`<div class="found" style="display:flex;flex-direction:column;gap:8px;margin-top:14px;width:100%">
+        <input class="in" id="pf-name" data-pf="name" value="${esc(p.name||"")}" placeholder="Your name" aria-label="Name">
+        <div class="grid2"><input class="in" id="pf-school" data-pf="school" value="${esc(p.school||"")}" placeholder="School" aria-label="School"><input class="in" id="pf-grad" data-pf="grad" inputmode="numeric" value="${esc(p.grad||"")}" placeholder="Grad year" aria-label="Grad year"></div>
+        <input class="in" id="pf-major" data-pf="major" value="${esc(p.major||"")}" placeholder="Major" aria-label="Major">
+        ${xp.map((x,i)=>`<div class="xp"><input class="in" data-xp="${i}" data-f="title" value="${esc(x.title)}" placeholder="Title" aria-label="Title"><input class="in" data-xp="${i}" data-f="company" value="${esc(x.company)}" placeholder="Company" aria-label="Company"><button class="rm" data-act="rmxp" data-i="${i}" aria-label="Remove">×</button></div>`).join("")}
+        <button class="txt" data-act="addxp" style="align-self:flex-start">+ Add a role</button></div>`:""}
+    <div class="stack" style="margin-top:22px">${AUTH.user?`<button class="txt" data-act="logout">Log out</button>`:`<a class="btn" href="#join">Save my results</a>`}</div>
+  </main>`,{tabs:"setup"})}
+/* profile photo: shrink to 240px so it fits in local storage */
+function handleAvatar(file){if(!file||!/^image\//.test(file.type))return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const n=240,c=document.createElement("canvas");c.width=c.height=n;const x=c.getContext("2d"),m=Math.min(im.width,im.height);
+  x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,n,n);(S.profile||(S.profile={})).avatar=c.toDataURL("image/jpeg",.85);save();render()};im.src=r.result};r.readAsDataURL(file)}
+function vSetup(){if(S.profile&&S.profile.done)return vProfile();const p=S.profile||(S.profile={}),P=UI.parse||{},xp=p.experience||[],first=!p.done,edit=UI.edit||(!p.resume&&!first);
   const head=first?(p.resume?`<p class="kick">Step 1 of 3 · Done</p><h1 class="t1">Got it.</h1><p class="t2">Here’s what we pulled from your resume. We’ll rate it at the end.</p>`
       :`<p class="kick">Step 1 of 3</p><h1 class="t1">Drop your resume.</h1><p class="t2">We’ll use it so you don’t have to answer questions about yourself. It stays on your device.</p>`)
     :`<h1 class="ttl" style="text-align:left;width:100%">Profile.<span>${p.resume?"Built from your resume.":"Add your resume to see your strengths and weaknesses."}</span></h1>`;
@@ -1961,6 +1990,7 @@ const ACT={
   more:()=>{UI.more=true;render()},
   copymsg:()=>{const t=($("#chatmsg")||{}).innerText||"";try{navigator.clipboard.writeText(t).then(()=>toast("Copied. Paste it into LinkedIn."),()=>toast("Select the text to copy it."))}catch(e){toast("Select the text to copy it.")}},
   edit:()=>{UI.edit=true;render()},
+  edit2:()=>{UI.edit=!UI.edit;render()},
   tick:el=>{const d=S.stepsDone||(S.stepsDone={}),k=el.dataset.k;d[k]=!d[k];UI.openArea=k.split(":")[0];save();render()},
   logout:async()=>{if(sb)await sb.auth.signOut();AUTH.user=null;S=fresh();save();go("home")},
   help:()=>{UI.help={};render()},helpx:(el,e)=>{if(el.classList.contains("modal-bg")&&e.target!==el)return;UI.help=null;render()},
@@ -1974,7 +2004,7 @@ document.addEventListener("input",e=>{const t=e.target;
   else if(t.matches("[data-qtext]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i];d.a[t.dataset.pid||q.id]=t.value;save();footSync(k);if(q.kind==="combo"){clearTimeout(UI.revT);UI.revT=setTimeout(()=>{if(route()==="q-"+k&&(t.type==="url"||shownParts(q,d.a).length!==(UI.partsShown||{})[q.id]))render()},700)}}});
 document.addEventListener("input",e=>{if(e.target.matches("[data-slider]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i],v=+e.target.value;d.a[e.target.dataset.pid||q.id]=v;save();$("#sl-n").textContent=v;$("#sl-l").textContent=selfLabel(v);footSync(k)}});
 function footSync(k){const d=S.draft[k],q=QUIZ[k].qs[d.i],ok=qOk(q,d.a),b=$(".qz-foot .go");if(!b)return;const last=qVisible(k,d.a).indexOf(q)===qVisible(k,d.a).length-1;b.disabled=!ok&&!q.optional;b.innerHTML=(!ok&&q.optional?"Skip":last?"Show me the truth":"Next")+"<i>→</i>"}
-document.addEventListener("change",e=>{if(e.target.matches("[data-resume]"))handleResume(e.target.files[0]);if(e.target.matches("[data-qfile]"))handleQFile(e.target.files[0],e.target.dataset.qfile,e.target.dataset.pid)});
+document.addEventListener("change",e=>{if(e.target.matches("[data-avatar]"))handleAvatar(e.target.files[0]);if(e.target.matches("[data-resume]"))handleResume(e.target.files[0]);if(e.target.matches("[data-qfile]"))handleQFile(e.target.files[0],e.target.dataset.qfile,e.target.dataset.pid)});
 async function handleQFile(file,doc,pid){if(!file)return;const k=route().slice(2),d=S.draft[k];UI.fileSt=UI.fileSt||{};
   if(!/pdf$/i.test(file.type)&&!/\.pdf$/i.test(file.name)){UI.fileSt[pid]={err:"That’s not a PDF. Export it as a PDF and try again."};render();return}
   UI.fileSt[pid]={busy:true};render();
