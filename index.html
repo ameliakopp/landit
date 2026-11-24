@@ -959,6 +959,27 @@ main.pf2{align-items:center;text-align:center;padding-top:28px}
 .pf-sub{margin:0;color:var(--mute);font-size:15.5px}
 .pf-rows{width:100%;max-width:460px;margin-top:24px;text-align:left}
 .pf-acts{display:flex;gap:10px;margin-top:14px;width:100%;max-width:460px}.pf-btn{flex:1;cursor:pointer}
+.pf-head{display:flex;flex-direction:column;align-items:center}.pf-id{display:flex;flex-direction:column;align-items:center}
+@media (min-width:900px){
+  main.pf2{max-width:1200px!important;width:100%;padding:40px 48px 0;align-items:stretch;text-align:left}
+  .pf-head{flex-direction:row;align-items:center;gap:32px}
+  .pf-id{align-items:flex-start}
+  .pf-av span,.pf-av img{width:140px;height:140px;font-size:54px}
+  .pf-name{margin:0 0 6px;font-size:48px}
+  .pf-sub{font-size:17px}
+  .pf-rows{max-width:none;margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;background:none!important;border:0!important;padding:0!important;box-shadow:none!important}
+  .pf-rows .alt{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:24px!important;border-radius:24px;background:#F6F6F3;border:0!important;min-height:140px;justify-content:space-between}
+  .pf-rows .alt span{font-size:15px;color:var(--mute)}
+  .pf-rows .alt em{font-style:normal;font-size:24px;font-weight:600;color:#15261F;text-align:left;overflow-wrap:anywhere;font-family:"Inter Tight",system-ui,sans-serif;letter-spacing:-.02em}
+  .pf-rows .alt:first-child em{font-size:44px;font-weight:400;letter-spacing:-.04em}
+  .pf-acts{max-width:none;width:auto;margin-top:22px;justify-content:flex-start}.pf-btn{flex:0 0 auto;width:auto!important;padding-left:28px;padding-right:28px}
+  main.pf2 .stack{align-items:flex-start;margin-top:14px!important}
+  main.pf2 .stack .btn{width:auto;padding-left:36px;padding-right:36px}
+}
+@media (min-width:900px){
+  main.pf2 .stack{align-self:flex-start!important;margin-left:0!important;margin-right:0!important;width:auto}
+  .pf-rows .alt{min-width:0}.pf-rows .alt em{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
+}
 </style>
 </head>
 <body>
@@ -1727,9 +1748,10 @@ function resumeBlock(p){const an=analyzeResume(p);if(!an)return"";
 function vProfile(){const p=S.profile||(S.profile={}),P=UI.parse||{},xp=p.experience||[],R=S.answers.arch&&archR0(),role=R&&roleText(),ini=esc((p.first||p.name||"?").charAt(0).toUpperCase());
   const rows=[R&&["Hirable score",R.score+"%"],role&&["Aiming for",role.charAt(0).toUpperCase()+role.slice(1)],["Resume",p.resume?p.resume.name:"Not added"]].filter(Boolean);
   return shell(`<main class="screen anim-in pf2">
+    <div class="pf-head">
     <label class="pf-av" aria-label="${p.avatar?"Change":"Add"} profile photo"><input type="file" accept="image/*" data-avatar hidden>${p.avatar?`<img src="${esc(p.avatar)}" alt="">`:`<span>${ini}</span>`}<em>${p.avatar?"Change photo":"+ Add photo"}</em></label>
-    <h1 class="pf-name">${esc(p.name||p.first||"You")}</h1>
-    ${p.school||p.grad?`<p class="pf-sub">${esc([p.school,p.grad&&"Class of "+p.grad].filter(Boolean).join(" · "))}</p>`:""}
+    <div class="pf-id"><h1 class="pf-name">${esc(p.name||p.first||"You")}</h1>
+    ${p.school||p.grad?`<p class="pf-sub">${esc([p.school,p.grad&&"Class of "+p.grad].filter(Boolean).join(" · "))}</p>`:""}</div></div>
     <div class="gcard pf-rows">${rows.map(([k,v])=>`<div class="alt"><span>${k}</span><em>${esc(v)}</em></div>`).join("")}</div>
     <div class="pf-acts"><label class="btn glass pf-btn"><input type="file" accept="application/pdf,.pdf" data-resume hidden>${P.busy?"Reading…":p.resume?"Replace resume":"Add resume"}</label><button class="btn glass pf-btn" data-act="edit2">${UI.edit?"Done":"Edit details"}</button></div>
     ${P.err?`<p class="msg err">${esc(P.err)}</p>`:""}
