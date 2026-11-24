@@ -17,7 +17,7 @@
 <meta name="description" content="The internship quiz that tells you the truth. Get your archetype, your clarity score, and the careers you're actually built for.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=Instrument+Serif&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=Instrument+Serif&display=swap">
 <style>
 :root{
   --bg:#FFFFFF;--ink:#F2F0EC;--mute:rgba(21,21,21,.55);--faint:rgba(21,21,21,.32);
@@ -794,6 +794,24 @@ html,body{background:#F4F3F1;color:#151515}
 .hirecard{margin-top:12px;padding:18px 20px;border-radius:24px;background:#FDFAF6;border:1px solid rgba(21,21,21,.05);display:flex;flex-direction:column;gap:12px;text-align:left}
 .hc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.hc-top span{font-size:15px;font-weight:500}.hc-top b{font-weight:300;font-size:38px;letter-spacing:-.04em;line-height:1}.hc-top b small{font-size:.4em;color:var(--faint)}
 .hirecard p{margin:0;font-size:14.5px;color:var(--mute);line-height:1.45}
+/* next steps: simple visual list */
+.stp-h{font-family:var(--sans);font-weight:800;font-size:46px;letter-spacing:-.04em;line-height:1;margin:10px 0 18px}
+.stp-tabs{display:flex;gap:18px;margin-bottom:18px;font-size:16px;font-weight:600;color:var(--faint)}.stp-tabs .on{color:#151515}
+.stp-tabs i{font-style:normal;font-size:12px;font-weight:600;background:rgba(21,21,21,.08);padding:2px 7px;border-radius:999px;margin-left:4px}
+.stp-list{display:flex;flex-direction:column;gap:12px}
+.stp-c{display:flex;align-items:center;gap:16px;padding:14px 16px 14px 14px;border-radius:24px;background:var(--bg);color:#151515;animation:fade .5s var(--ease) both;transition:transform .2s var(--ease)}
+.stp-c:active{transform:scale(.98)}
+.stp-art{width:84px;height:84px;flex:none;filter:drop-shadow(0 6px 10px rgba(21,21,21,.12))}.stp-art svg{width:100%;height:100%}
+.stp-t{flex:1;display:flex;flex-direction:column;gap:8px}.stp-t b{font-size:21px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.stp-m{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:rgba(21,21,21,.7)}.stp-m em{font-style:normal;opacity:.4}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}.dot.y{background:#3FAE76}.dot.a{background:#E8A35C}.dot.n{background:#F07A3E}.dot.x{background:#E5546C}
+.stp-go{width:34px;height:34px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:20px;flex:none}
+.ar-hero{width:150px;height:150px;margin:6px auto 0;border-radius:40px;background:var(--bg);display:grid;place-items:center}.ar-hero svg{width:112px;height:112px;filter:drop-shadow(0 8px 12px rgba(21,21,21,.14))}
+.ar-q{text-align:center;margin:0 0 8px;font-size:16px;font-weight:500;color:var(--mute)}
+/* bolder text overall */
+.sub,.t2,.tl .d,.step small,.swi span,.why li,.t2-p,.ar-p,.qsub,.plabel,.cap,.kick{font-weight:500}
+.step b,.swi b{font-weight:600}
+.sech{font-family:var(--sans)!important;font-weight:800!important;letter-spacing:-.03em!important;font-size:24px!important}
 </style>
 </head>
 <body>
@@ -1641,8 +1659,9 @@ function vBreak(){const R=archR0();if(!R)return go("home"),"";const a=S.answers.
 function vArea(k){const R=archR0(),d=DIMS.find(x=>x.k===k);if(!R||!d)return go("breakdown"),"";const a=S.answers.arch,p=S.profile||{},v=R.dims[k],[w,c]=verdict(v),G=areaGaps(k,a,p),r=roleText(),dn=S.stepsDone||{};
   const acts=(k==="art"&&analyzeResume(p)?[...analyzeResume(p).bad.filter(b=>b.fix).map(b=>[b.fix,b.d]),...AREA_ACT[k](r)]:AREA_ACT[k](r)).slice(0,3).map(z=>({t:z[0],sub:z[1],quiz:z[2]||null,key:k+":"+z[0]}));
   return shell(`<main class="screen anim-in">
-    <a class="txt" href="#breakdown" style="align-self:flex-start;padding-left:0">← Breakdown</a>
-    <h1 class="ttl" style="margin-top:6px">${esc(d.n)}.<span>${esc(d.q)}</span></h1>
+    <a class="txt" href="#steps" style="align-self:flex-start;padding-left:0">← Next steps</a>
+    <div class="ar-hero" style="--bg:${STK_BG[k]}">${STICK[k]}</div>
+    <h1 class="stp-h" style="text-align:center;font-size:38px;margin:14px 0 4px">${esc(d.n)}</h1><p class="ar-q">${esc(d.q)}</p>
     <div class="ar-top"><div class="bk-v big">${v}<small>%</small></div><span class="vd ${c}">${w}</span></div>
     <div class="bar2" style="margin-bottom:8px"><i class="${c}" style="width:${Math.max(3,v)}%"></i></div>
     ${G.gaps.length?`<h2 class="sech">The gaps.</h2><div class="gcard">${G.gaps.map(t=>`<div class="swi" style="padding:14px 16px">${ICON_NO}<div><b>${esc(t)}</b></div></div>`).join("")}</div>`:`<h2 class="sech">No gaps here.</h2><p class="sub">This is a strength. Keep it that way.</p>`}
@@ -1655,18 +1674,24 @@ function areaRows(R,a){const p=S.profile||{};return `<div class="areas">${DIMS.m
 function stageTrack(st){return `<div class="track">${[1,2,3,4,5].map(i=>`<div class="${i<st?"past":i===st?"now":""}"><i></i><span>${STAGE[i].n}</span></div>`).join("")}</div>`}
 function learnBlock(a){const L=learned(a);return L.length?`<h2 class="sech">What we learned about you.</h2><div class="gcard">${L.map(([k,v])=>`<div class="alt lrn"><span>${esc(k)}</span><em>${esc(v)}</em></div>`).join("")}</div>`:""}
 function actRows(acts){const dn=S.stepsDone||{};return acts.map(s=>`<div class="step${dn[s.key]?" done":""}"><button class="ck" data-act="tick" data-k="${esc(s.key)}" aria-label="Mark done" aria-pressed="${!!dn[s.key]}">${dn[s.key]?"✓":""}</button><div style="flex:1"><b>${esc(s.t)}</b><small>${esc(s.sub)}</small></div>${s.quiz&&!S.results.career?`<button class="go2" data-act="begin" data-k="${s.quiz}">Start</button>`:""}</div>`).join("")}
-function vSteps(){const R=archR0();if(!R)return go("home"),"";const pl=planFor(R),pct=pl.all.length?Math.round(pl.done/pl.all.length*100):0;
-  return shell(`<main class="screen anim-in">
-    <h1 class="ttl">Next steps.<span>${pl.done?`${pl.done} of ${pl.all.length} done. Keep going.`:"Weakest first. Tick them off."}</span></h1>
-    <div class="prog"><i style="width:${pct}%"></i></div>
-    ${(()=>{const oi=Math.max(0,pl.fix.findIndex(x=>x.acts.some(z=>!(S.stepsDone||{})[z.key])));return pl.fix.map((x,i)=>{const dn=x.acts.filter(z=>(S.stepsDone||{})[z.key]).length;return `<details class="area"${i===oi||UI.openArea===x.k?" open":""} data-area="${x.k}"><summary class="area-h"><span class="area-n">${dn===x.acts.length?"✓":i+1}</span><div style="flex:1"><b>${esc(x.fix)}</b><span>${esc(x.q)} ${verdict(x.score)[0]} · ${dn}/${x.acts.length} done</span></div><span class="chev">›</span></summary>
-      <div class="bar2"><i style="width:${Math.max(3,x.score)}%"></i></div>
-      ${x.why.length?`<ul class="why">${x.why.map(w=>`<li>${esc(w)}</li>`).join("")}</ul>`:""}
-      <div class="steps">${actRows(x.acts)}</div></details>`}).join("")})()}
-    ${pl.strengths.length?`<h2 class="sech">Already strong.</h2><div class="gcard">${pl.strengths.map(s=>`<div class="swi" style="padding:14px 16px">${ICON_OK}<div><b>${esc(s.t)}</b><span>${esc(s.d)}</span></div></div>`).join("")}</div>`:""}
-    <div class="stack" style="margin:26px auto 0"><button class="txt" data-act="begin" data-k="arch">Retake the quiz to see your new score</button></div>
+/* cute sticker art for the 4 areas */
+const STICK={
+cla:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(-8 60 60)"><circle cx="60" cy="60" r="44" fill="#fff"/><circle cx="60" cy="60" r="38" fill="#DCE7F6"/><circle cx="60" cy="60" r="30" fill="#fff" stroke="#151515" stroke-width="3"/><path d="M60 36 L68 60 L60 84 L52 60Z" fill="#F07A6A" stroke="#151515" stroke-width="3" stroke-linejoin="round"/><path d="M60 60 L68 60 L60 84Z" fill="#fff"/><circle cx="60" cy="60" r="4" fill="#151515"/><path d="M60 22v6M60 92v6M22 60h6M92 60h6" stroke="#151515" stroke-width="3" stroke-linecap="round"/></g></svg>`,
+art:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(7 60 60)"><rect x="26" y="14" width="66" height="88" rx="10" fill="#fff"/><rect x="31" y="19" width="56" height="78" rx="7" fill="#F6E5C6" stroke="#151515" stroke-width="3"/><circle cx="45" cy="36" r="7" fill="#F2B7DD" stroke="#151515" stroke-width="2.5"/><path d="M57 32h22M57 40h16M39 54h40M39 62h40M39 70h30M39 78h36" stroke="#151515" stroke-width="3" stroke-linecap="round"/></g><g transform="rotate(-10 92 88)"><rect x="76" y="72" width="32" height="32" rx="8" fill="#fff"/><rect x="79" y="75" width="26" height="26" rx="6" fill="#0A66C2" stroke="#151515" stroke-width="2.5"/><path d="M85 85v11M85 81v.5M90 96v-7c0-3 7-3 7 0v7" stroke="#fff" stroke-width="3" stroke-linecap="round"/></g></svg>`,
+str:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(-6 60 60)"><circle cx="56" cy="64" r="42" fill="#fff"/><circle cx="56" cy="64" r="36" fill="#F7D3C2" stroke="#151515" stroke-width="3"/><circle cx="56" cy="64" r="24" fill="#fff" stroke="#151515" stroke-width="3"/><circle cx="56" cy="64" r="11" fill="#F07A6A" stroke="#151515" stroke-width="3"/><path d="M56 64 L96 24" stroke="#151515" stroke-width="4" stroke-linecap="round"/><path d="M90 18 l10 -2 -2 10 -10 2z" fill="#EBC9F2" stroke="#151515" stroke-width="2.5" stroke-linejoin="round"/></g></svg>`,
+net:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(5 60 60)"><path d="M22 34h52a10 10 0 0 1 10 10v22a10 10 0 0 1-10 10H46l-14 12v-12h-10a10 10 0 0 1-10-10V44a10 10 0 0 1 10-10z" fill="#fff"/><path d="M24 38h48a8 8 0 0 1 8 8v18a8 8 0 0 1-8 8H46l-11 9v-9H24a8 8 0 0 1-8-8V46a8 8 0 0 1 8-8z" fill="#EBC9F2" stroke="#151515" stroke-width="3" stroke-linejoin="round"/><circle cx="36" cy="55" r="3.5" fill="#151515"/><circle cx="48" cy="55" r="3.5" fill="#151515"/><circle cx="60" cy="55" r="3.5" fill="#151515"/></g><g transform="rotate(-8 82 82)"><path d="M66 70h34a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8h-4v8l-10-8H66a8 8 0 0 1-8-8V78a8 8 0 0 1 8-8z" fill="#CDEBD9" stroke="#151515" stroke-width="3" stroke-linejoin="round"/><path d="M74 84l6 6 12-12" stroke="#151515" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg>`};
+const STK_BG={cla:"#EEF3FA",art:"#FBF2E3",str:"#FBEDE6",net:"#F6ECF8"};
+function areaActs(k,R){const pl=planFor(R),f=pl.fix.find(x=>x.k===k);if(f)return f.acts;const a=S.answers.arch,p=S.profile||{},r=roleText();
+  return (k==="art"&&analyzeResume(p)?[...analyzeResume(p).bad.filter(b=>b.fix).map(b=>[b.fix,b.d]),...AREA_ACT[k](r)]:AREA_ACT[k](r)).slice(0,3).map(z=>({t:z[0],sub:z[1],quiz:z[2]||null,key:k+":"+z[0]}))}
+function vSteps(){const R=archR0();if(!R)return go("home"),"";const dn=S.stepsDone||{},areas=DIMS.map(d=>({...d,v:R.dims[d.k]})).sort((x,y)=>x.v-y.v);
+  const tot=areas.reduce((n,x)=>n+areaActs(x.k,R).length,0),done=areas.reduce((n,x)=>n+areaActs(x.k,R).filter(z=>dn[z.key]).length,0);
+  return shell(`<main class="screen anim-in stp">
+    <h1 class="stp-h">Next steps</h1>
+    <div class="stp-tabs"><span class="on">To work on <i>${areas.filter(x=>x.v<75).length}</i></span><span>Done <i>${done}/${tot}</i></span></div>
+    <div class="stp-list">${areas.map((x,i)=>{const acts=areaActs(x.k,R),d=acts.filter(z=>dn[z.key]).length,[w,c]=verdict(x.v);
+      return `<a class="stp-c" href="#area-${x.k}" style="--bg:${STK_BG[x.k]};animation-delay:${i*70}ms"><span class="stp-art">${STICK[x.k]}</span><span class="stp-t"><b>${esc(x.n)}</b><span class="stp-m"><i class="dot ${c}"></i>${w}<em>·</em>${d}/${acts.length} done</span></span><span class="stp-go">›</span></a>`}).join("")}</div>
+    <button class="txt" data-act="begin" data-k="arch" style="margin-top:22px">Retake the quiz to see your new score</button>
   </main>`,{tabs:"steps"})}
-
 function vMe(){const p=S.profile||{},R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,pl=planFor(R),self=a.c_self!=null?+a.c_self:null,rc=S.results.career,c1=rc&&DIRS.find(d=>d.id===rc.top[0].id),ab=applyBy(a),days=ab?Math.round((new Date(ab)-new Date(TODAY))/DAY):null;
   return shell(`<main class="screen anim-in">
     <h1 class="ttl">Dashboard.<span>${p.first?`Welcome back, ${esc(p.first)}.`:"Welcome back."}</span></h1>
