@@ -1985,11 +1985,11 @@ function vResCareer(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1,
     ${ring(m1.pct,"match")}</div>
     <div class="cr-cols">
       <section class="cr-sec cr-side">
-        <h2 class="sech">Why ${esc(f1)}</h2><div class="whycard">${[...R.love.slice(0,2).map(t=>"You’d love to "+t.charAt(0).toLowerCase()+t.slice(1)),...R.env.slice(0,3).map(t=>"You thrive in: "+t.charAt(0).toLowerCase()+t.slice(1))].map(t=>`<div class="swi"><i class="ok">✓</i><div><b>${esc(t)}</b></div></div>`).join("")||`<p class="sub">${esc(cWhy(m1))}</p>`}</div>
-        <p class="cr-also">Also worth a look: ${R.M.slice(1,3).map(x=>`<b>${esc(x.d.t)}</b> ${x.pct}%`).join(" · ")}</p>
+        <h2 class="sech">Why ${esc(f1)}</h2><div class="whycard">${[...R.love.slice(0,2),...R.env.slice(0,2)].map(t=>`<div class="swi"><i class="ok">✓</i><div><b>${esc(t)}</b></div></div>`).join("")||`<p class="sub">${esc(cWhy(m1))}</p>`}</div>
+        
       </section>
       <section class="cr-sec cr-next"><h2 class="sech">Your next step</h2>
-        <div class="nextcard"><p>${tgt?`${esc(tgt.t)} is your target.`:`Make ${esc(f1)} your target.`} Then find out how hirable you are for it. About 5 minutes.</p>
+        <div class="nextcard"><p>${tgt?`${esc(tgt.t)} is your target.`:`See how hirable you are for ${esc(f1)}.`} 5 minutes.</p>
         <button class="btn" data-act="pickgo" data-v="${(tgt||m1.d).id}">${tgt?"See how hirable I am →":"Make this my target → see how hirable I am"}</button></div>
       </section>
     </div>
