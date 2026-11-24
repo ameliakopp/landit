@@ -860,6 +860,17 @@ p,li,.sub,label,input,textarea,button{letter-spacing:0}
 .ns-c{background:#F4F4F1}
 .rt.rt2,.bk2 .rt{min-height:0}
 .bk2 .t2-r{margin-top:14px}
+/* cleaner everywhere: neutral cards, ink accents */
+.qcard2{background:#F6F6F3!important;border:0!important}
+.qcard2 span{font-size:14.5px}
+.swi i.ok,.swi i.no,.lst .ok2,.fdrop.done>i{background:#F0F0EC!important;color:#15261F!important}
+.fdrop.done{border-color:rgba(21,38,31,.25)!important}
+.qbar i.now::after{background:#15261F!important;box-shadow:none!important}
+.ring .val{filter:none!important}.ring .glow{display:none}
+.gap .real b{background:none!important;color:#15261F!important;-webkit-text-fill-color:#15261F}
+.pbar>i{background:#15261F!important;box-shadow:none!important}
+.bar2 i,.bar2 i.y,.bar2 i.a,.bar2 i.n,.bar2 i.x,.lbar i{background:#15261F!important}
+.slide input{background:rgba(21,38,31,.12)!important;opacity:1}
 </style>
 </head>
 <body>
@@ -1554,7 +1565,7 @@ function loadSteps(k,a){const p=S.profile||{},out=[],nm=p.first?p.first+"’s":"
 const MARK=`<span class="mark orbm" aria-hidden="true"></span>`,WORD=`<a class="word" href="#about">${MARK}hirable</a>`;
 const amb=`<div class="amb" aria-hidden="true"><i></i><i></i><i></i></div>`;
 function ring(val,label){const r=90,c=2*Math.PI*r,off=c*(1-val/100);
-  return `<div class="ring"><div class="glow"></div><svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A9D18C"/><stop offset=".6" stop-color="#7FB069"/><stop offset="1" stop-color="#CFE6B4"/></linearGradient></defs><circle class="trk" cx="100" cy="100" r="${r}"/><circle class="val" cx="100" cy="100" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" style="--full:${c.toFixed(1)}"/></svg>
+  return `<div class="ring"><div class="glow"></div><svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#15261F"/><stop offset="1" stop-color="#15261F"/></linearGradient></defs><circle class="trk" cx="100" cy="100" r="${r}"/><circle class="val" cx="100" cy="100" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" style="--full:${c.toFixed(1)}"/></svg>
     <div class="num"><b>${val}<small>%</small></b><span>${label}</span></div></div>`}
 function topbar(right){const p=S.profile,me=p&&p.done;
   return `<header class="top">${WORD}${right!=null?right:me?`<a class="circ" href="#me" aria-label="Your dashboard">${p.avatar?`<img src="${esc(p.avatar)}" alt="">`:esc((p.first||"?").charAt(0).toUpperCase())}</a>`:AUTH.user?`<a class="chipc" href="#setup">Profile</a>`:`<a class="chipc" href="#join">Log in</a>`}</header>`}
@@ -1765,12 +1776,12 @@ function vResCareer(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1}
     <h1 class="gap-top" style="margin-top:6px">You’re built for<br>${esc(m1.d.t.toLowerCase())}.</h1>
     ${ring(m1.pct,"match")}
     <p class="sub" style="text-align:center;max-width:34ch;margin:0 auto">${esc(cWhy(m1))}</p>
-    <div class="seat"><span class="seat-k">Your seat on a ${esc(m1.d.t.toLowerCase())} team</span><b>${esc(R.seat.seat)}</b><p>Because ${esc(R.seat.why)}.</p><small>Also on the team: ${esc(R.seat.others.join(" · "))}</small></div>
-    <div class="hirecard"><div class="hc-top"><span>How hirable you are right now</span><b>${R.hire}<small>/100</small></b></div>${dotbar(R.hire,30)}<p>${esc(hirableLine(R.hire))}</p></div>
+    <div class="seat"><span class="seat-k">Your seat on a ${esc(m1.d.t.toLowerCase())} team</span><b>${esc(R.seat.seat)}</b><p>Because ${esc(R.seat.why)}.</p></div>
+    <div class="hirecard"><div class="hc-top"><span>How hirable you are right now</span><b>${R.hire}<small>/100</small></b></div>${dotbar(R.hire,30)}</div>
     <h2 class="sech">Your best qualities.</h2>
     <div class="qcards">${(R.qual.length?R.qual:[{t:"Still figuring it out",d:"That’s okay. The coffee chats will show you."}]).map(q=>`<div class="qcard2"><b>${esc(q.t)}</b><span>${esc(q.d)}</span></div>`).join("")}</div>
     <h2 class="sech">Fields to look into.</h2>
-    <div class="qcards">${fields.map((x,i)=>`<div class="qcard2 fcard"><div class="fc-top"><b>${esc(x.d.t)}</b><em>${x.pct}%</em></div><span>${esc(cWhy(x))}</span><small>Search: ${esc(x.titles[0])}</small></div>`).join("")}</div>
+    <div class="qcards">${fields.map((x,i)=>`<div class="qcard2 fcard"><div class="fc-top"><b>${esc(x.d.t)}</b><em>${x.pct}%</em></div></div>`).join("")}</div>
     ${UI.more?"":`<button class="txt" data-act="more" style="align-self:flex-start">Show 3 more</button>`}
     <div class="stack" style="margin:30px auto 0"><a class="btn" href="#r-career2">Why ${esc(m1.d.t.toLowerCase())}? →</a><button class="txt" data-act="begin" data-k="career">Retake</button></div>
   </main>`,{tabs:"me"})}
