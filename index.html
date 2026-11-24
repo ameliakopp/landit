@@ -788,6 +788,12 @@ html,body{background:#F4F3F1;color:#151515}
 .bk-cta{width:100%;max-width:none;margin-top:22px;padding:20px;font-size:18px;border-radius:999px;background:#0B0B0B}
 @media (max-width:480px){.rt2 .t2-h b{font-size:16px}.rt2 .t2-n{font-size:32px}.dnw,.dnw .dn{width:58px;height:58px}.dnw i{font-size:11.5px}.rt2 .vd{font-size:13px;padding:4px 11px}.rt2 .t2-p{font-size:13.5px}.bk2 .rt2{padding:16px 15px 18px}}
 .dnw circle{stroke-width:3.4}
+.seat{margin-top:34px;padding:22px 22px 20px;border-radius:26px;background:#151515;color:#fff;text-align:left;display:flex;flex-direction:column;gap:6px}
+.seat-k{font-size:13px;color:rgba(255,255,255,.6)}.seat b{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:32px;line-height:1.08}
+.seat p{margin:2px 0 0;font-size:15.5px;color:rgba(255,255,255,.85)}.seat small{margin-top:6px;font-size:13px;color:rgba(255,255,255,.55)}
+.hirecard{margin-top:12px;padding:18px 20px;border-radius:24px;background:#FDFAF6;border:1px solid rgba(21,21,21,.05);display:flex;flex-direction:column;gap:12px;text-align:left}
+.hc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.hc-top span{font-size:15px;font-weight:500}.hc-top b{font-weight:300;font-size:38px;letter-spacing:-.04em;line-height:1}.hc-top b small{font-size:.4em;color:var(--faint)}
+.hirecard p{margin:0;font-size:14.5px;color:var(--mute);line-height:1.45}
 </style>
 </head>
 <body>
@@ -1113,11 +1119,68 @@ const EARLY=new Set(["finance","consult","swe","ai","accounting"]),MID=new Set([
 const postTime=id=>EARLY.has(id)?"Posts early: usually Jul–Oct":MID.has(id)?"Usually posts Aug–Dec":"Usually posts Nov–Mar";
 const SKILL_WHY={writing:"Words are your tool. You make people get it.",numbers:"You find the answer in numbers other people skip.",visual:"You have taste. You make things look and feel right.",talking:"You can talk to anyone. That opens doors.",organize:"You keep things on track when others are lost.",research:"You dig until you actually understand it.",code:"You can build things that actually work.",persuade:"You get people to say yes."};
 const KNOWN_WHY={creative:"You bring the ideas nobody else thought of.",smart:"You’re the one who figures out the hard part.",doer:"You turn plans into done.",trusted:"People come to you. You make them feel heard.",closer:"You make things happen.",voice:"You know what’s good and what isn’t."};
+/* ---------- career quiz v4: more skills, work setups, team seats, hirable score ---------- */
+QSKILL.push(["social","Social media"],["teach","Explaining and teaching"],["lead","Leading a group"],["events","Planning events"],["problem","Solving messy problems"],["listen","Listening and helping"],["sell","Selling"],["detail","Catching details"]);
+const SKILL_TAGS={social:["hype","comm","creative"],teach:["explain","help"],lead:["org","doer","closer"],events:["org","organize","plan"],problem:["fig","smart"],listen:["help","trusted","advice"],sell:["persuade","talking","deals","closer"],detail:["numbers","clear","depth"]};
+/* deeper skills that pop up based on what they picked */
+const SKILL_MORE={writing:["Copywriting","Storytelling","Editing","Speechwriting"],numbers:["Excel","Financial modeling","Data analysis","Budgeting"],visual:["Figma","Photo and video editing","Branding","Illustration"],
+  talking:["Networking","Public speaking","Interviewing people","Customer service"],organize:["Project management","Scheduling","Running meetings","Notion or Asana"],research:["Market research","Survey design","Fact-checking","Reading studies"],
+  code:["Python","Web development","SQL","No-code tools"],persuade:["Pitching","Negotiation","Fundraising","Debate"],social:["TikTok and Reels","Community building","Trend spotting","Influencer outreach"],
+  teach:["Tutoring","Workshops","Making guides","Mentoring"],lead:["Running a club","Managing volunteers","Coaching a team","Delegating"],events:["Vendor booking","Run-of-show","Sponsorships","Event promo"],
+  problem:["Root-cause digging","Process fixing","Case studies","Puzzles and logic"],listen:["Peer counseling","Conflict resolution","Onboarding people","Feedback"],sell:["Cold outreach","Closing deals","Upselling","Retail"],detail:["Proofreading","Reconciling numbers","Quality checks","Compliance"]};
+const MORE_TAG={Copywriting:"writing",Storytelling:"words",Editing:"edit",Speechwriting:"front",Excel:"numbers","Financial modeling":"money","Data analysis":"research",Budgeting:"organize",Figma:"design","Photo and video editing":"make",Branding:"voice",Illustration:"arts",
+  Networking:"out","Public speaking":"front","Interviewing people":"research","Customer service":"help","Project management":"organize",Scheduling:"clear","Running meetings":"org","Notion or Asana":"doer","Market research":"research","Survey design":"research","Fact-checking":"depth","Reading studies":"stem",
+  Python:"code","Web development":"tech",SQL:"numbers","No-code tools":"tech",Pitching:"persuade",Negotiation:"deals",Fundraising:"impact",Debate:"explain","TikTok and Reels":"hype","Community building":"people","Trend spotting":"creative","Influencer outreach":"talking",
+  Tutoring:"explain",Workshops:"front","Making guides":"words",Mentoring:"trusted","Running a club":"org","Managing volunteers":"impact","Coaching a team":"lead","Delegating":"doer","Vendor booking":"deals","Run-of-show":"plan",Sponsorships:"deals","Event promo":"hype",
+  "Root-cause digging":"fig","Process fixing":"organize","Case studies":"smart","Puzzles and logic":"fig","Peer counseling":"help","Conflict resolution":"trusted","Onboarding people":"help",Feedback:"advice","Cold outreach":"talking","Closing deals":"closer",Upselling:"money",Retail:"people",
+  Proofreading:"edit","Reconciling numbers":"numbers","Quality checks":"clear",Compliance:"stable"};
+const SETUPS=[["big","Big company"],["small","Small team"],["startup","Startup"],["founder","My own thing (entrepreneur)"],["freelance","Freelance"],["collective","Collective or creative studio"],["agency","Agency (many clients)"],["mission","Nonprofit or mission-driven"]];
+const SETUP_TAGS={big:["big","stable","clear"],small:["small"],startup:["small","fast","learn","blank"],founder:["small","blank","doer","closer"],freelance:["alone","blank","flex"],collective:["people","creative","small"],agency:["fast","breadth","people"],mission:["impact","help"]};
+const SETUP_ENV={big:"A big company with structure and resources",small:"A small team where your work is visible",startup:"A startup where you wear lots of hats",founder:"Building your own thing",freelance:"Freelance, choosing your own projects",collective:"A collective or studio of creative people",agency:"An agency, working with lots of clients",mission:"A mission-driven org where the work matters"};
+function extraWant(w){const out=[];(w.qskill||[]).forEach(k=>(SKILL_TAGS[k]||[]).forEach(t=>out.push(t)));(w.c_skmore||[]).forEach(l=>MORE_TAG[l]&&out.push(MORE_TAG[l]));(w.c_setup||[]).forEach(k=>(SETUP_TAGS[k]||[]).forEach(t=>out.push(t)));return out}
+/* the seat on the team: same field, different people */
+const SEAT_ARCH={analyst:["numbers","research","depth","smart","detail","alone","stem"],creative:["visual","writing","creative","voice","make","design","arts","words","social"],connector:["talking","persuade","people","hype","closer","out","sell","front"],organizer:["organize","doer","plan","clear","events","lead","org"],strategist:["fig","explain","smart","breadth","problem","advice","teach"]};
+const SEATS={brand:{analyst:"Consumer insights analyst",creative:"Brand content & creative lead",connector:"Brand partnerships coordinator",organizer:"Brand campaign manager",strategist:"Brand strategist"},
+  social:{analyst:"Social media analyst",creative:"Content creator",connector:"Community manager",organizer:"Content calendar coordinator",strategist:"Social strategist"},
+  partner:{analyst:"Partnerships analyst",creative:"Co-marketing lead",connector:"Partnerships manager",organizer:"Partner operations",strategist:"Business development strategist"},
+  pm:{analyst:"Product analyst",creative:"Product designer-PM",connector:"Customer-facing PM",organizer:"Technical program manager",strategist:"Product manager"},
+  ux:{analyst:"UX researcher",creative:"Product designer",connector:"Design ops & research recruiter",organizer:"Design program coordinator",strategist:"UX strategist"},
+  data:{analyst:"Data analyst",creative:"Data visualization designer",connector:"Analytics partner to business teams",organizer:"Data operations",strategist:"Business intelligence strategist"},
+  consult:{analyst:"Research analyst",creative:"Slide and storytelling specialist",connector:"Client engagement associate",organizer:"Project coordinator",strategist:"Strategy consultant"},
+  finance:{analyst:"Financial analyst",creative:"Pitch book designer",connector:"Investor relations",organizer:"Finance operations",strategist:"Corporate development"},
+  swe:{analyst:"Data / backend engineer",creative:"Front-end engineer",connector:"Developer relations",organizer:"DevOps / infrastructure",strategist:"Product engineer"},
+  events:{analyst:"Event analytics & budgeting",creative:"Experience designer",connector:"Sponsorships & talent",organizer:"Event producer",strategist:"Experiential strategist"},
+  comms:{analyst:"Media monitoring analyst",creative:"Copywriter",connector:"Media relations",organizer:"Communications coordinator",strategist:"Communications strategist"},
+  journal:{analyst:"Researcher & fact-checker",creative:"Writer / reporter",connector:"Audience & social editor",organizer:"Producer",strategist:"Editor"},
+  people:{analyst:"People analytics",creative:"Employer brand & culture",connector:"Recruiter",organizer:"People operations",strategist:"HR business partner"},
+  ops:{analyst:"Operations analyst",creative:"Process designer",connector:"Vendor & partner manager",organizer:"Operations coordinator",strategist:"Strategy & operations"},
+  sales:{analyst:"Sales operations analyst",creative:"Sales enablement content",connector:"Account executive",organizer:"Sales coordinator",strategist:"Business development"},
+  program:{analyst:"Impact & evaluation analyst",creative:"Program designer",connector:"Community outreach",organizer:"Program coordinator",strategist:"Program strategist"},
+  creator:{analyst:"Creator analytics",creative:"Creative producer",connector:"Creator partnerships",organizer:"Campaign coordinator",strategist:"Influencer strategist"},
+  research:{analyst:"Research analyst",creative:"Insights storyteller",connector:"User / customer researcher",organizer:"Research operations",strategist:"Insights strategist"},
+  strategy:{analyst:"Strategy analyst",creative:"Narrative & deck lead",connector:"Cross-team partner",organizer:"Strategy & operations",strategist:"Corporate strategist"},
+  visual:{analyst:"Design systems specialist",creative:"Graphic designer",connector:"Client-facing designer",organizer:"Production designer",strategist:"Art director track"}};
+function seatFor(fieldId,want){const sc={};Object.entries(SEAT_ARCH).forEach(([k,tags])=>sc[k]=tags.filter(t=>want.includes(t)).length);
+  const best=Object.keys(sc).sort((x,y)=>sc[y]-sc[x]),d=DIRS.find(x=>x.id===fieldId),f=d?d.t.toLowerCase():"";
+  const name=k=>(SEATS[fieldId]&&SEATS[fieldId][k])||({analyst:`${d.t} analyst`,creative:`${d.t} creative`,connector:`${d.t} partnerships`,organizer:`${d.t} coordinator`,strategist:`${d.t} strategist`})[k];
+  const why={analyst:"you dig into numbers and details",creative:"you make things people want to look at and read",connector:"you can talk to anyone and get them on board",organizer:"you keep things on track and get them done",strategist:"you figure out what to do and explain why"}[best[0]];
+  return{seat:name(best[0]),why,others:best.slice(1,4).map(name),arch:best[0]}}
+/* how hirable you are right now, from how well you know yourself */
+function hirableNow(a){const w=flatPairs(a),pts=[],m=(map,v)=>v==null?null:map[v],add=v=>{if(v!=null)pts.push(v)};
+  add(m({none:0,one:1.5,three:3},a.c_kgood));add(m({none:0,some:1.5,yes:3},a.c_kenv));add(m({"0":.5,"2":2,"4":3},a.c_kwork));
+  const r=Object.keys(w).filter(k=>/^r_/.test(k)).map(k=>w[k]);if(r.length)add(3*r.filter(v=>v!=="maybe").length/r.length);
+  const n=(a.qskill||[]).length;add(n===0?0:n<=4?3:n<=7?2:1);add((a.c_skmore||[]).length?3:1);
+  add(a.c_setup&&a.c_setup.length&&a.c_setup.length<=3?3:a.c_setup&&a.c_setup.length?1.5:null);
+  add(m({"0":0,"1":2,"3":3},a.q_people));const t=(a.q_tried||[]).filter(x=>x!=="none").length;add(t>=2?3:t===1?2:0);
+  return clamp(Math.round(100*pts.reduce((s,x)=>s+x,0)/(3*Math.max(1,pts.length))),5,97)}
+function hirableLine(v){return v>=75?"You know yourself well. Recruiters can tell.":v>=50?"You know some of what you want. Interviews will expose the gaps.":"You can’t explain what you’re good at yet. That’s what recruiters test first."}
+SKILL_WHY.social="You know what makes people stop and look.";SKILL_WHY.teach="You make hard things click for people.";SKILL_WHY.lead="People follow your lead.";SKILL_WHY.events="You make big things happen on time.";SKILL_WHY.problem="You untangle what others give up on.";SKILL_WHY.listen="People open up to you.";SKILL_WHY.sell="You get people to yes.";SKILL_WHY.detail="You catch what everyone else misses.";
+QSKILL.slice(8).forEach(([k,l])=>QLAB[k]=l.toLowerCase());
 function adaptTasks(a,topN,n){const w=flatPairs(a),rank=DIRS.map(d=>({d,s:qScore(w,d).sc})).sort((x,y)=>y.s-x.s).slice(0,topN).map(x=>x.d.id);
   const seen=new Set([...BROAD_TASKS,...(a.rate2_t||[])]);
   return QTASKS.filter(t=>!seen.has(t[0])).map(t=>({k:t[0],s:t[2].reduce((s,id)=>{const r=rank.indexOf(id);return s+(r<0?0:topN-r)},0)})).filter(x=>x.s>0).sort((x,y)=>y.s-x.s).slice(0,n).map(x=>x.k)}
 function topSoFar(a,n){const w=flatPairs(a);return DIRS.map(d=>({d,s:qScore(w,d).sc})).sort((x,y)=>y.s-x.s).slice(0,n).map(x=>x.d)}
-function qWant(w){return [...[].concat(w.sat||[]),...[].concat(w.area||[]),...QPAIRS.map(x=>w[x[0]]),...[].concat(w.known||[]),...(w.qfor||[]),...(w.qval||[]),...(w.qskill||[])].filter(Boolean)}
+function qWant(w){return [...extraWant(w),...[].concat(w.sat||[]),...[].concat(w.area||[]),...QPAIRS.map(x=>w[x[0]]),...[].concat(w.known||[]),...(w.qfor||[]),...(w.qval||[]),...(w.qskill||[])].filter(Boolean)}
 function qScore(w,d){const want=qWant(w),ind=w.qind||[],no=w.qnot||[];let sc=0;const love=[];
   d.tags.forEach(t=>{if(want.includes(t))sc+=(w.qskill||[]).includes(t)?1.5:1});
   sc+=d.ind.filter(i=>ind.includes(i)).length*1.5;
@@ -1206,6 +1269,8 @@ const QUIZ={
       {id:"c_kwork",kind:"one",l:"How many different kinds of work have you tried? Jobs, clubs and projects all count.",opts:o(["0","0 or 1"],["2","2 or 3"],["4","4 or more"])}]},
     {id:"k_strong",kind:"combo",q:"What are you genuinely good at?",sub:"Not what sounds good. What’s true.",parts:[
       {id:"qskill",kind:"many",l:"Pick all that apply",opts:QSKILL.map(([v,l])=>({v,l}))},
+      {id:"c_skmore",kind:"many",optional:true,when:a=>(a.qskill||[]).length>0,l:"Based on that, any of these too?",opts:a=>[...new Set((a.qskill||[]).flatMap(k=>SKILL_MORE[k]||[]))].map(l=>({v:l,l}))},
+      {id:"c_skown",kind:"text",short:true,optional:true,when:a=>(a.qskill||[]).length>0,l:"Anything else you’re good at? (optional)",ph:"e.g. Video editing, Spanish, running a podcast"},
       {id:"q_top",kind:"one",l:"Which would your friends say is your #1?",when:a=>(a.qskill||[]).length>1,opts:a=>(a.qskill||[]).map(v=>({v,l:lab(QSKILL,v)}))},
       {id:"qfor",kind:"many",l:"What do friends come to you for?",opts:QFOR.map(([v,l])=>({v,l}))}]},
     {id:"k_energy",kind:"combo",q:"What gives you energy?",parts:[
@@ -1213,7 +1278,8 @@ const QUIZ={
       {id:"q_8h",kind:"one",l:"Which of those could you do for 8 hours straight?",when:a=>(a.sat||[]).length>1,opts:a=>(a.sat||[]).map(v=>({v,l:lab(QSAT,v)}))},
       {id:"area",kind:"many",l:"Which classes or projects made you lose track of time?",opts:QAREA.map(([v,l])=>({v,l}))}]},
     {id:"k_style",kind:"combo",q:"How do you like to work?",parts:[
-      {id:"pairs1",kind:"pairs",pairs:QPAIRS.slice(0,4)},
+      {id:"pairs1",kind:"pairs",pairs:QPAIRS.filter(p=>p[0]!=="t4").slice(0,3)},
+      {id:"c_setup",kind:"many",l:"Where would you want to work? Pick all that apply.",opts:SETUPS.map(([v,l])=>({v,l}))},
       {id:"known",kind:"many",l:"In a group project, you’re…",opts:QKNOWN.map(([v,l])=>({v,l}))}]},
     {id:"k_days",kind:"combo",q:"What kind of days do you want?",parts:[{id:"pairs2",kind:"pairs",pairs:QPAIRS.slice(4)}]},
     {id:"rate1",kind:"rate",q:"Would you actually enjoy doing this at work?",tasks:BROAD_TASKS},
@@ -1236,7 +1302,7 @@ const DIR_KW={brand:/brand|marketing|campaign/i,social:/social media|content|tik
 Object.assign(DIR_KW,{accounting:/accounting|audit|tax|cpa/i,supply:/supply chain|logistics|procurement/i,health:/health|clinical|hospital|patient|medical/i,edu:/teach|tutor|education|curriculum/i,legal:/legal|law|paralegal|compliance/i,ai:/machine learning|\bai\b|artificial intelligence|neural|pytorch|tensorflow/i,hardware:/mechanical|hardware|cad|solidworks|manufactur/i});
 Object.assign(PAY_BAND,{accounting:1,supply:1,health:0,edu:0,legal:1,ai:3,hardware:2});
 function resumeBoost(d){const p=S.profile||{},t=[p.resumeText||"",(p.experience||[]).map(x=>x.title+" "+x.company).join(" "),(p.skills||[]).join(" "),p.major||""].join(" ");const k=DIR_KW[d.id];return k&&k.test(t)?2:0}
-function careerResult(w){const all=DIRS.map(d=>{const r=qScore(w,d),hit=d.tags.filter(t=>qWant(w).includes(t)),rb=resumeBoost(d),bonus=(d.tags.includes(w.q_top)?1.5:0)+(d.tags.includes(w.q_8h)?1.5:0)+(d.tags.includes(w.q_val1)?1:0);
+function careerResult(w){const all=DIRS.map(d=>{const r=qScore(w,d),hit=d.tags.filter(t=>qWant(w).includes(t)),rb=resumeBoost(d),bonus=(w.c_skown&&DIR_KW[d.id]&&DIR_KW[d.id].test(w.c_skown)?2:0)+(d.tags.includes(w.q_top)?1.5:0)+(d.tags.includes(w.q_8h)?1.5:0)+(d.tags.includes(w.q_val1)?1:0);
     return{d,score:r.sc+rb+bonus,rb,loves:r.love.slice(0,2).map(l=>l.charAt(0).toLowerCase()+l.slice(1)),likes:hit.slice(0,2).map(t=>QLAB[t]).filter(Boolean)}}).sort((a,b)=>b.score-a.score);
   const top=Math.max(1,all[0].score);all.forEach((x,i)=>x.pct=Math.max(40,Math.min(97,Math.round(96*x.score/top-(i?3:0)))));return all.slice(0,6)}
 function flatPairs(a){const w=Object.assign({},a);["pairs1","pairs2"].forEach(k=>Object.assign(w,a[k]||{}));["rate1","rate2","rate3"].forEach(k=>Object.entries(a[k]||{}).forEach(([t,v])=>w["r_"+t]=v));return w}
@@ -1358,7 +1424,7 @@ function careerReport(a){const w=flatPairs(a),M=careerResult(w).map(x=>({...x,ti
   const sk=[a.q_top,...(a.qskill||[])].filter((v,i,arr)=>v&&arr.indexOf(v)===i);
   const qual=[...sk.slice(0,2).map(v=>({t:lab(QSKILL,v),d:SKILL_WHY[v]})),...(a.known||[]).slice(0,1).map(v=>({t:lab(QKNOWN,v),d:KNOWN_WHY[v]}))].filter(x=>x.d).slice(0,3);
   const P=k=>w[k],env=[];
-  if(P("t4"))env.push(P("t4")==="small"?"A small team where your work is visible":"A big company with structure and resources");
+  (a.c_setup||[]).slice(0,2).forEach(k=>SETUP_ENV[k]&&env.push(SETUP_ENV[k]));
   if(P("t5"))env.push(P("t5")==="fast"?"Fast days where every day is different":"Steady weeks you can plan around");
   if(P("t1"))env.push(P("t1")==="people"?"Around people, talking things through":"Long stretches of focused, solo work");
   if(P("t8"))env.push(P("t8")==="blank"?"Freedom to figure it out your way":"Clear goals and someone who sets them");
@@ -1371,7 +1437,8 @@ function careerReport(a){const w=flatPairs(a),M=careerResult(w).map(x=>({...x,ti
   {const r=Object.keys(w).filter(k=>/^r_/.test(k)).map(k=>w[k]);if(r.length&&r.filter(v=>v==="maybe").length/r.length>.4)improve.push("Lots of “maybe” answers. That means you need real exposure, not more thinking.")}
   if(a.c_kenv==="none")improve.push("You don’t know where you work best yet. Notice which classes and groups make you feel sharp.");
   const tried=new Set(a.q_tried||[]),untested=M.slice(0,3).filter(x=>!tried.has(x.d.id));
-  return{M,qual,env,love:love.slice(0,4),drain:drain.slice(0,3),self,improve:improve.slice(0,3),untested,people:a.q_people}}
+  const seat=seatFor(M[0].d.id,qWant(w)),hire=hirableNow(a);
+  return{M,qual,env,seat,hire,love:love.slice(0,4),drain:drain.slice(0,3),self,improve:improve.slice(0,3),untested,people:a.q_people}}
 function chatMsg(field){const p=S.profile||{},yr=p.grad?(+p.grad-YEAR<=0?"recent grad":["senior","junior","sophomore","freshman"][Math.min(3,Math.max(0,+p.grad-YEAR-1))]):"student";
   return `Hi [Name], I’m a ${yr}${p.school?" at "+p.school.split(",")[0]:""} exploring ${field.toLowerCase()}. I saw you work at [Company] and would love to hear what your week actually looks like. Would you have 15 minutes for a quick call in the next couple of weeks? Totally flexible. Thank you!`}
 /* cover letter check */
@@ -1624,6 +1691,8 @@ function vResCareer(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1}
     <h1 class="gap-top" style="margin-top:6px">You’re built for<br>${esc(m1.d.t.toLowerCase())}.</h1>
     ${ring(m1.pct,"match")}
     <p class="sub" style="text-align:center;max-width:34ch;margin:0 auto">${esc(cWhy(m1))}</p>
+    <div class="seat"><span class="seat-k">Your seat on a ${esc(m1.d.t.toLowerCase())} team</span><b>${esc(R.seat.seat)}</b><p>Because ${esc(R.seat.why)}.</p><small>Also on the team: ${esc(R.seat.others.join(" · "))}</small></div>
+    <div class="hirecard"><div class="hc-top"><span>How hirable you are right now</span><b>${R.hire}<small>/100</small></b></div>${dotbar(R.hire,30)}<p>${esc(hirableLine(R.hire))}</p></div>
     <h2 class="sech">Your best qualities.</h2>
     <div class="qcards">${(R.qual.length?R.qual:[{t:"Still figuring it out",d:"That’s okay. The coffee chats will show you."}]).map(q=>`<div class="qcard2"><b>${esc(q.t)}</b><span>${esc(q.d)}</span></div>`).join("")}</div>
     <h2 class="sech">Fields to look into.</h2>
