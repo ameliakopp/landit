@@ -927,6 +927,11 @@ p,li,.sub,label,input,textarea,button{letter-spacing:0}
 .devbar::-webkit-scrollbar{display:none}.devbar b{color:#A9D18C;margin-right:4px}.devbar a{color:#fff;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.1);flex:none}.devbar a.on{background:#A9D18C;color:#15261F}
 body.has-devbar{padding-top:34px}
 .devskip{position:fixed;right:12px;bottom:110px;z-index:9998;padding:9px 14px;border-radius:999px;background:#15261F;color:#fff;font:600 13px/1 system-ui,sans-serif;box-shadow:0 8px 20px -8px rgba(0,0,0,.4)}
+/* mockup: smaller card, tab bar back */
+.pf-ns .ns-row{padding-left:24px!important}
+.pf-ns .ns-c{flex:0 0 316px!important;height:338px!important}
+.pf-in .hs-tabs{height:74px;padding-bottom:10px;font-size:14px}
+.fchip.c3{top:97.5%!important}
 </style>
 </head>
 <body>
@@ -1671,6 +1676,7 @@ function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden=
     <div class="hp-wrap" aria-hidden="true"><span class="fchip c1 t1c">Am I ready?</span><span class="fchip c2 t2c">What’s stopping me?</span><span class="fchip c3 t3c">What do I fix first?</span><div class="pf"><div class="pf-scr"><div class="pf-in">
         <span class="pf-cam"></span>
         <div class="ns pf-ns">${board("Amelia",49,[{k:"net",n:"Networking Ability",pr:12},{k:"str",n:"Application Strategy",pr:53},{k:"art",n:"Artifacts",pr:54},{k:"cla",n:"Career Clarity",pr:73}],1)}</div>
+        <div class="hs-tabs" style="grid-template-columns:1fr 1fr"><span class="on">Dashboard</span><span>Profile</span><i class="pf-home"></i></div>
       </div></div></div></div>
   </main></div>`}
 function vJoin(){if(AUTH.user)return go("me"),"";const up=UI.mode==="signup";
