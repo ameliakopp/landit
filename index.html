@@ -1148,6 +1148,21 @@ main.nx{max-width:560px;padding-top:28px}
 }
 @media (min-width:900px){main.ns:not(.pf-ns){row-gap:10px}main.ns .ns-big{font-size:clamp(64px,5.6vw,88px)!important;margin:4px 0 0!important}main.ns .ns-mid .ns-bar{margin-bottom:12px}
   main.ns .ns-mid .ns-h,main.ns .ns-right .ns-h{margin:0 0 6px}main.ns .ns-tap{margin:-2px 0 10px}main.ns .ns-c{min-height:132px}main.ns .tl2 a,main.ns .tl2 li>div{min-height:74px;padding:12px 14px!important}main.ns .tl2 li{gap:10px}}
+/* dashboard: score ring on the side + one timeline */
+.ns-hero{display:flex;flex-direction:column;align-items:stretch}
+.ns-ringbox{display:flex;flex-direction:column;align-items:center;margin:6px 0 18px}
+.ns-ringbox .ring{width:170px;margin:4px auto 6px}.ns-ringbox .ring .num b{font-size:52px}.ns-ringbox .ring .num span{font-size:12.5px;margin-top:2px}
+.ns-ringbox .ns-l{margin:0 0 10px;text-align:center}
+.ns-ringbox .buddy{display:flex!important;margin:0!important;justify-content:center}.ns-ringbox .bud{width:38px;height:38px}.ns-ringbox .bud i{width:5px;height:7px}.ns-ringbox .bud u{width:9px;height:5px;margin-left:-4.5px;border-width:2px}
+.ns-ringbox .bud-say{padding:6px 10px}.ns-ringbox .bud-say b{font-size:13px}
+@media (min-width:900px){
+  main.ns:not(.pf-ns){grid-template-columns:1fr!important;row-gap:14px}
+  main.ns .ns-left{display:block!important}
+  main.ns .ns-hero{flex-direction:row;align-items:center;gap:44px}
+  main.ns .ns-ringbox{flex:none;width:200px;margin:0}
+  main.ns .ns-mid{flex:1;min-width:0;padding-top:0}
+  main.ns .ns-mid .tl2{margin:0}
+}
 </style>
 </head>
 <body>
@@ -2129,6 +2144,11 @@ net:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(5 60 60)
 const STK_BG={cla:"#F1F6EA",art:"#F1F6EA",str:"#F1F6EA",net:"#EEF4E6"};
 function areaActs(k,R){return areaPairs(k,S.answers.arch||{},S.profile||{}).pairs.map(x=>x.fix)}
 function board(name,all,areas,demo,plan,bud){const now=demo?new Date("2026-11-24T12:00:00"):new Date(),day=now.toLocaleDateString("en-US",{weekday:"long"}),date=now.toLocaleDateString("en-US",{day:"numeric",month:"long"});
+  if(!demo)return `<div class="ns-left"><p class="ns-d"><b>${day}</b><span>${date}</span></p></div>
+    <div class="ns-hero"><div class="ns-ringbox">${ring(all,"hirable")}<p class="ns-l">${name?esc(name)+"’s":"Your"} score</p>${bud||""}</div>
+    <div class="ns-mid">${plan?planBlock(plan):""}</div></div>
+    <div class="ns-right"><h2 class="ns-h">Your 4 areas</h2><p class="ns-tap">Tap one to see what’s holding you back.</p>
+    <div class="ns-row">${areas.map((x,i)=>`<a class="ns-c" href="#area-${x.k}" style="animation-delay:${i*90}ms"><span class="ns-go">↗</span><b>${esc(x.n).replace(" ","<br>")}</b><span class="ns-f"><span class="ns-n">${x.pr}%</span></span></a>`).join("")}</div></div>`;
   return `<div class="ns-left"><p class="ns-d"><b>${day}</b><span>${date}</span></p>
     <div class="ns-scorerow"><div class="ns-big">${all}<small>%</small></div>${bud||""}</div>
     <p class="ns-l">${name?esc(name)+"’s":"Your"} hirable score</p>${bud?bud.replace('class="buddy','class="buddy bud-m'):""}</div>
@@ -2147,8 +2167,7 @@ function nextPlan(areas){const dn=S.stepsDone||{},a=S.answers.arch||{},p=S.profi
   const when=["This week","Next week","In 2 weeks"];out.forEach((x,i)=>x.when=when[i]);
   const ab=applyBy(a);if(ab&&ab>TODAY)out.push({apply:true,t:"Start applying",when:new Date(ab+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})});return out}
 function planBlock(plan){if(!plan.some(x=>!x.apply))return `<div class="ns-done">✓ All caught up. Nice.</div>`;let cur=false;
-  return `<h2 class="ns-h">Your plan</h2>
-    <ol class="tline tl2">${plan.map(x=>{if(x.apply)return `<li class="tl-apply"><i></i><div><em>${esc(x.when)}</em><b>${esc(x.t)}</b></div></li>`;const now=!cur;cur=true;
+  return `<ol class="tline tl2">${plan.map(x=>{if(x.apply)return `<li class="tl-apply"><i></i><div><em>${esc(x.when)}</em><b>${esc(x.t)}</b></div></li>`;const now=!cur;cur=true;
       return `<li class="${now?"tl-now":""}"><button class="ck" data-act="tick" data-k="${esc(x.key)}" aria-label="Mark done"></button><a href="#area-${x.k}"><em>${now?"Do this next":esc(x.when)}</em><b>${esc(x.t)}</b></a></li>`}).join("")}</ol>`}
 function vSteps(){const R=archR0();if(!R)return go("home"),"";const dn=S.stepsDone||{},p=S.profile||{};
   const areas=DIMS.map(d=>{const acts=areaActs(d.k,R),done=acts.filter(z=>dn[z.key]).length,v=R.dims[d.k];return{...d,pr:Math.round(v+(100-v)*(acts.length?done/acts.length:0))}}).sort((x,y)=>x.pr-y.pr);
