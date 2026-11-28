@@ -1039,6 +1039,45 @@ main.nx{max-width:560px;padding-top:28px}
 @media (min-width:900px){main.nx{padding-top:56px}}
 .nx-go{align-items:stretch!important;width:100%}.nx-go .btn{width:100%}.nx-go .txt{align-self:center}
 .nextcard{border:1px solid var(--edge);border-radius:22px;padding:22px;background:#EEF4E6}.nextcard p{margin:0 0 16px;font-size:17px;line-height:1.5}.nextcard .btn{width:100%;white-space:normal;line-height:1.3}
+/* dashboard: next step + simple timeline */
+.ns-next{display:flex!important;align-items:center;gap:14px;text-align:left;padding:18px 20px!important;border-radius:22px!important;margin:-14px 0 30px;width:100%}
+.ns-next span{display:block;font-size:12.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#A9D18C;flex:none}
+.ns-next b{flex:1;font-weight:600;font-size:16px;line-height:1.3}.ns-next i{font-style:normal;width:34px;height:34px;border-radius:50%;background:#fff;color:#15261F;display:grid;place-items:center;flex:none}
+.ns-done{margin:-14px 0 30px;padding:16px 20px;border-radius:22px;background:#EEF4E6;font-weight:600}
+.tline{list-style:none;margin:0 0 34px;padding:0 0 0 4px;position:relative}
+.tline::before{content:"";position:absolute;left:15px;top:14px;bottom:14px;width:2px;background:#E3E8DD}
+.tline li{position:relative;display:flex;align-items:center;gap:14px;padding:8px 0}
+.tline .ck{position:relative;z-index:1;width:24px;height:24px;flex:none;margin-left:0;background:#fff}
+.tline a,.tline li>div{display:flex;flex-direction:column;flex:1;padding:12px 16px;border-radius:16px;background:#F6F6F3}
+.tline em{font-style:normal;font-size:12.5px;font-weight:600;color:#5E8F4A}.tline b{font-weight:600;font-size:15.5px;line-height:1.3}.tline span{font-size:13.5px;color:var(--mute)}
+.tl-apply>i{position:relative;z-index:1;width:24px;height:24px;flex:none;border-radius:50%;background:#15261F;box-shadow:inset 0 0 0 7px #A9D18C}
+.tl-apply>div{background:#EEF4E6!important}
+.ns-tap{margin:-8px 0 14px;color:var(--mute);font-size:14.5px}
+@media (min-width:900px){.ns-next{max-width:640px}.tline{max-width:640px}main.ns .ns-next{margin-top:-6px}}
+@media (max-width:420px){.ns-next{flex-wrap:wrap}.ns-next span{width:100%}}
+.ns-left,.ns-right{display:contents}
+.tline .ck{border-radius:50%!important;border:1.5px solid rgba(21,38,31,.35)!important;background:#fff!important}
+@media (min-width:900px){
+  main.ns:not(.pf-ns){display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);column-gap:64px;align-items:start}
+  main.ns .ns-left,main.ns .ns-right{display:block}
+  main.ns .ns-right{padding-top:8px}
+  main.ns .ns-row{grid-template-columns:1fr 1fr!important;gap:14px!important}
+  main.ns .ns-c{aspect-ratio:1/.72!important}
+  main.ns .ns-c b{font-size:clamp(22px,2vw,30px)!important;margin-bottom:12px}
+  main.ns .ns-big{font-size:clamp(84px,8vw,112px)}
+  main.ns .tline{margin-bottom:0}
+}
+@media (min-width:900px){
+  main.ns .ns-big{font-size:clamp(72px,6.5vw,96px)!important;margin:10px 0 2px}
+  main.ns .ns-bar{margin-bottom:22px}
+  main.ns .ns-next{margin:0 0 18px!important;padding:14px 18px!important}
+  main.ns .ns-left .ns-h{margin-bottom:6px}
+  main.ns .tline li{padding:4px 0}
+  main.ns .tline a,main.ns .tline li>div{flex-direction:row;align-items:baseline;gap:10px;flex-wrap:wrap;padding:10px 14px}
+  main.ns .tline em{min-width:74px}
+  main.ns .tline span{width:100%;padding-left:84px;margin-top:-2px}
+}
+@media (min-width:900px){main.ns .ns-d{flex-direction:row!important;align-items:baseline;gap:10px}main.ns .ns-d span{font-size:20px}main.ns .ns-right{padding-top:0}}
 </style>
 </head>
 <body>
@@ -2013,17 +2052,27 @@ str:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(-6 60 60
 net:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(5 60 60)"><path d="M22 34h52a10 10 0 0 1 10 10v22a10 10 0 0 1-10 10H46l-14 12v-12h-10a10 10 0 0 1-10-10V44a10 10 0 0 1 10-10z" fill="#fff"/><path d="M24 38h48a8 8 0 0 1 8 8v18a8 8 0 0 1-8 8H46l-11 9v-9H24a8 8 0 0 1-8-8V46a8 8 0 0 1 8-8z" fill="#E4EFD8" stroke="#15261F" stroke-width="3" stroke-linejoin="round"/><circle cx="36" cy="55" r="3.5" fill="#15261F"/><circle cx="48" cy="55" r="3.5" fill="#15261F"/><circle cx="60" cy="55" r="3.5" fill="#15261F"/></g><g transform="rotate(-8 82 82)"><path d="M66 70h34a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8h-4v8l-10-8H66a8 8 0 0 1-8-8V78a8 8 0 0 1 8-8z" fill="#CDEBD9" stroke="#15261F" stroke-width="3" stroke-linejoin="round"/><path d="M74 84l6 6 12-12" stroke="#15261F" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg>`};
 const STK_BG={cla:"#F1F6EA",art:"#F1F6EA",str:"#F1F6EA",net:"#EEF4E6"};
 function areaActs(k,R){return areaPairs(k,S.answers.arch||{},S.profile||{}).pairs.map(x=>x.fix)}
-function board(name,all,areas,demo){const now=demo?new Date("2026-11-24T12:00:00"):new Date(),day=now.toLocaleDateString("en-US",{weekday:"long"}),date=now.toLocaleDateString("en-US",{day:"numeric",month:"long"});
-  return `<p class="ns-d"><b>${day}</b><span>${date}</span></p>
+function board(name,all,areas,demo,plan){const now=demo?new Date("2026-11-24T12:00:00"):new Date(),day=now.toLocaleDateString("en-US",{weekday:"long"}),date=now.toLocaleDateString("en-US",{day:"numeric",month:"long"});
+  return `<div class="ns-left"><p class="ns-d"><b>${day}</b><span>${date}</span></p>
     <div class="ns-big">${all}<small>%</small></div>
     <p class="ns-l">${name?esc(name)+"’s":"Your"} hirable score</p>
     <div class="ns-bar"><i style="width:${all}%"></i></div>
-    <h2 class="ns-h">Work on</h2>
-    <div class="ns-row">${areas.map((x,i)=>`<${demo?"div":"a"} class="ns-c"${demo?"":` href="#area-${x.k}"`} style="animation-delay:${i*90}ms"><span class="ns-go">↗</span><b>${esc(x.n).replace(" ","<br>")}</b><span class="ns-f"><span class="ns-n">${x.pr}%</span><span class="ns-mini"><i style="width:${x.pr}%"></i></span></span></${demo?"div":"a"}>`).join("")}</div>`}
+    ${plan?planBlock(plan):""}</div><div class="ns-right">
+    <h2 class="ns-h">${demo?"Work on":"Your 4 areas"}</h2>${demo?"":`<p class="ns-tap">Tap one to see what’s holding you back.</p>`}
+    <div class="ns-row">${areas.map((x,i)=>`<${demo?"div":"a"} class="ns-c"${demo?"":` href="#area-${x.k}"`} style="animation-delay:${i*90}ms"><span class="ns-go">↗</span><b>${esc(x.n).replace(" ","<br>")}</b><span class="ns-f"><span class="ns-n">${x.pr}%</span><span class="ns-mini"><i style="width:${x.pr}%"></i></span></span></${demo?"div":"a"}>`).join("")}</div></div>`}
+/* the next few undone fixes, weakest area first, spread over the coming weeks */
+function nextPlan(areas){const dn=S.stepsDone||{},a=S.answers.arch||{},p=S.profile||{},lists=areas.map(x=>areaPairs(x.k,a,p).pairs.map(y=>({...y.fix,area:x.n,k:x.k})).filter(f=>!dn[f.key])),out=[];
+  for(let r=0;out.length<3&&r<3;r++)lists.forEach(L=>{if(out.length<3&&L[r])out.push(L[r])});
+  const when=["This week","Next week","In 2 weeks"];out.forEach((x,i)=>x.when=when[i]);
+  const ab=applyBy(a);if(ab&&ab>TODAY)out.push({apply:true,t:"Start applying",when:new Date(ab+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})});return out}
+function planBlock(plan){const first=plan.find(x=>!x.apply);
+  return `${first?`<a class="btn ns-next" href="#area-${first.k}"><span>Do this next</span><b>${esc(first.t)}</b><i>→</i></a>`:`<div class="ns-done">✓ All caught up. Nice.</div>`}
+    <h2 class="ns-h">Your plan</h2>
+    <ol class="tline">${plan.map(x=>x.apply?`<li class="tl-apply"><i></i><div><em>${esc(x.when)}</em><b>${esc(x.t)}</b></div></li>`:`<li><button class="ck" data-act="tick" data-k="${esc(x.key)}" aria-label="Mark done"></button><a href="#area-${x.k}"><em>${esc(x.when)}</em><b>${esc(x.t)}</b><span>${esc(x.area)}</span></a></li>`).join("")}</ol>`}
 function vSteps(){const R=archR0();if(!R)return go("home"),"";const dn=S.stepsDone||{},p=S.profile||{};
   const areas=DIMS.map(d=>{const acts=areaActs(d.k,R),done=acts.filter(z=>dn[z.key]).length,v=R.dims[d.k];return{...d,pr:Math.round(v+(100-v)*(acts.length?done/acts.length:0))}}).sort((x,y)=>x.pr-y.pr);
   const all=Math.round(areas.reduce((n,x)=>n+x.pr*DIM_W[x.k],0));
-  return shell(`<main class="screen anim-in ns">${board(p.first,all,areas)}</main>`,{tabs:"me"})}
+  return shell(`<main class="screen anim-in ns">${board(p.first,all,areas,0,nextPlan(areas))}</main>`,{tabs:"me"})}
 function vMe(){return vSteps()}
 function vMeOld(){const p=S.profile||{},R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,pl=planFor(R),self=a.c_self!=null?+a.c_self:null,rc=S.results.career,c1=rc&&DIRS.find(d=>d.id===rc.top[0].id),ab=applyBy(a),days=ab?Math.round((new Date(ab)-new Date(TODAY))/DAY):null;
   return shell(`<main class="screen anim-in">
