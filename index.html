@@ -1095,6 +1095,12 @@ main.nx{max-width:560px;padding-top:28px}
 @keyframes blinky{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
 @media (prefers-reduced-motion:reduce){.bud,.bud i,.buddy.hop .bud{animation:none}}
 .bud-d{display:none!important}@media (min-width:900px){main.ns .ns-left .buddy{display:none}main.ns .bud-d{display:flex!important;margin-top:22px}}
+/* voice to type */
+.micwrap{position:relative}.micwrap .in,.micwrap .qtext{padding-right:54px}
+.mic{position:absolute;right:8px;top:8px;width:38px;height:38px;border-radius:50%;border:1px solid var(--edge);background:#fff;color:#15261F;display:grid;place-items:center;cursor:pointer}
+.mic svg{width:19px;height:19px}
+.mic.on{background:#15261F;color:#fff;border-color:#15261F;animation:micpulse 1.4s ease-in-out infinite}
+@keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(127,176,105,.55)}50%{box-shadow:0 0 0 9px rgba(127,176,105,0)}}
 </style>
 </head>
 <body>
@@ -1232,7 +1238,7 @@ async function handleResume(file){if(!file)return;if(!/pdf$/i.test(file.type)&&!
 /* ---------- router ---------- */
 function route(){const h=(location.hash||"").replace(/^#\/?/,"");if(/access_token|error_description/.test(h))return"auth";return h.split(/[?&]/)[0]||"about"}
 function go(r){if(("#"+r)===location.hash)render();else location.hash=r;window.scrollTo(0,0)}
-window.addEventListener("hashchange",()=>{window.scrollTo(0,0);render()});
+window.addEventListener("hashchange",()=>{micStop();window.scrollTo(0,0);render()});
 
 /* ---------- readiness score & stages ---------- */
 const ROLE_WORDS=/market|analy|product|design|ux|engineer|software|develop|financ|bank|consult|sales|operation|\bhr\b|people ops|recruit|research|data|content|social media|brand|\bpr\b|communicat|journalis|editor|writ|strateg|partner|event|policy|teach|nonprofit|venture|invest|account|law|legal|health|nurs|med|science|sustainab|climate|game|film|music|fashion|media|advertis|growth|community|program/i;
@@ -1976,6 +1982,18 @@ function vSetup(){if(S.profile&&S.profile.done)return vProfile();const p=S.profi
       :(AUTH.user?`<button class="txt" data-act="logout">Log out</button>`:`<a class="btn glass" href="#join">Save my results</a>`)}</div>
   </main>`,{tabs:"setup",top:first?"":undefined})}
 
+/* ---------- voice to type: a mic on every quiz text box (Chrome, Edge, Safari) ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function micWrap(field,id){if(!SR)return field;const on=UI.mic&&UI.mic.id===id;
+  return `<div class="micwrap">${field}<button type="button" class="mic${on?" on":""}" data-act="mic" data-for="${id}" aria-label="${on?"Stop talking":"Talk instead of typing"}" aria-pressed="${on}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button></div>`}
+function micStop(){if(UI.mic){try{UI.mic.rec.stop()}catch(e){}UI.mic=null}}
+function micStart(id){micStop();const el=document.getElementById(id);if(!el)return;const rec=new SR();rec.lang="en-US";rec.interimResults=true;rec.continuous=true;
+  const base=el.value?el.value.replace(/\s*$/," "):"";let fin="";
+  rec.onresult=ev=>{let interim="";for(let i=ev.resultIndex;i<ev.results.length;i++){const t=ev.results[i][0].transcript;if(ev.results[i].isFinal)fin+=t;else interim+=t}
+    const box=document.getElementById(id);if(!box)return;box.value=(base+fin+interim).replace(/\s+/g," ").replace(/^\s/,"").replace(/^./,c=>c.toUpperCase());box.dispatchEvent(new Event("input",{bubbles:true}))};
+  rec.onerror=ev=>{if(ev.error==="not-allowed"||ev.error==="service-not-allowed")toast("Allow the microphone to talk instead of typing.");micStop();render()};
+  rec.onend=()=>{if(UI.mic&&UI.mic.rec===rec){UI.mic=null;render()}};
+  UI.mic={id,rec};try{rec.start()}catch(e){UI.mic=null}render()}
 function ctl(q,v,a,pid){const opts=typeof q.opts==="function"?q.opts(a):q.opts,P=pid?` data-pid="${pid}"`:"",mini=!!pid;
   if(q.kind==="one"||q.kind==="many"){const sel=x=>q.kind==="one"?v===x:(v||[]).includes(x),one=!mini&&(q.cols===1||opts.some(x=>x.l.length>30));
     return `<div class="tiles${one?" one-col":""}${mini?" mini":""}">${opts.map((x,i)=>`<button class="tile" data-act="${q.kind}" data-v="${esc(x.v)}"${P} aria-pressed="${sel(x.v)}">${mini?"":`<span class="k">${String(i+1).padStart(2,"0")}</span>`}<span>${esc(x.l)}</span></button>`).join("")}</div>`}
@@ -1984,8 +2002,8 @@ function ctl(q,v,a,pid){const opts=typeof q.opts==="function"?q.opts(a):q.opts,P
   if(q.kind==="file"){const pr=S.profile||{},has=q.doc==="cover"?pr.cover:pr.resume,st=(UI.fileSt||{})[pid]||{},xp=(pr.experience||[]).length;
     return `<label class="fdrop${has&&v!=="none"?" done":""}"><input type="file" accept="application/pdf,.pdf" data-qfile="${q.doc}"${P} aria-label="Upload ${q.doc==="cover"?"cover letter":"resume"} as a PDF"><i>${has&&v!=="none"?"✓":"↑"}</i><span><b>${st.busy?"Reading…":has&&v!=="none"?esc(has.name):"Upload PDF"}</b><em>${st.err?esc(st.err):has&&v!=="none"?(q.doc==="cover"?"Got it · tap to replace":`${xp} role${xp===1?"":"s"}${pr.school?" · "+esc(pr.school.split(",")[0]):""} · tap to replace`):"Tap to choose a file"}</em></span></label>
     <div class="tiles mini" style="margin-top:10px"><button class="tile" data-act="one" data-pid="${pid}" data-v="none" aria-pressed="${v==="none"}"><span>${esc(q.none)}</span></button></div>`}
-  if(q.kind==="text"&&q.short)return `<input class="in" id="qz-text${pid?"-"+pid:""}" data-qtext${P} value="${esc(v||"")}" placeholder="${esc(q.ph||"")}" autocomplete="off">`;
-  if(q.kind==="text")return `<textarea class="qtext${mini?" sm":""}" id="qz-text${pid?"-"+pid:""}" data-qtext${P} placeholder="${esc(q.ph||"What do you think?")}">${esc(v||"")}</textarea>`;
+  if(q.kind==="text"&&q.short)return micWrap(`<input class="in" id="qz-text${pid?"-"+pid:""}" data-qtext${P} value="${esc(v||"")}" placeholder="${esc(q.ph||"")}" autocomplete="off">`,"qz-text"+(pid?"-"+pid:""));
+  if(q.kind==="text")return micWrap(`<textarea class="qtext${mini?" sm":""}" id="qz-text${pid?"-"+pid:""}" data-qtext${P} placeholder="${esc(q.ph||"What do you think?")}">${esc(v||"")}</textarea>`,"qz-text"+(pid?"-"+pid:""));
   if(q.kind==="pairs"){const cur=v||{};return `<div class="pairs">${q.pairs.map(([pk,a1,l1,b1,l2])=>`<div class="pair"><button class="tile" data-act="pair" data-p="${pk}" data-v="${a1}"${P} aria-pressed="${cur[pk]===a1}"><span>${esc(l1)}</span></button><span>or</span><button class="tile" data-act="pair" data-p="${pk}" data-v="${b1}"${P} aria-pressed="${cur[pk]===b1}"><span>${esc(l2)}</span></button></div>`).join("")}</div>`}
   if(q.kind==="rate"){const cur=v||{};return `<div class="rate">${taskList(q,a).map(t=>`<div class="rate-row"><b>${esc(QT[t][1])}</b><div class="rate-b">${[["love","Love it"],["maybe","Maybe"],["no","No"]].map(([x,l])=>`<button data-act="rate" data-t="${t}" data-v="${x}" aria-pressed="${cur[t]===x}">${l}</button>`).join("")}</div></div>`).join("")}</div>`}
   return ""}
@@ -2232,6 +2250,7 @@ const ACT={
   more:()=>{UI.more=true;render()},
   copymsg:()=>{const t=($("#chatmsg")||{}).innerText||"";try{navigator.clipboard.writeText(t).then(()=>toast("Copied. Paste it into LinkedIn."),()=>toast("Select the text to copy it."))}catch(e){toast("Select the text to copy it.")}},
   edit:()=>{UI.edit=true;render()},
+  mic:el=>{const id=el.dataset.for;if(UI.mic&&UI.mic.id===id){micStop();render()}else micStart(id)},
   edit2:()=>{UI.edit=!UI.edit;render()},
   tick:el=>{const d=S.stepsDone||(S.stepsDone={}),k=el.dataset.k;d[k]=!d[k];if(d[k]){(S.dayLog||(S.dayLog={}))[TODAY]=1;UI.hop=1}UI.openArea=k.split(":")[0];save();render()},
   logout:async()=>{if(sb)await sb.auth.signOut();AUTH.user=null;S=fresh();save();go("home")},
