@@ -1128,6 +1128,26 @@ main.nx{max-width:560px;padding-top:28px}
   main.ns .ns-left .ns-l{margin-bottom:0}
 }
 @media (min-width:900px){main.ns .ns-scorerow .buddy{display:none!important}main.ns .bud-m{display:flex!important;justify-content:flex-start;margin:18px 0 0!important}}
+/* plan as a timeline: current step highlighted; horizontal across the page on desktop */
+.tl2 .tl-now a{background:#15261F!important;color:#fff}.tl2 .tl-now em{color:#A9D18C!important}.tl2 .tl-now b{color:#fff}
+.tl2 .tl-now .ck{border-color:#15261F!important;border-width:2px!important}
+@media (min-width:900px){
+  main.ns:not(.pf-ns){grid-template-columns:1fr!important;row-gap:18px}
+  main.ns .ns-left{display:grid!important;grid-template-columns:auto 1fr;column-gap:28px;align-items:end}
+  main.ns .ns-left .ns-d{grid-column:1 / -1}
+  main.ns .ns-left .ns-scorerow{grid-column:1}main.ns .ns-left .ns-l{grid-column:1}
+  main.ns .bud-m{grid-column:2;grid-row:2 / span 2;align-self:center;margin:0!important}
+  main.ns .ns-mid{padding-top:0}
+  main.ns .ns-right{grid-column:auto}
+  main.ns .tl2{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:16px;padding:0;margin:4px 0 0}
+  main.ns .tl2::before{left:12px;right:12px;top:12px;bottom:auto;width:auto;height:2px}
+  main.ns .tl2 li{flex-direction:column;align-items:flex-start;gap:12px;padding:0}
+  main.ns .tl2 a,main.ns .tl2 li>div{width:100%;flex-direction:column!important;align-items:flex-start!important;gap:4px!important;padding:14px 16px!important;min-height:84px;box-sizing:border-box}
+  main.ns .tl2 em{min-width:0!important}
+  main.ns .tl2 .tl-apply>i{margin-left:0}
+}
+@media (min-width:900px){main.ns:not(.pf-ns){row-gap:10px}main.ns .ns-big{font-size:clamp(64px,5.6vw,88px)!important;margin:4px 0 0!important}main.ns .ns-mid .ns-bar{margin-bottom:12px}
+  main.ns .ns-mid .ns-h,main.ns .ns-right .ns-h{margin:0 0 6px}main.ns .ns-tap{margin:-2px 0 10px}main.ns .ns-c{min-height:132px}main.ns .tl2 a,main.ns .tl2 li>div{min-height:74px;padding:12px 14px!important}main.ns .tl2 li{gap:10px}}
 </style>
 </head>
 <body>
@@ -2126,10 +2146,10 @@ function nextPlan(areas){const dn=S.stepsDone||{},a=S.answers.arch||{},p=S.profi
   for(let r=0;out.length<3&&r<3;r++)lists.forEach(L=>{if(out.length<3&&L[r])out.push(L[r])});
   const when=["This week","Next week","In 2 weeks"];out.forEach((x,i)=>x.when=when[i]);
   const ab=applyBy(a);if(ab&&ab>TODAY)out.push({apply:true,t:"Start applying",when:new Date(ab+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})});return out}
-function planBlock(plan){const first=plan.find(x=>!x.apply),rest=plan.filter(x=>x!==first);
-  return `${first?`<div class="btn ns-next"><button class="ck" data-act="tick" data-k="${esc(first.key)}" aria-label="Mark done"></button><a href="#area-${first.k}"><span>Do this next</span><b>${esc(first.t)}</b></a><a class="ns-go2" href="#area-${first.k}" aria-label="Open">→</a></div>`:`<div class="ns-done">✓ All caught up. Nice.</div>`}
-    ${rest.length?`<h2 class="ns-h">After that</h2>
-    <ol class="tline">${rest.map(x=>x.apply?`<li class="tl-apply"><i></i><div><em>${esc(x.when)}</em><b>${esc(x.t)}</b></div></li>`:`<li><button class="ck" data-act="tick" data-k="${esc(x.key)}" aria-label="Mark done"></button><a href="#area-${x.k}"><em>${esc(x.when)}</em><b>${esc(x.t)}</b></a></li>`).join("")}</ol>`:""}`}
+function planBlock(plan){if(!plan.some(x=>!x.apply))return `<div class="ns-done">✓ All caught up. Nice.</div>`;let cur=false;
+  return `<h2 class="ns-h">Your plan</h2>
+    <ol class="tline tl2">${plan.map(x=>{if(x.apply)return `<li class="tl-apply"><i></i><div><em>${esc(x.when)}</em><b>${esc(x.t)}</b></div></li>`;const now=!cur;cur=true;
+      return `<li class="${now?"tl-now":""}"><button class="ck" data-act="tick" data-k="${esc(x.key)}" aria-label="Mark done"></button><a href="#area-${x.k}"><em>${now?"Do this next":esc(x.when)}</em><b>${esc(x.t)}</b></a></li>`}).join("")}</ol>`}
 function vSteps(){const R=archR0();if(!R)return go("home"),"";const dn=S.stepsDone||{},p=S.profile||{};
   const areas=DIMS.map(d=>{const acts=areaActs(d.k,R),done=acts.filter(z=>dn[z.key]).length,v=R.dims[d.k];return{...d,pr:Math.round(v+(100-v)*(acts.length?done/acts.length:0))}}).sort((x,y)=>x.pr-y.pr);
   const all=Math.round(areas.reduce((n,x)=>n+x.pr*DIM_W[x.k],0));
