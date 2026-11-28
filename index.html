@@ -1123,6 +1123,22 @@ const MON="(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\\.?";
 const DATE_RX=new RegExp(`((?:${MON}\\s+)?(?:19|20)\\d{2}\\s*(?:–|—|-|to)\\s*(?:(?:${MON}\\s+)?(?:19|20)\\d{2}|present|current|now))|((?:summer|fall|spring|winter)\\s+(?:19|20)\\d{2})|(${MON}\\s+(?:19|20)\\d{2})`,"i");
 const HEAD_RX=/^(education|academic background|experience|work experience|professional experience|relevant experience|employment|internships?|leadership( experience)?|leadership & activities|activities|campus involvement|involvement|extracurriculars?|projects?|skills|skills & interests|skills and interests|technical skills|interests|honors( & awards)?|awards|certifications?|additional( information)?|volunteer(ing| experience)?|languages)\s*:?$/i;
 const SEC_OF=h=>/educ|academic/i.test(h)?"edu":/skill|interest|language|certif|additional/i.test(h)?"skills":/project/i.test(h)?"proj":/honor|award/i.test(h)?"other":"exp";
+/* real accomplishment bullets only: skip title / company / location / date lines, and join lines that wrapped */
+const ROLE_KW=/\b(intern|internship|assistant|analyst|associate|coordinator|manager|president|vice president|lead|director|member|fellow|ambassador|chair|founder|co-founder|editor|writer|designer|developer|engineer|researcher|consultant|captain|officer|tutor|volunteer|representative|specialist|strategist|producer|organizer|treasurer|secretary)\b/i;
+const LOC_RX=/(^|\s|\|)(remote|hybrid|on-?site)\b|\b[A-Z][a-zA-Z.]+(?: [A-Z][a-zA-Z.]+)*,\s?(?:[A-Z]{2}|[A-Z][a-z]+)\b\s*$/;
+function metaLine(l){const t=l.replace(/^[•●▪◦∙·\-–*]\s*/,"").trim(),w=t.split(/\s+/);
+  if(DATE_RX.test(t)||/\s\|\s|\t/.test(t)||LOC_RX.test(t))return true;
+  const caps=w.filter(x=>/^[A-Z&(]/.test(x)).length/w.length;
+  if(w.length<=9&&!/[.!?]$/.test(t)&&(caps>=.6||ROLE_KW.test(t)))return true;
+  return false}
+function resumeBullets(lines,bullet){const out=[],glyphs=lines.some(bullet);let open=false;
+  lines.forEach(l=>{const t=l.replace(/^[•●▪◦∙·\-–*]\s*/,"").trim();if(!t)return;
+    if(bullet(l)){if(metaLine(l)&&t.split(/\s+/).length<=6){open=false;return}out.push(t);open=!/[.!?]$/.test(t);return}
+    const cont=out.length&&((glyphs&&open)||/^[a-z(&,]/.test(t))&&!metaLine(l);
+    if(cont){out[out.length-1]+=" "+t;open=!/[.!?]$/.test(t);return}
+    open=false;
+    if(!glyphs&&t.length>40&&!metaLine(l)&&/^[A-Z]/.test(t)){out.push(t);open=!/[.!?]$/.test(t)}});
+  return out}
 function parseResume(lines){
   const txt=lines.join("\n"),R={name:"",email:"",phone:"",linkedinUrl:"",school:"",major:"",grad:"",experience:[],skills:[],bullets:[],lines:lines.length,text:txt.slice(0,12000)};
   R.email=(txt.match(/[\w.+-]+@[\w-]+\.[\w.-]+/)||[""])[0];
@@ -1136,7 +1152,7 @@ function parseResume(lines){
     const mj=l.match(/(?:bachelor(?:’s|'s)?|master(?:’s|'s)?|b\.?\s?a\.?|b\.?\s?s\.?|b\.?\s?b\.?\s?a\.?|m\.?\s?s\.?)\s*(?:of|in)?\s*(?:arts|science|business administration)?\s*(?:,|in|–|-)?\s*([A-Za-z&,\s]{3,60})/i)||l.match(/major(?:s)?\s*(?:in|:)?\s*([A-Za-z&,\s]{3,60})/i);
     if(!R.major&&mj&&mj[1])R.major=mj[1].replace(/\b(minor|gpa|expected|candidate|concentration)\b.*$/i,"").replace(/[,|\s]+$/,"").trim();
     (l.match(/\b(19|20)\d{2}\b/g)||[]).forEach(y=>{if(+y<=YEAR+6&&(!R.grad||+y>+R.grad))R.grad=y})})});
-  secs.filter(s=>s.k==="exp"||s.k==="proj").forEach(s=>s.lines.forEach(l=>{if((bullet(l)||l.length>48)&&!DATE_RX.test(l))R.bullets.push(l.replace(/^[•●▪◦∙·\-–*]\s*/,""))}));
+  secs.filter(s=>s.k==="exp"||s.k==="proj").forEach(s=>resumeBullets(s.lines,bullet).forEach(b=>R.bullets.push(b)));
   secs.filter(s=>s.k==="exp").forEach(s=>{const L=s.lines;for(let i=0;i<L.length;i++){const l=L[i];if(bullet(l))continue;const m=l.match(DATE_RX);if(!m)continue;
     const dates=m[0].replace(/\s+/g," ").trim();let a=l.replace(m[0],"").replace(/\s*\|\s*/g," | ").replace(/(^[\s|,–-]+|[\s|,–-]+$)/g,"");
     const parts=a.split(/\s\|\s|\s[–—]\s/).map(x=>x.trim()).filter(x=>x&&!/^(remote|hybrid|[A-Z][a-z]+(?: [A-Z][a-z]+)*,\s?[A-Z]{2}|New York|NYC)$/.test(x));
