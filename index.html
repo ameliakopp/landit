@@ -1102,6 +1102,18 @@ main.nx{max-width:560px;padding-top:28px}
 .mic.on{background:#15261F;color:#fff;border-color:#15261F;animation:micpulse 1.4s ease-in-out infinite}
 @keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(127,176,105,.55)}50%{box-shadow:0 0 0 9px rgba(127,176,105,0)}}
 .src{display:inline-block;margin-top:5px;font-size:12.5px;color:#5E8F4A;text-decoration:underline;text-underline-offset:2px;text-decoration-color:rgba(94,143,74,.4)}
+/* dashboard, simpler */
+.ns-scorerow{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+.ns-scorerow .buddy{margin:0;gap:8px}.ns-scorerow .bud{width:44px;height:44px}.ns-scorerow .bud i{width:5px;height:8px}.ns-scorerow .bud u{width:10px;height:5px;margin-left:-5px;border-width:2px}
+.ns-scorerow .bud-say{padding:7px 11px;border-radius:14px}.ns-scorerow .bud-say b{font-size:13.5px;font-weight:600}
+.ns-next{gap:14px!important}.ns-next>a:first-of-type{flex:1;display:flex;flex-direction:column;gap:3px;color:#fff}
+.ns-next .ck{border-color:rgba(255,255,255,.5)!important;background:transparent!important;width:26px;height:26px;border-radius:50%!important}
+.ns-go2{width:34px;height:34px;border-radius:50%;background:#fff;color:#15261F!important;display:grid;place-items:center;flex:none;font-size:16px}
+.ns-next span{color:#A9D18C}
+@media (min-width:900px){main.ns .ns-scorerow{justify-content:flex-start}main.ns .ns-next>a:first-of-type{flex-direction:row;align-items:center;gap:14px}}
+@media (max-width:420px){.ns-next{flex-wrap:nowrap!important}.ns-next span{width:auto}}
+.ns-scorerow .buddy{display:none!important}.bud-m{justify-content:center;margin:2px 0 18px!important}.bud-m .bud{width:40px;height:40px}.bud-m .bud i{width:5px;height:8px}.bud-m .bud u{width:10px;height:5px;margin-left:-5px;border-width:2px}.bud-m .bud-say{padding:7px 11px}.bud-m .bud-say b{font-size:13.5px}
+@media (min-width:900px){main.ns .ns-scorerow .buddy{display:flex!important}.bud-m{display:none!important}}
 </style>
 </head>
 <body>
@@ -2083,27 +2095,27 @@ net:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(5 60 60)
 const STK_BG={cla:"#F1F6EA",art:"#F1F6EA",str:"#F1F6EA",net:"#EEF4E6"};
 function areaActs(k,R){return areaPairs(k,S.answers.arch||{},S.profile||{}).pairs.map(x=>x.fix)}
 function board(name,all,areas,demo,plan,bud){const now=demo?new Date("2026-11-24T12:00:00"):new Date(),day=now.toLocaleDateString("en-US",{weekday:"long"}),date=now.toLocaleDateString("en-US",{day:"numeric",month:"long"});
-  return `<div class="ns-left">${bud||""}<p class="ns-d"><b>${day}</b><span>${date}</span></p>
-    <div class="ns-big">${all}<small>%</small></div>
-    <p class="ns-l">${name?esc(name)+"’s":"Your"} hirable score</p>
+  return `<div class="ns-left"><p class="ns-d"><b>${day}</b><span>${date}</span></p>
+    <div class="ns-scorerow"><div class="ns-big">${all}<small>%</small></div>${bud||""}</div>
+    <p class="ns-l">${name?esc(name)+"’s":"Your"} hirable score</p>${bud?bud.replace('class="buddy','class="buddy bud-m'):""}
     <div class="ns-bar"><i style="width:${all}%"></i></div>
     ${plan?planBlock(plan):""}</div><div class="ns-right">
     <h2 class="ns-h">${demo?"Work on":"Your 4 areas"}</h2>${demo?"":`<p class="ns-tap">Tap one to see what’s holding you back.</p>`}
-    <div class="ns-row">${areas.map((x,i)=>`<${demo?"div":"a"} class="ns-c"${demo?"":` href="#area-${x.k}"`} style="animation-delay:${i*90}ms"><span class="ns-go">↗</span><b>${esc(x.n).replace(" ","<br>")}</b><span class="ns-f"><span class="ns-n">${x.pr}%</span><span class="ns-mini"><i style="width:${x.pr}%"></i></span></span></${demo?"div":"a"}>`).join("")}</div>${bud?bud.replace('class="buddy','class="buddy bud-d'):""}</div>`}
+    <div class="ns-row">${areas.map((x,i)=>`<${demo?"div":"a"} class="ns-c"${demo?"":` href="#area-${x.k}"`} style="animation-delay:${i*90}ms"><span class="ns-go">↗</span><b>${esc(x.n).replace(" ","<br>")}</b><span class="ns-f"><span class="ns-n">${x.pr}%</span></span></${demo?"div":"a"}>`).join("")}</div></div>`}
 /* streak: days in a row with at least one step done (today can still be pending) */
 function streak(){const L=S.dayLog||{};let n=0,d=TODAY;if(!L[d])d=addDays(d,-1);while(L[d]){n++;d=addDays(d,-1)}return{n,today:!!L[TODAY]}}
 function buddy(){const st=streak(),any=Object.values(S.stepsDone||{}).some(Boolean),hop=UI.hop;UI.hop=0;
-  const msg=st.n>=1?(st.today?`<b>🔥 ${st.n}-day streak!</b><span>Done for today. See you tomorrow.</span>`:`<b>🔥 ${st.n}-day streak</b><span>Do one step today to keep it.</span>`):any?`<b>Let’s start a new streak</b><span>One step today is all it takes.</span>`:`<b>Hi! I’m Bud.</b><span>Tick off a step and we’ll start a streak.</span>`;
+  const msg=st.n>=1?`<b>🔥 ${st.n}-day streak${st.today?"!":""}</b>`:any?`<b>Tick a step to restart your streak</b>`:`<b>Hi, I’m Bud! Tick a step to start a streak</b>`;
   return `<div class="buddy${hop?" hop":""}"><div class="bud" aria-hidden="true"><i class="e1"></i><i class="e2"></i><u></u><em class="c1"></em><em class="c2"></em></div><div class="bud-say">${msg}</div></div>`}
 /* the next few undone fixes, weakest area first, spread over the coming weeks */
 function nextPlan(areas){const dn=S.stepsDone||{},a=S.answers.arch||{},p=S.profile||{},lists=areas.map(x=>areaPairs(x.k,a,p).pairs.map(y=>({...y.fix,area:x.n,k:x.k})).filter(f=>!dn[f.key])),out=[];
   for(let r=0;out.length<3&&r<3;r++)lists.forEach(L=>{if(out.length<3&&L[r])out.push(L[r])});
   const when=["This week","Next week","In 2 weeks"];out.forEach((x,i)=>x.when=when[i]);
   const ab=applyBy(a);if(ab&&ab>TODAY)out.push({apply:true,t:"Start applying",when:new Date(ab+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})});return out}
-function planBlock(plan){const first=plan.find(x=>!x.apply);
-  return `${first?`<a class="btn ns-next" href="#area-${first.k}"><span>Do this next</span><b>${esc(first.t)}</b><i>→</i></a>`:`<div class="ns-done">✓ All caught up. Nice.</div>`}
-    <h2 class="ns-h">Your plan</h2>
-    <ol class="tline">${plan.map(x=>x.apply?`<li class="tl-apply"><i></i><div><em>${esc(x.when)}</em><b>${esc(x.t)}</b></div></li>`:`<li><button class="ck" data-act="tick" data-k="${esc(x.key)}" aria-label="Mark done"></button><a href="#area-${x.k}"><em>${esc(x.when)}</em><b>${esc(x.t)}</b><span>${esc(x.area)}</span></a></li>`).join("")}</ol>`}
+function planBlock(plan){const first=plan.find(x=>!x.apply),rest=plan.filter(x=>x!==first);
+  return `${first?`<div class="btn ns-next"><button class="ck" data-act="tick" data-k="${esc(first.key)}" aria-label="Mark done"></button><a href="#area-${first.k}"><span>Do this next</span><b>${esc(first.t)}</b></a><a class="ns-go2" href="#area-${first.k}" aria-label="Open">→</a></div>`:`<div class="ns-done">✓ All caught up. Nice.</div>`}
+    ${rest.length?`<h2 class="ns-h">After that</h2>
+    <ol class="tline">${rest.map(x=>x.apply?`<li class="tl-apply"><i></i><div><em>${esc(x.when)}</em><b>${esc(x.t)}</b></div></li>`:`<li><button class="ck" data-act="tick" data-k="${esc(x.key)}" aria-label="Mark done"></button><a href="#area-${x.k}"><em>${esc(x.when)}</em><b>${esc(x.t)}</b></a></li>`).join("")}</ol>`:""}`}
 function vSteps(){const R=archR0();if(!R)return go("home"),"";const dn=S.stepsDone||{},p=S.profile||{};
   const areas=DIMS.map(d=>{const acts=areaActs(d.k,R),done=acts.filter(z=>dn[z.key]).length,v=R.dims[d.k];return{...d,pr:Math.round(v+(100-v)*(acts.length?done/acts.length:0))}}).sort((x,y)=>x.pr-y.pr);
   const all=Math.round(areas.reduce((n,x)=>n+x.pr*DIM_W[x.k],0));
