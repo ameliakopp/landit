@@ -1598,44 +1598,31 @@ const QUIZ={
       {id:"c_line3",kind:"text",short:true,optional:true,when:a=>a.c_mode==="type"&&a.c_targets==="few"&&String(a.c_line2||"").trim().length>2,l:"A 3rd one? (optional)",ph:"e.g. Partnerships at a music label, because I love connecting people"}]},
     {id:"q_docs",sec:"What you want",kind:"combo",q:a=>a.c_mode==="spec"?`Your application for ${coName(a)}.`:"Your resume.",sub:a=>a.c_mode==="spec"?"Upload what you’d actually send. We’ll check it against this job.":"We’ll use it so you answer fewer questions. It stays on your device.",parts:[
       {id:"c_resfile",kind:"file",doc:"resume",l:a=>a.c_mode==="spec"?`The resume you’d send to ${coName(a)}`:"Your resume",none:"I don’t have one yet"},
-      {id:"c_covfile",kind:"file",doc:"cover",when:a=>a.c_mode==="spec",l:a=>`Your cover letter for ${coName(a)}`,none:"No cover letter for this one"}]},
+      {id:"c_covfile",kind:"file",doc:"cover",when:a=>a.c_mode==="spec",l:a=>`Your cover letter for ${coName(a)}`,none:"No cover letter for this one"},
+      {id:"c_exp",kind:"one",l:"Have you done anything related to the role you want?",when:a=>a.c_resfile!=null&&!(S.profile&&S.profile.resumeStats),opts:o(["none","Nothing yet"],["class","Class projects"],["club","Club or part-time job"],["real","Internship in it"])}]},
     {id:"q_why",sec:"How you apply",kind:"combo",q:"Quick test. Why this role?",sub:"Answer like it’s a real interview. Two sentences.",parts:[
       {id:"c_why",kind:"text",ph:"e.g. I ran our club’s Instagram and grew it 3x, and I loved testing what made people stop scrolling. That’s brand work."}],
       react:a=>{const n=whyScore(a.c_why);return n>=2.5?"Strong answer. Specific and real.":n>=1.5?"Decent. Add one thing you actually did.":"Interviewers hear this a lot. We’ll fix it."}},
     {id:"q_real",sec:"What you want",kind:"combo",q:a=>`How well do you know ${targetDir(a)?targetDir(a).t.toLowerCase():"this job"}?`,parts:[
-      {id:"c_tuesday",kind:"text",l:"Describe a normal Tuesday in that job. One line.",ph:"e.g. Morning standup, pull campaign numbers, brief the designer, pitch ideas to my manager"},
-      {id:"c_src",kind:"one",l:"Where does that picture come from?",opts:o(["guess","Honestly a guess"],["media","TV or social media"],["read","I’ve read about it"],["talked","Someone who does it told me"],["done","I’ve done some of it"])},
-      {id:"c_hard",kind:"text",when:shaky,l:"Quick follow-up: what do you think is the hardest part of that job?",ph:"Your best guess"},
-      {id:"c_skills",kind:"many",when:a=>!!targetDir(a),l:a=>`Which skills do ${targetDir(a).t.toLowerCase()} postings usually ask for? Pick all that apply.`,opts:skillOpts},
-      {id:"c_title",kind:"many",when:a=>!!targetDir(a)&&(shaky(a)||knowScore(a.c_skills)<2),l:"Which job titles would you search for? Pick all that apply.",opts:titleOpts}]},
+      {id:"c_src",kind:"one",l:"Where does your picture of this job come from?",opts:o(["guess","Honestly a guess"],["media","TV or social media"],["read","I’ve read about it"],["talked","Someone who does it told me"],["done","I’ve done some of it"])},
+      {id:"c_skills",kind:"many",when:a=>!!targetDir(a),l:a=>`Which skills do ${targetDir(a).t.toLowerCase()} postings usually ask for? Pick all that apply.`,opts:skillOpts}]},
     {id:"q_co",sec:"What you want",kind:"combo",q:a=>a.c_mode==="spec"?`Why ${coName(a)}?`:"Which companies?",parts:[
       {id:"c_whyco",kind:"text",when:a=>a.c_mode==="spec",l:a=>`Why ${coName(a)} and not a competitor? One or two lines.`,ph:"e.g. Their Wrapped campaign is the reason I got into marketing, and I want to work on data-driven brand stories"},
       {id:"c_team",kind:"one",when:a=>a.c_mode==="spec",l:"Do you know what the team you’d join actually works on?",opts:o(["yes","Yes"],["rough","Roughly"],["no","No"])},
       {id:"c_news",kind:"one",when:a=>a.c_mode==="spec",l:a=>`Have you read anything ${coName(a)} put out in the last month?`,opts:o(["yes","Yes, and I have a take"],["skim","I skimmed their site"],["no","No"])},
       {id:"c_insider",kind:"one",when:a=>a.c_mode==="spec",l:a=>`Do you know anyone at ${coName(a)}?`,opts:o(["talked","Yes, I’ve talked to them"],["find","I could find someone"],["no","No one"])},
       {id:"c_cos3",kind:"text",short:true,when:a=>a.c_mode==="type",l:"Which specific companies are you interested in?",ph:"e.g. Glossier, Spotify, Nike"},
-      {id:"c_cowhy",kind:"text",when:a=>a.c_mode==="type"&&cosCount(a.c_cos3)>0,l:a=>{const n=cosCount(a.c_cos3);return n>1?"Why these companies specifically?":`Why ${String(a.c_cos3).trim()} specifically?`},ph:"e.g. Glossier built a brand through its community, and that’s the kind of marketing I want to learn"},
-      {id:"c_cofind",kind:"one",when:a=>a.c_mode==="type"&&a.c_cowhy!=null&&whyScore(a.c_cowhy)<1.5,l:"Follow-up: have you looked at what they’re hiring for right now?",opts:o(["yes","Yes, I’ve read their postings"],["some","I’ve looked at one or two"],["no","Not yet"])},
       {id:"c_open",kind:"one",l:"When do applications usually open for this?",opts:o(["early","July–October"],["mid","August–December"],["late","November–March"],["idk","No idea"])}]},
-    {id:"q_env",sec:"Your fit",kind:"combo",q:"Where do you do your best work?",parts:[
-      {id:"c_exp",kind:"one",l:"Have you done anything related to the role you want?",when:()=>!(S.profile&&S.profile.resumeStats),opts:o(["none","Nothing yet"],["class","Class projects"],["club","Club or part-time job"],["real","Internship in it"])},
-      {id:"c_env",kind:"pairs",pairs:ENV_PAIRS},
-      {id:"c_best",kind:"one",l:a=>((S.profile||{}).experience||[]).length?"Where did you do your best work so far?":"Where have you done your best work so far?",opts:a=>{const xp=((S.profile||{}).experience||[]).slice(0,4);return [...(xp.length?xp.map((x,i)=>({v:"xp"+i,l:x.company||x.title})):[{v:"job",l:"A job"},{v:"club",l:"A club"}]),{v:"class",l:"A class or project"},{v:"none",l:"Haven’t found it yet"}]}},
-      {id:"c_bestwhy",kind:"many",l:"What made it work? Pick all that apply.",when:a=>a.c_best&&a.c_best!=="none",opts:BEST_WHY.map(([v,l])=>({v,l}))}],
-      react:a=>a.c_best==="none"?"Good to know. We’ll help you find it.":"That tells us a lot about where to look."},
-    {id:"q_where",sec:"Your fit",kind:"combo",q:"Where, and when?",parts:[
+    {id:"q_where",sec:"Your fit",kind:"combo",q:"Where, when and pay.",parts:[
       {id:"c_city",kind:"many",l:"Where do you want to work? Pick all that apply.",opts:CITIES.map(([v,l])=>({v,l}))},
-      {id:"c_move",kind:"one",l:"Would you move for the right role?",opts:o(["any","Anywhere"],["some","Only some cities"],["no","I can’t move"])},
       {id:"c_when",kind:"one",l:"When do you want to start?",opts:()=>[...TARGETS().map(t=>({v:t.v,l:t.l})),{v:"unsure",l:"Not sure"}]},
-      {id:"c_stage",kind:"one",l:"Where are you in school?",when:()=>!(S.profile&&S.profile.grad),opts:o(...STAGES)}]},
-    {id:"q_pay",sec:"Your fit",kind:"combo",q:"Let’s talk money.",parts:[
-      {id:"c_pay",kind:"one",l:a=>{const d=targetDir(a);return `What do ${d?d.t.toLowerCase():"interns in your target role"} interns usually make?`},opts:o(["0","Under $20/hr"],["1","$20–30/hr"],["2","$30–45/hr"],["3","$45+/hr"],["idk","No idea"])},
-      {id:"c_min",kind:"one",l:"The lowest you’d accept?",opts:o(["unpaid","Unpaid is fine"],["15","$15/hr+"],["25","$25/hr+"],["40","$40/hr+"])}],
+      {id:"c_pay",kind:"one",l:a=>{const d=targetDir(a);return `What do ${d?d.t.toLowerCase():"interns in your target role"} interns usually make?`},opts:o(["0","Under $20/hr"],["1","$20–30/hr"],["2","$30–45/hr"],["3","$45+/hr"],["idk","No idea"])}],
       react:a=>{const d=targetDir(a);if(a.c_pay==="idk")return d?`Rough guide: ${d.t.toLowerCase()} interns make about ${PAY_L[PAY_BAND[d.id]]}. Knowing this helps you negotiate.`:"Knowing this helps you aim and negotiate. We’ll add it to your steps.";if(d&&+a.c_pay!==PAY_BAND[d.id])return `Rough guide: ${d.t.toLowerCase()} interns usually make ${PAY_L[PAY_BAND[d.id]]}.`;return d?"Spot on.":null}},
     {id:"q_apps",sec:"How you apply",kind:"combo",q:"Your track record so far.",parts:[
       {id:"c_apps",kind:"one",l:"Applications sent",opts:o(["0","None"],["1","1–10"],["11","11–50"],["51","51–100"],["101","101–200"],["200","200+"])},
       {id:"c_reply",kind:"one",l:"Interviews you got",when:a=>a.c_apps&&a.c_apps!=="0",opts:o(["0","None"],["1","1–2"],["3","3+"],["wait","Waiting"])},
-      {id:"c_how",kind:"one",l:"How did most of them go out?",when:a=>a.c_apps&&a.c_apps!=="0",opts:o(["cold","Online, no contact"],["ref","Through a referral"],["fair","Career fair or event"])}],
+      {id:"c_how",kind:"one",l:"How did most of them go out?",when:a=>a.c_apps&&a.c_apps!=="0",opts:o(["cold","Online, no contact"],["ref","Through a referral"],["fair","Career fair or event"])},
+      {id:"c_month",kind:"one",l:"Be honest. Next month you’ll…",opts:o(["all","Keep applying to everything"],["tweak","Apply a lot, better resume"],["narrow","Narrow down, apply less"],["people","Talk to people, then apply"])}],
       react:a=>manyApps(a)&&a.c_reply==="0"?"That’s a lot of silence. It’s the method, not you.":null},
     {id:"q_net",sec:"Your people",kind:"combo",q:"Who’s in your corner?",parts:[
       {id:"c_people",kind:"one",l:"People in your target field you’ve talked to in 3 months",opts:o(["0","Zero"],["1","1–2"],["3","3–5"],["6","6+"])},
@@ -1644,12 +1631,7 @@ const QUIZ={
     {id:"q_li",sec:"Your LinkedIn",kind:"combo",q:"How’s your LinkedIn?",parts:[
       {id:"c_lilink",kind:"url",none:"I don’t have LinkedIn",l:"Paste your LinkedIn profile link",ph:"linkedin.com/in/your-name"},
       {id:"c_lihead",kind:"one",when:a=>liHas(a),l:"What does your headline say?",opts:o(["student","Just “Student at…”"],["kinda","Sort of what I want"],["yes","Exactly the role I want"])},
-      {id:"c_liprof",kind:"one",when:a=>liHas(a),l:"Do you have a photo and an About section?",opts:o(["both","Both"],["one","One of them"],["neither","Neither"])},
-      {id:"c_liconn",kind:"one",when:a=>liHas(a),l:"How many connections?",opts:o(["0","Under 100"],["100","100–500"],["500","500+"])},
-      {id:"c_lipost",kind:"one",when:a=>liHas(a),l:"How often do you post or comment?",opts:o(["never","Never"],["rare","A few times a year"],["monthly","Monthly"],["weekly","Weekly"])}]},
-    {id:"q_plan",sec:"Last one",kind:"combo",q:"Be honest. What’s the plan?",parts:[
-      {id:"c_month",kind:"one",l:"Next month you’ll…",opts:o(["all","Keep applying to everything"],["tweak","Apply a lot, better resume"],["narrow","Narrow down, apply less"],["people","Talk to people, then apply"])},
-      {id:"c_block",kind:"many",l:"What’s really holding you back? Pick all that apply.",optional:true,opts:o(["what","Don’t know what I want"],["know","Don’t know anyone"],["silence","Applications go nowhere"],["exp","Not enough experience"],["interview","Interviews"],["time","Time or motivation"])}]},
+      {id:"c_liprof",kind:"one",when:a=>liHas(a),l:"Do you have a photo and an About section?",opts:o(["both","Both"],["one","One of them"],["neither","Neither"])}]},
   ]},
   career:{n:"02",title:"What should you go for?",short:"Career",qs:[
     {id:"k_self",kind:"combo",q:"First: how well do you know yourself?",parts:[
@@ -1923,7 +1905,7 @@ function vAbout(){return `<div class="aboutpg"><div class="ab-glow" aria-hidden=
     <div class="ab-txt">
     <h1 class="ab-h"><span class="nw2">Know if you’re hirable.</span> <i class="nw2">Before you apply.</i></h1>
     <div class="mtags"><span class="t2c g1">What’s stopping me?</span><span class="t3c g2">What do I fix first?</span><span class="t1c g3">Am I ready?</span></div>
-    <p class="ab-p">5 minutes. Your score, your gaps, <span style="white-space:nowrap">your next 3 moves.</span></p>
+    <p class="ab-p">Under 5 minutes. Your score, your gaps, <span style="white-space:nowrap">your next 3 moves.</span></p>
     <div class="btnzone"><span class="bz t1c b1">Am I ready?</span><span class="bz t2c b2">What’s stopping me?</span><a class="ab-btn" href="#home">Take the quiz <i>↗</i></a><span class="bz t3c b3">What do I fix first?</span></div>
     </div>
     <div class="hp-wrap" aria-hidden="true"><span class="fchip c1 t1c">Am I ready?</span><span class="fchip c2 t2c">What’s stopping me?</span><span class="fchip c3 t3c">What do I fix first?</span><div class="pf"><div class="pf-scr"><div class="pf-in">
@@ -2034,7 +2016,7 @@ function qOk(q,a){if(q.kind==="rate"){const c=a[q.id]||{};return taskList(q,a).e
 function vQuiz(k){const Q=QUIZ[k],d=S.draft[k];if(!d)return startQuiz(k),"";if(d.i>=Q.qs.length)d.i=0;if(Q.qs[d.i].id==="q_li"&&d.a.c_lilink==null&&(S.profile||{}).linkedinUrl)d.a.c_lilink=S.profile.linkedinUrl;
   const q=Q.qs[d.i],a=d.a,vis=qVisible(k,a),idx=vis.indexOf(q),N=vis.length,ok=qOk(q,a),last=idx===N-1,V=x=>typeof x==="function"?x(a):x;
   const hint=q.kind==="combo"?(partsOf(q,a).length>1?`${partsOf(q,a).length} quick ones`:"Be honest"):q.kind==="many"?(q.max?`Pick up to ${q.max}`:"Pick all that apply"):q.kind==="one"?"Pick one":q.kind==="rate"?"Gut reaction":q.kind==="pairs"?"This or that":q.optional?"Optional":"In your own words";
-  const left=Math.max(1,Math.round((N-idx)*(k==="arch"?.45:.22)));
+  const left=Math.max(1,Math.round((N-idx)*(k==="arch"?.4:.22)));
   const sp=q.kind==="combo"?shownParts(q,a):[],prevN=(UI.partsShown||(UI.partsShown={}))[q.id]||1;if(q.kind==="combo")UI.partsShown[q.id]=sp.length;
   const body=q.kind==="combo"?sp.map((x,pi)=>`<div class="part${pi>=prevN?" pop":""}">${x.l?`<p class="plabel">${esc(V(x.l))}${x.kind==="many"&&x.max?` <span>${(a[x.id]||[]).length}/${x.max}</span>`:""}</p>`:""}${ctl(x,a[x.id],a,x.id)}</div>`).join(""):ctl(q,a[q.id],a,null);
   const cnt=q.kind==="many"&&q.max?`<span class="cnt">${(a[q.id]||[]).length} of ${q.max}</span>`:"";
@@ -2158,7 +2140,7 @@ function vResCareer(){const C=careerCtx();if(!C)return go("home"),"";const{R,m1,
         
       </section>
       <section class="cr-sec cr-next"><h2 class="sech">Your next step</h2>
-        <div class="nextcard"><p>${tgt?`${esc(tgt.t)} is your target.`:`See how hirable you are for ${esc(f1)}.`} 5 minutes.</p>
+        <div class="nextcard"><p>${tgt?`${esc(tgt.t)} is your target.`:`See how hirable you are for ${esc(f1)}.`} Under 5 minutes.</p>
         <button class="btn" data-act="pickgo" data-v="${(tgt||m1.d).id}">${tgt?"See how hirable I am →":"Make this my target → see how hirable I am"}</button></div>
       </section>
     </div>
@@ -2171,7 +2153,7 @@ function vNext(){const rc=S.results.career,p=S.profile||{},t=p.target&&DIRS.find
     <div class="nx-done"><i>✓</i><div><b>Career quiz done</b><span>You’re built for ${esc(f)}.</span></div></div>
     <p class="nx-p">Knowing what fits you is half of it. The other half is whether a recruiter would pick you <b>today</b>. The next quiz checks that, for ${esc(f)}.</p>
     <div class="nx-list">
-      <div><b>What you’ll do</b><span>Answer ${QUIZ.arch.qs.length} short questions and add your resume if you have one. About 5 minutes.</span></div>
+      <div><b>What you’ll do</b><span>Answer ${QUIZ.arch.qs.length} quick screens and add your resume if you have one. Under 5 minutes.</span></div>
       <div><b>What you’ll get</b><span>Your hirable score, what’s holding you back, and the exact steps to fix it.</span></div>
     </div>
     <div class="stack nx-go"><button class="btn" data-act="begin" data-k="arch">Start the readiness quiz →</button><a class="txt" href="#r-career">Not yet, back to my match</a></div>
