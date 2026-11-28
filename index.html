@@ -1114,6 +1114,20 @@ main.nx{max-width:560px;padding-top:28px}
 @media (max-width:420px){.ns-next{flex-wrap:nowrap!important}.ns-next span{width:auto}}
 .ns-scorerow .buddy{display:none!important}.bud-m{justify-content:center;margin:2px 0 18px!important}.bud-m .bud{width:40px;height:40px}.bud-m .bud i{width:5px;height:8px}.bud-m .bud u{width:10px;height:5px;margin-left:-5px;border-width:2px}.bud-m .bud-say{padding:7px 11px}.bud-m .bud-say b{font-size:13.5px}
 @media (min-width:900px){main.ns .ns-scorerow .buddy{display:flex!important}.bud-m{display:none!important}}
+/* dashboard desktop: score | bar + next + timeline on top, the 4 areas in one row below */
+.ns-mid{display:contents}
+@media (min-width:900px){
+  main.ns:not(.pf-ns){grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)!important;row-gap:26px}
+  main.ns .ns-mid{display:block;padding-top:14px}
+  main.ns .ns-right{grid-column:1 / -1;padding-top:0}
+  main.ns .ns-row{grid-template-columns:repeat(4,1fr)!important}
+  main.ns .ns-c{aspect-ratio:auto!important;min-height:150px}
+  main.ns .ns-mid .ns-bar{margin-bottom:18px}
+  main.ns .ns-mid .ns-next{max-width:none}
+  main.ns .ns-mid .tline{max-width:none}
+  main.ns .ns-left .ns-l{margin-bottom:0}
+}
+@media (min-width:900px){main.ns .ns-scorerow .buddy{display:none!important}main.ns .bud-m{display:flex!important;justify-content:flex-start;margin:18px 0 0!important}}
 </style>
 </head>
 <body>
@@ -2097,8 +2111,8 @@ function areaActs(k,R){return areaPairs(k,S.answers.arch||{},S.profile||{}).pair
 function board(name,all,areas,demo,plan,bud){const now=demo?new Date("2026-11-24T12:00:00"):new Date(),day=now.toLocaleDateString("en-US",{weekday:"long"}),date=now.toLocaleDateString("en-US",{day:"numeric",month:"long"});
   return `<div class="ns-left"><p class="ns-d"><b>${day}</b><span>${date}</span></p>
     <div class="ns-scorerow"><div class="ns-big">${all}<small>%</small></div>${bud||""}</div>
-    <p class="ns-l">${name?esc(name)+"’s":"Your"} hirable score</p>${bud?bud.replace('class="buddy','class="buddy bud-m'):""}
-    <div class="ns-bar"><i style="width:${all}%"></i></div>
+    <p class="ns-l">${name?esc(name)+"’s":"Your"} hirable score</p>${bud?bud.replace('class="buddy','class="buddy bud-m'):""}</div>
+    <div class="ns-mid"><div class="ns-bar"><i style="width:${all}%"></i></div>
     ${plan?planBlock(plan):""}</div><div class="ns-right">
     <h2 class="ns-h">${demo?"Work on":"Your 4 areas"}</h2>${demo?"":`<p class="ns-tap">Tap one to see what’s holding you back.</p>`}
     <div class="ns-row">${areas.map((x,i)=>`<${demo?"div":"a"} class="ns-c"${demo?"":` href="#area-${x.k}"`} style="animation-delay:${i*90}ms"><span class="ns-go">↗</span><b>${esc(x.n).replace(" ","<br>")}</b><span class="ns-f"><span class="ns-n">${x.pr}%</span></span></${demo?"div":"a"}>`).join("")}</div></div>`}
