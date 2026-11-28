@@ -1078,6 +1078,23 @@ main.nx{max-width:560px;padding-top:28px}
   main.ns .tline span{width:100%;padding-left:84px;margin-top:-2px}
 }
 @media (min-width:900px){main.ns .ns-d{flex-direction:row!important;align-items:baseline;gap:10px}main.ns .ns-d span{font-size:20px}main.ns .ns-right{padding-top:0}}
+/* Bud: the green orb mascot */
+.buddy{display:flex;align-items:center;gap:12px;margin:6px 0 18px}
+.bud{position:relative;flex:none;width:64px;height:64px;border-radius:50%;
+  background:radial-gradient(circle at 34% 26%,rgba(255,255,255,.95),transparent 30%),radial-gradient(circle at 50% 80%,#D9EFB5 0%,#A9D18C 38%,#6E9F5A 78%,#4E7F5A 100%);
+  box-shadow:0 10px 24px -10px rgba(78,127,90,.6),inset 0 -6px 12px rgba(30,59,51,.18);animation:budbob 3.2s ease-in-out infinite}
+.bud i{position:absolute;top:40%;width:7px;height:10px;border-radius:5px;background:#1E3328;animation:blinky 3.6s infinite}.bud .e1{left:35%}.bud .e2{right:35%}
+.bud u{position:absolute;left:50%;top:56%;width:14px;height:7px;margin-left:-7px;border:2.5px solid #1E3328;border-top:0;border-radius:0 0 10px 10px}
+.bud em{position:absolute;top:55%;width:9px;height:5px;border-radius:50%;background:#F2A9A0;opacity:.75}.bud .c1{left:20%}.bud .c2{right:20%}
+.bud-say{position:relative;background:#fff;border:1px solid var(--edge);border-radius:16px;padding:9px 13px;box-shadow:0 8px 20px -14px rgba(21,38,31,.35)}
+.bud-say::before{content:"";position:absolute;left:-6px;top:50%;width:10px;height:10px;background:#fff;border-left:1px solid var(--edge);border-bottom:1px solid var(--edge);transform:translateY(-50%) rotate(45deg)}
+.bud-say b{display:block;font-weight:600;font-size:14.5px}.bud-say span{display:block;font-size:13px;color:var(--mute)}
+.buddy.hop .bud{animation:budhop .7s var(--ease),budbob 3.2s ease-in-out .7s infinite}
+@keyframes budbob{50%{transform:translateY(-4px)}}
+@keyframes budhop{30%{transform:translateY(-14px) scale(1.06,.94)}60%{transform:translateY(0) scale(.96,1.04)}100%{transform:none}}
+@keyframes blinky{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@media (prefers-reduced-motion:reduce){.bud,.bud i,.buddy.hop .bud{animation:none}}
+.bud-d{display:none!important}@media (min-width:900px){main.ns .ns-left .buddy{display:none}main.ns .bud-d{display:flex!important;margin-top:22px}}
 </style>
 </head>
 <body>
@@ -2052,14 +2069,19 @@ str:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(-6 60 60
 net:`<svg viewBox="0 0 120 120" aria-hidden="true"><g transform="rotate(5 60 60)"><path d="M22 34h52a10 10 0 0 1 10 10v22a10 10 0 0 1-10 10H46l-14 12v-12h-10a10 10 0 0 1-10-10V44a10 10 0 0 1 10-10z" fill="#fff"/><path d="M24 38h48a8 8 0 0 1 8 8v18a8 8 0 0 1-8 8H46l-11 9v-9H24a8 8 0 0 1-8-8V46a8 8 0 0 1 8-8z" fill="#E4EFD8" stroke="#15261F" stroke-width="3" stroke-linejoin="round"/><circle cx="36" cy="55" r="3.5" fill="#15261F"/><circle cx="48" cy="55" r="3.5" fill="#15261F"/><circle cx="60" cy="55" r="3.5" fill="#15261F"/></g><g transform="rotate(-8 82 82)"><path d="M66 70h34a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8h-4v8l-10-8H66a8 8 0 0 1-8-8V78a8 8 0 0 1 8-8z" fill="#CDEBD9" stroke="#15261F" stroke-width="3" stroke-linejoin="round"/><path d="M74 84l6 6 12-12" stroke="#15261F" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg>`};
 const STK_BG={cla:"#F1F6EA",art:"#F1F6EA",str:"#F1F6EA",net:"#EEF4E6"};
 function areaActs(k,R){return areaPairs(k,S.answers.arch||{},S.profile||{}).pairs.map(x=>x.fix)}
-function board(name,all,areas,demo,plan){const now=demo?new Date("2026-11-24T12:00:00"):new Date(),day=now.toLocaleDateString("en-US",{weekday:"long"}),date=now.toLocaleDateString("en-US",{day:"numeric",month:"long"});
-  return `<div class="ns-left"><p class="ns-d"><b>${day}</b><span>${date}</span></p>
+function board(name,all,areas,demo,plan,bud){const now=demo?new Date("2026-11-24T12:00:00"):new Date(),day=now.toLocaleDateString("en-US",{weekday:"long"}),date=now.toLocaleDateString("en-US",{day:"numeric",month:"long"});
+  return `<div class="ns-left">${bud||""}<p class="ns-d"><b>${day}</b><span>${date}</span></p>
     <div class="ns-big">${all}<small>%</small></div>
     <p class="ns-l">${name?esc(name)+"’s":"Your"} hirable score</p>
     <div class="ns-bar"><i style="width:${all}%"></i></div>
     ${plan?planBlock(plan):""}</div><div class="ns-right">
     <h2 class="ns-h">${demo?"Work on":"Your 4 areas"}</h2>${demo?"":`<p class="ns-tap">Tap one to see what’s holding you back.</p>`}
-    <div class="ns-row">${areas.map((x,i)=>`<${demo?"div":"a"} class="ns-c"${demo?"":` href="#area-${x.k}"`} style="animation-delay:${i*90}ms"><span class="ns-go">↗</span><b>${esc(x.n).replace(" ","<br>")}</b><span class="ns-f"><span class="ns-n">${x.pr}%</span><span class="ns-mini"><i style="width:${x.pr}%"></i></span></span></${demo?"div":"a"}>`).join("")}</div></div>`}
+    <div class="ns-row">${areas.map((x,i)=>`<${demo?"div":"a"} class="ns-c"${demo?"":` href="#area-${x.k}"`} style="animation-delay:${i*90}ms"><span class="ns-go">↗</span><b>${esc(x.n).replace(" ","<br>")}</b><span class="ns-f"><span class="ns-n">${x.pr}%</span><span class="ns-mini"><i style="width:${x.pr}%"></i></span></span></${demo?"div":"a"}>`).join("")}</div>${bud?bud.replace('class="buddy','class="buddy bud-d'):""}</div>`}
+/* streak: days in a row with at least one step done (today can still be pending) */
+function streak(){const L=S.dayLog||{};let n=0,d=TODAY;if(!L[d])d=addDays(d,-1);while(L[d]){n++;d=addDays(d,-1)}return{n,today:!!L[TODAY]}}
+function buddy(){const st=streak(),any=Object.values(S.stepsDone||{}).some(Boolean),hop=UI.hop;UI.hop=0;
+  const msg=st.n>=1?(st.today?`<b>🔥 ${st.n}-day streak!</b><span>Done for today. See you tomorrow.</span>`:`<b>🔥 ${st.n}-day streak</b><span>Do one step today to keep it.</span>`):any?`<b>Let’s start a new streak</b><span>One step today is all it takes.</span>`:`<b>Hi! I’m Bud.</b><span>Tick off a step and we’ll start a streak.</span>`;
+  return `<div class="buddy${hop?" hop":""}"><div class="bud" aria-hidden="true"><i class="e1"></i><i class="e2"></i><u></u><em class="c1"></em><em class="c2"></em></div><div class="bud-say">${msg}</div></div>`}
 /* the next few undone fixes, weakest area first, spread over the coming weeks */
 function nextPlan(areas){const dn=S.stepsDone||{},a=S.answers.arch||{},p=S.profile||{},lists=areas.map(x=>areaPairs(x.k,a,p).pairs.map(y=>({...y.fix,area:x.n,k:x.k})).filter(f=>!dn[f.key])),out=[];
   for(let r=0;out.length<3&&r<3;r++)lists.forEach(L=>{if(out.length<3&&L[r])out.push(L[r])});
@@ -2072,7 +2094,7 @@ function planBlock(plan){const first=plan.find(x=>!x.apply);
 function vSteps(){const R=archR0();if(!R)return go("home"),"";const dn=S.stepsDone||{},p=S.profile||{};
   const areas=DIMS.map(d=>{const acts=areaActs(d.k,R),done=acts.filter(z=>dn[z.key]).length,v=R.dims[d.k];return{...d,pr:Math.round(v+(100-v)*(acts.length?done/acts.length:0))}}).sort((x,y)=>x.pr-y.pr);
   const all=Math.round(areas.reduce((n,x)=>n+x.pr*DIM_W[x.k],0));
-  return shell(`<main class="screen anim-in ns">${board(p.first,all,areas,0,nextPlan(areas))}</main>`,{tabs:"me"})}
+  return shell(`<main class="screen anim-in ns">${board(p.first,all,areas,0,nextPlan(areas),buddy())}</main>`,{tabs:"me"})}
 function vMe(){return vSteps()}
 function vMeOld(){const p=S.profile||{},R=archR0();if(!R)return go("home"),"";const a=S.answers.arch,pl=planFor(R),self=a.c_self!=null?+a.c_self:null,rc=S.results.career,c1=rc&&DIRS.find(d=>d.id===rc.top[0].id),ab=applyBy(a),days=ab?Math.round((new Date(ab)-new Date(TODAY))/DAY):null;
   return shell(`<main class="screen anim-in">
@@ -2211,7 +2233,7 @@ const ACT={
   copymsg:()=>{const t=($("#chatmsg")||{}).innerText||"";try{navigator.clipboard.writeText(t).then(()=>toast("Copied. Paste it into LinkedIn."),()=>toast("Select the text to copy it."))}catch(e){toast("Select the text to copy it.")}},
   edit:()=>{UI.edit=true;render()},
   edit2:()=>{UI.edit=!UI.edit;render()},
-  tick:el=>{const d=S.stepsDone||(S.stepsDone={}),k=el.dataset.k;d[k]=!d[k];UI.openArea=k.split(":")[0];save();render()},
+  tick:el=>{const d=S.stepsDone||(S.stepsDone={}),k=el.dataset.k;d[k]=!d[k];if(d[k]){(S.dayLog||(S.dayLog={}))[TODAY]=1;UI.hop=1}UI.openArea=k.split(":")[0];save();render()},
   logout:async()=>{if(sb)await sb.auth.signOut();AUTH.user=null;S=fresh();save();go("home")},
   help:()=>{UI.help={};render()},helpx:(el,e)=>{if(el.classList.contains("modal-bg")&&e.target!==el)return;UI.help=null;render()},
   helptype:el=>{UI.help.type=el.dataset.v;UI.help.msg=($("#help-msg")||{}).value||"";render()},helpsend:()=>helpSend(),
