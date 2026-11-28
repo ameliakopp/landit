@@ -1492,7 +1492,9 @@ const QUIZ={
       {id:"c_role",kind:"text",short:true,when:a=>a.c_mode==="spec"&&linkOk(a.c_link)&&!slugRole(a.c_link),l:"And what’s the role called?",ph:"e.g. Brand Marketing Intern"},
       {id:"c_line",kind:"text",when:a=>a.c_mode==="type",l:"What kind of role? One line, and why.",ph:"e.g. Brand marketing at a beauty company, because I love figuring out why people buy things"},
       {id:"c_sure",kind:"one",when:a=>a.c_mode==="type",l:"How sure are you?",opts:o(["guess","Just a guess"],["lean","Leaning"],["pretty","Pretty sure"],["locked","Locked in"])},
-      {id:"c_targets",kind:"one",when:a=>a.c_mode==="type",l:"How many kinds of roles are you applying to?",opts:o(["none","Haven’t started"],["any","Anything open"],["few","3 to 5"],["one","1 or 2"])}]},
+      {id:"c_targets",kind:"one",when:a=>a.c_mode==="type",l:"How many kinds of roles are you applying to?",opts:o(["none","Haven’t started"],["any","Anything open"],["few","3 to 5"],["one","1 or 2"])},
+      {id:"c_line2",kind:"text",short:true,optional:true,when:a=>a.c_mode==="type"&&(a.c_targets==="few"||a.c_targets==="one"),l:"Your 2nd kind of role, and why (optional)",ph:"e.g. Social media at a startup, because I already run our club’s TikTok"},
+      {id:"c_line3",kind:"text",short:true,optional:true,when:a=>a.c_mode==="type"&&a.c_targets==="few"&&String(a.c_line2||"").trim().length>2,l:"A 3rd one? (optional)",ph:"e.g. Partnerships at a music label, because I love connecting people"}]},
     {id:"q_docs",sec:"What you want",kind:"combo",q:a=>a.c_mode==="spec"?`Your application for ${coName(a)}.`:"Your resume.",sub:a=>a.c_mode==="spec"?"Upload what you’d actually send. We’ll check it against this job.":"We’ll use it so you answer fewer questions. It stays on your device.",parts:[
       {id:"c_resfile",kind:"file",doc:"resume",l:a=>a.c_mode==="spec"?`The resume you’d send to ${coName(a)}`:"Your resume",none:"I don’t have one yet"},
       {id:"c_covfile",kind:"file",doc:"cover",when:a=>a.c_mode==="spec",l:a=>`Your cover letter for ${coName(a)}`,none:"No cover letter for this one"}]},
@@ -1831,7 +1833,7 @@ function resumeBlock(p){const an=analyzeResume(p);if(!an)return"";
   return `<div class="sw"><div class="sw-col"><h3>Strengths</h3>${an.good.length?an.good.map(x=>`<div class="swi">${ICON_OK}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join(""):`<p class="tiny">None yet. That’s what we’ll build.</p>`}</div>
     <div class="sw-col"><h3>Weaknesses</h3>${an.bad.length?an.bad.map(x=>`<div class="swi">${ICON_NO}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join(""):`<p class="tiny">Nothing obvious. Nice.</p>`}</div></div>`}
 function vProfile(){const p=S.profile||(S.profile={}),P=UI.parse||{},xp=p.experience||[],R=S.answers.arch&&archR0(),role=R&&roleText(),ini=esc((p.first||p.name||"?").charAt(0).toUpperCase());
-  const rows=[R&&["Hirable score",R.score+"%"],role&&["Aiming for",role.charAt(0).toUpperCase()+role.slice(1)],["Resume",p.resume?p.resume.name:"Not added"],p.linkedinUrl&&["LinkedIn",p.linkedinUrl]].filter(Boolean);
+  const rows=[R&&["Hirable score",R.score+"%"],role&&["Aiming for",[role.charAt(0).toUpperCase()+role.slice(1),...[S.answers.arch.c_line2,S.answers.arch.c_line3].filter(x=>x&&String(x).trim()).map(x=>String(x).split(/,|\bbecause\b/i)[0].trim())].join(" · ")],["Resume",p.resume?p.resume.name:"Not added"],p.linkedinUrl&&["LinkedIn",p.linkedinUrl]].filter(Boolean);
   return shell(`<main class="screen anim-in pf2">
     <div class="pf-head">
     <label class="pf-av" aria-label="${p.avatar?"Change":"Add"} profile photo"><input type="file" accept="image/*" data-avatar hidden>${p.avatar?`<img src="${esc(p.avatar)}" alt="">`:`<span>${ini}</span>`}<em>${p.avatar?"Change photo":"+ Add photo"}</em></label>
