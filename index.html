@@ -1057,7 +1057,9 @@ const SCRIB=`<svg class="scrib" viewBox="0 0 200 100" preserveAspectRatio="none"
 /* ---------- state ---------- */
 const STORE="clocked.v1";
 function fresh(){return {v:"clocked1",profile:null,answers:{},results:{},draft:{}}}
-let S=(()=>{try{const s=JSON.parse(localStorage.getItem(STORE));if(s&&s.v==="clocked1")return s}catch(e){}return fresh()})();
+/* fill in any missing sections so old or partial saves can't crash a screen */
+function normS(s){if(!s||typeof s!=="object"||s.v!=="clocked1")return fresh();["answers","results","draft"].forEach(k=>{if(!s[k]||typeof s[k]!=="object")s[k]={}});return s}
+let S=(()=>{try{return normS(JSON.parse(localStorage.getItem(STORE)))}catch(e){}return fresh()})();
 
 /* =====================================================================
    DEV ONLY: skip a quiz and preview its result screen.
@@ -1088,12 +1090,13 @@ const AUTH={user:null};
 function cloudSave(){if(DEV_PREVIEW||!sb||!AUTH.user)return;clearTimeout(cloudSave.t);cloudSave.t=setTimeout(async()=>{
   const p=S.profile||{},row={id:AUTH.user.id,first_name:p.first||null,company:(p.experience&&p.experience[0]&&p.experience[0].company)||null,state:S,updated_at:new Date().toISOString()};
   const {error}=await sb.from("students").upsert(row);if(error)console.warn("Cloud save failed:",error.message)},700)}
-async function cloudLoad(){if(DEV_PREVIEW)return;const {data,error}=await sb.from("students").select("state").eq("id",AUTH.user.id).maybeSingle();
+async function cloudLoad(){if(DEV_PREVIEW)return;let data,error;try{({data,error}=await sb.from("students").select("state").eq("id",AUTH.user.id).maybeSingle())}catch(e){error=e}
   if(error){console.warn("Cloud load failed:",error.message);return}
-  if(data&&data.state&&data.state.v==="clocked1"){S=data.state;try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}}else cloudSave()}
+  if(data&&data.state&&data.state.v==="clocked1"){S=normS(data.state);try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}}else cloudSave()}
 function metaProfile(u){const m=(u&&u.user_metadata)||{},name=m.full_name||m.name||[m.given_name,m.family_name].filter(Boolean).join(" ")||"";
   return {name,first:(m.given_name||name.split(" ")[0]||"").trim(),email:u.email||m.email||"",avatar:m.avatar_url||m.picture||""}}
-async function setUser(u){const was=AUTH.user&&AUTH.user.id;AUTH.user=u||null;
+async function setUser(u){try{await setUser0(u)}catch(e){console.error(e);S=normS(S);render()}}
+async function setUser0(u){const was=AUTH.user&&AUTH.user.id;AUTH.user=u||null;
   if(AUTH.user&&AUTH.user.id!==was){await cloudLoad();const mp=metaProfile(AUTH.user);
     S.profile=Object.assign({},mp,S.profile||{});["name","first","avatar"].forEach(k=>{if(!S.profile[k]&&mp[k])S.profile[k]=mp[k]});if(!S.profile.email)S.profile.email=mp.email;save();
     const r=route();if(r==="join"||r==="home"||/access_token|error_description|code=/.test(location.href))go(S.profile.done?(S.pending||"me"):"setup");else render()}
@@ -1101,10 +1104,12 @@ async function setUser(u){const was=AUTH.user&&AUTH.user.id;AUTH.user=u||null;
 if(sb){sb.auth.getSession().then(({data})=>setUser(data.session&&data.session.user));
   sb.auth.onAuthStateChange((ev,s)=>{if(ev==="SIGNED_OUT"){AUTH.user=null;render()}else if(s&&(!AUTH.user||AUTH.user.id!==s.user.id))setUser(s.user)})}
 async function emailAuth(form){const email=form.querySelector("#au-email").value.trim(),password=form.querySelector("#au-pw").value;
-  UI.busy=true;UI.msg="";render();
-  const res=UI.mode==="signup"?await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}}):await sb.auth.signInWithPassword({email,password});
-  UI.busy=false;if(res.error){UI.msg=res.error.message;render();return}
-  if(UI.mode==="signup"&&!res.data.session){UI.msg="Check your email and tap the link to confirm. Then come back here.";render()}}
+  if(!sb){UI.msg="We couldn’t reach our login service. Check your connection (or turn off any ad blocker) and try again.";render();return}
+  UI.busy=true;UI.msg="";render();let res;
+  try{res=await Promise.race([UI.mode==="signup"?sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}}):sb.auth.signInWithPassword({email,password}),new Promise((_,no)=>setTimeout(()=>no(new Error("timeout")),20000))])}
+  catch(e){UI.busy=false;UI.msg="That took too long. Check your connection and try again.";render();return}
+  UI.busy=false;if(res.error){UI.msg=/invalid login/i.test(res.error.message)?"That email and password don’t match. Try again, or sign up if you’re new.":/already registered/i.test(res.error.message)?"You already have an account. Tap “Have an account? Log in”.":res.error.message;render();return}
+  if(UI.mode==="signup"&&!res.data.session){UI.msg="Check your email and tap the link to confirm. Then come back here and log in with the same email and password.";UI.mode="login";render()}}
 
 /* ---------- resume reader ---------- */
 const PDFJS="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/";
@@ -2041,7 +2046,9 @@ async function helpSend(){const h=UI.help;h.msg=($("#help-msg").value||"").trim(
   h.busy=false;if(ok){h.sent=true;render();return}location.href="mailto:ameliamkopp@gmail.com?subject="+encodeURIComponent("Hirable feedback")+"&body="+encodeURIComponent(h.msg);h.sent=true;render()}
 
 /* ---------- render ---------- */
-function render(){const r=route();let html;
+function render(){try{render0()}catch(e){console.error("Screen failed:",e);UI.loading=null;
+  const app=document.getElementById("app");if(app)app.innerHTML=`<header class="top">${WORD}<span></span></header><main class="screen center"><div class="orb sm" aria-hidden="true"></div><h1 class="t1">Something went wrong.</h1><p class="t2">Your answers are saved. Let’s get you back.</p><div class="stack"><a class="btn" href="#home" onclick="setTimeout(()=>location.reload(),50)">Go home</a></div></main>`}}
+function render0(){const r=route();let html;
   if(UI.loading)html=vLoading(UI.loading);
   else if(r==="auth")html=shell(`<main class="screen center"><div class="orb busy"></div><span class="loadpill"><i></i>Logging you in</span></main>`,{bare:true});
   else if(r==="join")html=vJoin();else if(r==="setup")html=vSetup();
