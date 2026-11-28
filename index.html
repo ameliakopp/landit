@@ -967,7 +967,7 @@ main.pf2{align-items:center;text-align:center;padding-top:28px}
   .pf-av span,.pf-av img{width:140px;height:140px;font-size:54px}
   .pf-name{margin:0 0 6px;font-size:48px}
   .pf-sub{font-size:17px}
-  .pf-rows{max-width:none;margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;background:none!important;border:0!important;padding:0!important;box-shadow:none!important}
+  .pf-rows{max-width:none;margin-top:40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;background:none!important;border:0!important;padding:0!important;box-shadow:none!important}
   .pf-rows .alt{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:24px!important;border-radius:24px;background:#F6F6F3;border:0!important;min-height:140px;justify-content:space-between}
   .pf-rows .alt span{font-size:15px;color:var(--mute)}
   .pf-rows .alt em{font-style:normal;font-size:24px;font-weight:600;color:#15261F;text-align:left;overflow-wrap:anywhere;font-family:"Inter Tight",system-ui,sans-serif;letter-spacing:-.02em}
@@ -1220,7 +1220,9 @@ const SKILL_NEAR={brand:["Google Ads bidding","Press releases","Sales quotas","I
   people:["Payroll processing","Sales recruiting quotas","Employment law","Event planning"],ops:["Financial modeling","Supply chain engineering","Customer support tickets","Sales quotas"]};
 const SK_FAR={brand:"swe",social:"accounting",partner:"hardware",pm:"legal",ux:"finance",data:"events",consult:"visual",finance:"social",swe:"journal",events:"ai",comms:"supply",journal:"swe",people:"hardware",ops:"creator",sales:"legal",program:"finance",sustain:"social",research:"sales",strategy:"visual",vc:"edu",policy:"swe",visual:"accounting",recruit:"ai",creator:"legal",accounting:"social",supply:"journal",health:"creator",edu:"finance",legal:"social",ai:"events",hardware:"comms"};
 const TITLE_FAR={brand:"accounting",social:"legal",partner:"ai",pm:"health",ux:"supply",data:"edu",consult:"creator",finance:"program",swe:"comms",events:"data",comms:"ai",journal:"accounting",people:"swe",ops:"visual",sales:"research",program:"vc",sustain:"swe",research:"events",strategy:"social",vc:"journal",policy:"creator",visual:"finance",recruit:"hardware",creator:"consult",accounting:"social",supply:"ux",health:"vc",edu:"sales",legal:"brand",ai:"people",hardware:"comms"};
-function linkOk(u){return /^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(String(u||"").trim())}
+function linkOk(u){u=String(u||"").trim();return /linkedin\.com\/(in|pub)\/[^\s]+|lnkd\.in\/\S+/i.test(u)||/^(https?:\/\/)?[^\s.\/@]+(\.[^\s.\/@]+)+(\/\S*)?$/u.test(u)}
+/* pull a clean linkedin.com/in/... out of whatever was pasted */
+function liClean(u){const m=String(u||"").match(/(?:linkedin\.com\/(?:in|pub)\/[^\s/?#]+|lnkd\.in\/[^\s/?#]+)/i);return m?m[0]:""}
 function slugRole(u){try{const x=new URL(/^https?:/i.test(u)?u:"https://"+u);const segs=x.pathname.split("/").filter(Boolean).reverse();
   for(const g of segs){const w=decodeURIComponent(g).replace(/\.[a-z]+$/i,"").split(/[-_+]+/).filter(t=>/^[a-z]+$/i.test(t)&&!/^(summer|fall|spring|winter|intl|us|usa|job|jobs|careers)$/i.test(t));if(w.length>=2&&(/intern|analyst|associate|coordinator|assistant|engineer|designer|manager/i.test(w.join(" "))||ROLE_WORDS.test(w.join(" "))))return w.map(t=>t.charAt(0).toUpperCase()+t.slice(1).toLowerCase()).join(" ")}}catch(e){}return""}
 function goalLine(a){a=a||{};if(a.c_mode==="spec"){const r=a.c_role||slugRole(a.c_link),c=a.c_co||postingCompany(a.c_link);return [r||"An internship",c&&("at "+c)].filter(Boolean).join(" ")}return a["c_line"]||""}
@@ -1250,7 +1252,7 @@ function dayScore(t){t=String(t||"").trim();if(!t||/^(idk|i don.?t know|no idea|
 function whyScore(t){t=String(t||"").trim().toLowerCase();if(!t||/^(idk|i don.?t know|no idea|not sure)/.test(t))return 0;const w=t.split(/\s+/).length;let n=w>=8?1:0;
   if(/because|since|so that|that’s why|which is why/.test(t))n+=.75;if(/\b(i (led|built|ran|grew|started|worked|interned|organized|planned|created)|at (my|the) (internship|job|club))/.test(t))n+=.75;if(ROLE_WORDS.test(t))n+=.5;if(/\b(passion|passionate|dream|always wanted|love people|good with people)\b/.test(t))n-=.5;return clamp(Math.round(n*2)/2,0,3)}
 function resumeExp(){const st=(S.profile||{}).resumeStats;if(!st)return null;return st.intern?3:st.roles>=2?2:st.roles===1?1.2:0}
-const liHas=a=>a.c_lilink&&a.c_lilink!=="none"&&linkOk(a.c_lilink);
+const liHas=a=>a.c_lilink&&a.c_lilink!=="none"&&(!!liClean(a.c_lilink)||linkOk(a.c_lilink));
 const liNorm=a=>a&&a.c_lilink==="none"?Object.assign({},a,{c_lihead:"none"}):a;
 function readiness(a){a=liNorm(a);const P={cla:[],art:[],net:[],str:[]},add=(k,v)=>{if(v!=null&&!isNaN(v))P[k].push(v)},m=(map,v)=>v==null||Array.isArray(v)?null:map[v];
   add("cla",a.c_mode==="spec"?null:(a["c_line"]!=null?lineScore(a["c_line"]):null));
@@ -1623,7 +1625,7 @@ function analyzeResume(p){const st=p&&p.resumeStats;if(!st)return null;const goo
     else bad.push({t:`Only ${st.nums} of ${st.bullets} bullets have a number`,d:"Recruiters skim for results. No numbers, no proof.",fix:`Add a number to ${Math.min(4,st.bullets-st.nums)} of your bullets`})}
   if(st.weak)bad.push({t:`${st.weak} bullet${st.weak>1?"s start":" starts"} with “${st.weakEx.split(" ").slice(0,2).join(" ")}…”`,d:"That describes a job, not what you did.",fix:"Start every bullet with a strong verb: led, built, grew, cut"});
   if(st.pages>1)bad.push({t:`${st.pages} pages long`,d:"Students get one page. Recruiters won’t flip.",fix:"Cut it to one page"});
-  if(!st.hasLi)bad.push({t:"No LinkedIn link",d:"The first thing a recruiter checks after your resume.",fix:"Add your LinkedIn URL to the top"});
+  if(!st.hasLi)bad.push(p.linkedinUrl?{t:"Your LinkedIn isn’t on your resume",d:"You have one. Put the link at the top so recruiters find it in one click.",fix:`Add ${p.linkedinUrl} to the top of your resume`}:{t:"No LinkedIn link",d:"The first thing a recruiter checks after your resume.",fix:"Add your LinkedIn URL to the top"});
   else good.push({t:"LinkedIn linked",d:"Easy for recruiters to check you out."});
   if(st.skills>=5)good.push({t:`${st.skills} skills listed`,d:"Make sure the top ones match the job you want."});
   else bad.push({t:st.skills?"Thin skills section":"No skills section",d:"Recruiters keyword-search for these.",fix:"Add a skills line with 5+ tools you actually use"});
@@ -1829,7 +1831,7 @@ function resumeBlock(p){const an=analyzeResume(p);if(!an)return"";
   return `<div class="sw"><div class="sw-col"><h3>Strengths</h3>${an.good.length?an.good.map(x=>`<div class="swi">${ICON_OK}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join(""):`<p class="tiny">None yet. That’s what we’ll build.</p>`}</div>
     <div class="sw-col"><h3>Weaknesses</h3>${an.bad.length?an.bad.map(x=>`<div class="swi">${ICON_NO}<div><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join(""):`<p class="tiny">Nothing obvious. Nice.</p>`}</div></div>`}
 function vProfile(){const p=S.profile||(S.profile={}),P=UI.parse||{},xp=p.experience||[],R=S.answers.arch&&archR0(),role=R&&roleText(),ini=esc((p.first||p.name||"?").charAt(0).toUpperCase());
-  const rows=[R&&["Hirable score",R.score+"%"],role&&["Aiming for",role.charAt(0).toUpperCase()+role.slice(1)],["Resume",p.resume?p.resume.name:"Not added"]].filter(Boolean);
+  const rows=[R&&["Hirable score",R.score+"%"],role&&["Aiming for",role.charAt(0).toUpperCase()+role.slice(1)],["Resume",p.resume?p.resume.name:"Not added"],p.linkedinUrl&&["LinkedIn",p.linkedinUrl]].filter(Boolean);
   return shell(`<main class="screen anim-in pf2">
     <div class="pf-head">
     <label class="pf-av" aria-label="${p.avatar?"Change":"Add"} profile photo"><input type="file" accept="image/*" data-avatar hidden>${p.avatar?`<img src="${esc(p.avatar)}" alt="">`:`<span>${ini}</span>`}<em>${p.avatar?"Change photo":"+ Add photo"}</em></label>
@@ -2127,7 +2129,7 @@ document.addEventListener("submit",e=>{if(e.target.matches("[data-auth]")){e.pre
 document.addEventListener("input",e=>{const t=e.target;
   if(t.dataset.pf){S.profile=S.profile||{};S.profile[t.dataset.pf]=t.value;save()}
   else if(t.dataset.xp!=null){S.profile.experience[+t.dataset.xp][t.dataset.f]=t.value;save()}
-  else if(t.matches("[data-qtext]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i];d.a[t.dataset.pid||q.id]=t.value;save();footSync(k);if(q.kind==="combo"){clearTimeout(UI.revT);UI.revT=setTimeout(()=>{if(route()==="q-"+k&&(t.type==="url"||shownParts(q,d.a).length!==(UI.partsShown||{})[q.id]))render()},700)}}});
+  else if(t.matches("[data-qtext]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i];d.a[t.dataset.pid||q.id]=t.value;if((t.dataset.pid||q.id)==="c_lilink"&&liClean(t.value))(S.profile||(S.profile={})).linkedinUrl=liClean(t.value);save();footSync(k);if(q.kind==="combo"){clearTimeout(UI.revT);UI.revT=setTimeout(()=>{if(route()==="q-"+k&&(t.type==="url"||shownParts(q,d.a).length!==(UI.partsShown||{})[q.id]))render()},700)}}});
 document.addEventListener("input",e=>{if(e.target.matches("[data-slider]")){const k=route().slice(2),d=S.draft[k],q=QUIZ[k].qs[d.i],v=+e.target.value;d.a[e.target.dataset.pid||q.id]=v;save();$("#sl-n").textContent=v;$("#sl-l").textContent=selfLabel(v);footSync(k)}});
 function footSync(k){const d=S.draft[k],q=QUIZ[k].qs[d.i],ok=qOk(q,d.a),b=$(".qz-foot .go");if(!b)return;const last=qVisible(k,d.a).indexOf(q)===qVisible(k,d.a).length-1;b.disabled=!ok&&!q.optional;b.innerHTML=(!ok&&q.optional?"Skip":last?"Show me the truth":"Next")+"<i>→</i>"}
 document.addEventListener("change",e=>{if(e.target.matches("[data-avatar]"))handleAvatar(e.target.files[0]);if(e.target.matches("[data-resume]"))handleResume(e.target.files[0]);if(e.target.matches("[data-qfile]"))handleQFile(e.target.files[0],e.target.dataset.qfile,e.target.dataset.pid)});
